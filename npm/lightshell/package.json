@@ -12,9 +12,9 @@
   "bin": {
     "lightshell": "bin/lightshell"
   },
-  "scripts": {
-    "postinstall": "node install.js"
-  },
+  "files": [
+    "bin/"
+  ],
   "optionalDependencies": {
     "@lightshell/darwin-arm64": "0.1.0",
     "@lightshell/darwin-x64": "0.1.0",

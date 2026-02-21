@@ -7,7 +7,16 @@ Build desktop apps with JavaScript. Ship them under 5MB.
 ## Quick Start
 
 ```bash
-npm create lightshell@latest my-app
+npx @lightshell/create my-app
+cd my-app
+npx @lightshell/cli dev
+```
+
+Or install globally:
+
+```bash
+npm install -g @lightshell/cli
+lightshell init my-app
 cd my-app
 lightshell dev
 ```
