@@ -1,0 +1,27 @@
+{
+  "name": "lightshell",
+  "version": "0.1.0",
+  "description": "Build desktop apps with JavaScript. Ship them under 5MB.",
+  "keywords": ["desktop", "app", "framework", "webview", "native", "macos", "linux"],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/meherpanguluri/lightshell"
+  },
+  "homepage": "https://lightshell.sh",
+  "bin": {
+    "lightshell": "bin/lightshell"
+  },
+  "scripts": {
+    "postinstall": "node install.js"
+  },
+  "optionalDependencies": {
+    "@lightshell/darwin-arm64": "0.1.0",
+    "@lightshell/darwin-x64": "0.1.0",
+    "@lightshell/linux-arm64": "0.1.0",
+    "@lightshell/linux-x64": "0.1.0"
+  },
+  "engines": {
+    "node": ">=16"
+  }
+}

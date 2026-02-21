@@ -17,18 +17,22 @@ jobs:
             goos: darwin
             goarch: arm64
             artifact: lightshell-darwin-arm64
+            npm_pkg: darwin-arm64
           - os: macos-latest
             goos: darwin
             goarch: amd64
             artifact: lightshell-darwin-amd64
+            npm_pkg: darwin-x64
           - os: ubuntu-latest
             goos: linux
             goarch: amd64
             artifact: lightshell-linux-amd64
+            npm_pkg: linux-x64
           - os: ubuntu-latest
             goos: linux
             goarch: arm64
             artifact: lightshell-linux-arm64
+            npm_pkg: linux-arm64
 
     runs-on: ${{ matrix.os }}
 
@@ -95,3 +99,110 @@ jobs:
         with:
           generate_release_notes: true
           files: release/*.tar.gz
+
+  publish-npm:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: https://registry.npmjs.org
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Get version from tag
+        id: version
+        run: echo "VERSION=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
+
+      - name: Publish platform packages
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          VERSION=${{ steps.version.outputs.VERSION }}
+
+          declare -A BINARIES
+          BINARIES[darwin-arm64]=lightshell-darwin-arm64
+          BINARIES[darwin-x64]=lightshell-darwin-amd64
+          BINARIES[linux-x64]=lightshell-linux-amd64
+          BINARIES[linux-arm64]=lightshell-linux-arm64
+
+          declare -A OS_FIELD
+          OS_FIELD[darwin-arm64]=darwin
+          OS_FIELD[darwin-x64]=darwin
+          OS_FIELD[linux-x64]=linux
+          OS_FIELD[linux-arm64]=linux
+
+          declare -A CPU_FIELD
+          CPU_FIELD[darwin-arm64]=arm64
+          CPU_FIELD[darwin-x64]=x64
+          CPU_FIELD[linux-x64]=x64
+          CPU_FIELD[linux-arm64]=arm64
+
+          for PLATFORM in darwin-arm64 darwin-x64 linux-x64 linux-arm64; do
+            ARTIFACT=${BINARIES[$PLATFORM]}
+            PKG_DIR=$(mktemp -d)
+
+            cat > "$PKG_DIR/package.json" <<PKGJSON
+          {
+            "name": "@lightshell/${PLATFORM}",
+            "version": "${VERSION}",
+            "description": "LightShell binary for ${PLATFORM}",
+            "license": "MIT",
+            "repository": {
+              "type": "git",
+              "url": "https://github.com/meherpanguluri/lightshell"
+            },
+            "os": ["${OS_FIELD[$PLATFORM]}"],
+            "cpu": ["${CPU_FIELD[$PLATFORM]}"],
+            "files": ["lightshell"]
+          }
+          PKGJSON
+
+            cp "artifacts/${ARTIFACT}/${ARTIFACT}" "$PKG_DIR/lightshell"
+            chmod +x "$PKG_DIR/lightshell"
+
+            echo "Publishing @lightshell/${PLATFORM}@${VERSION}"
+            cd "$PKG_DIR" && npm publish --access public || true
+            cd -
+          done
+
+      - name: Publish main lightshell package
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          VERSION=${{ steps.version.outputs.VERSION }}
+          cd npm/lightshell
+
+          # Update version and optional dependency versions
+          node -e "
+            const pkg = require('./package.json');
+            pkg.version = '${VERSION}';
+            for (const dep of Object.keys(pkg.optionalDependencies || {})) {
+              pkg.optionalDependencies[dep] = '${VERSION}';
+            }
+            require('fs').writeFileSync('package.json', JSON.stringify(pkg, null, 2) + '\n');
+          "
+
+          npm publish --access public
+
+      - name: Publish create-lightshell package
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          VERSION=${{ steps.version.outputs.VERSION }}
+          cd npm/create-lightshell
+
+          node -e "
+            const pkg = require('./package.json');
+            pkg.version = '${VERSION}';
+            require('fs').writeFileSync('package.json', JSON.stringify(pkg, null, 2) + '\n');
+          "
+
+          npm publish --access public
