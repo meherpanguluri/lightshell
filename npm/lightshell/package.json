@@ -1,5 +1,5 @@
 {
-  "name": "lightshell",
+  "name": "@lightshell/cli",
   "version": "0.1.0",
   "description": "Build desktop apps with JavaScript. Ship them under 5MB.",
   "keywords": ["desktop", "app", "framework", "webview", "native", "macos", "linux"],

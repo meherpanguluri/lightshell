@@ -1,10 +1,12 @@
 /* shared.css — Typography, colors, resets, responsive */
 
 :root {
-  --bg-desktop: #f5f4f0;
-  --bg-window: #ffffff;
-  --bg-window-header: #fafaf9;
-  --bg-window-header-inactive: #f5f5f3;
+  --canvas-bg: #f5f4f0;
+  --glass-bg: rgba(255, 255, 255, 0.45);
+  --glass-border: rgba(255, 255, 255, 0.3);
+  --bg-window: rgba(255, 255, 255, 0.6);
+  --bg-window-header: rgba(255, 255, 255, 0.35);
+  --bg-window-header-inactive: rgba(245, 244, 240, 0.4);
   --bg-taskbar: #ffffff;
   --bg-icon-hover: rgba(0, 0, 0, 0.04);
   --bg-tooltip: rgba(30, 30, 30, 0.9);
@@ -13,17 +15,16 @@
   --text-secondary: #6b6b6b;
   --text-muted: #999999;
   --text-desktop: #1a1a1a;
-  --text-desktop-shadow: none;
   --text-link: #1a1a1a;
 
-  --border-window: rgba(255, 255, 255, 0.7);
-  --border-subtle: rgba(0, 0, 0, 0.03);
+  --border-window: rgba(255, 255, 255, 0.5);
+  --border-subtle: rgba(0, 0, 0, 0.04);
 
-  --shadow-window: 0 30px 60px rgba(0, 0, 0, 0.05);
-  --shadow-window-focused: 0 30px 60px rgba(0, 0, 0, 0.08);
-  --shadow-taskbar: 0 15px 40px rgba(0, 0, 0, 0.1);
+  --shadow-window: 0 25px 50px rgba(0, 0, 0, 0.06);
+  --shadow-window-focused: 0 25px 50px rgba(0, 0, 0, 0.1);
+  --shadow-taskbar: 0 10px 40px rgba(0, 0, 0, 0.1);
 
-  --radius-window: 32px;
+  --radius-window: 28px;
   --radius-btn: 14px;
   --radius-icon: 16px;
 
@@ -44,7 +45,7 @@
 
   --accent: #1a1a1a;
   --accent-light: #f0f0ee;
-  --green: #40916c;
+  --green: #2d5a4c;
   --yellow: #dda15e;
   --red: #e07a5f;
   --orange: #d4a373;
@@ -83,7 +84,7 @@ pre {
   background: #1e1e2e;
   color: #cdd6f4;
   padding: 1rem;
-  border-radius: var(--radius-btn);
+  border-radius: 12px;
   overflow-x: auto;
   font-size: 0.8125rem;
   line-height: 1.6;
@@ -94,7 +95,7 @@ pre {
 code {
   background: rgba(0, 0, 0, 0.06);
   padding: 0.15em 0.4em;
-  border-radius: 3px;
+  border-radius: 4px;
   font-size: 0.875em;
 }
 
@@ -120,18 +121,18 @@ button {
 /* Scrollbar normalization */
 ::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: rgba(0, 0, 0, 0.15); border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: rgba(0, 0, 0, 0.25); }
+::-webkit-scrollbar-thumb { background: rgba(0, 0, 0, 0.12); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(0, 0, 0, 0.2); }
 
 /* Buttons */
 .btn {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.6rem 1.2rem;
-  border-radius: var(--radius-btn);
+  padding: 0.7rem 1.5rem;
+  border-radius: 100px;
   font-size: 0.875rem;
-  font-weight: 500;
+  font-weight: 600;
   transition: all var(--transition-fast);
   white-space: nowrap;
 }
@@ -139,9 +140,6 @@ button {
 .btn-primary {
   background: var(--accent);
   color: white;
-  border-radius: 100px;
-  font-weight: 600;
-  padding: 0.7rem 1.5rem;
 }
 .btn-primary:hover {
   background: #333;
@@ -151,9 +149,6 @@ button {
 .btn-secondary {
   background: var(--accent-light);
   color: var(--text-primary);
-  border-radius: 100px;
-  font-weight: 600;
-  padding: 0.7rem 1.5rem;
 }
 .btn-secondary:hover {
   background: #e8e8e5;
