@@ -1,5 +1,5 @@
 # Binaries
-lightshell
+/lightshell
 *.app
 dist/
 
