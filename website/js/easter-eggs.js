@@ -60,7 +60,7 @@
     col.style.cssText = `
       position: absolute; left: ${x}px; top: -50px;
       font-family: var(--font-mono); font-size: 12px;
-      color: rgba(108, 92, 231, 0.7); white-space: nowrap;
+      color: rgba(100, 100, 100, 0.6); white-space: nowrap;
       animation: fall ${6 + Math.random() * 8}s linear infinite;
       animation-delay: ${-Math.random() * 8}s;
     `
@@ -114,11 +114,11 @@
     menu.id = 'ctx-menu'
     menu.style.cssText = `
       position: fixed; left: ${e.clientX}px; top: ${e.clientY}px;
-      background: rgba(40, 40, 55, 0.95); backdrop-filter: blur(12px);
-      border: 1px solid rgba(255,255,255,0.1); border-radius: 8px;
-      padding: 4px 0; min-width: 180px; z-index: 10002;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
-      font-size: 0.8125rem; color: rgba(255,255,255,0.85);
+      background: #ffffff;
+      border: 1px solid rgba(255,255,255,0.8); border-radius: 16px;
+      padding: 6px 0; min-width: 180px; z-index: 10002;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.08);
+      font-size: 0.8125rem; color: #1a1a1a;
     `
 
     const items = [
@@ -139,14 +139,14 @@
     items.forEach(item => {
       if (item.separator) {
         const sep = document.createElement('div')
-        sep.style.cssText = 'height: 1px; background: rgba(255,255,255,0.1); margin: 4px 8px;'
+        sep.style.cssText = 'height: 1px; background: rgba(0,0,0,0.08); margin: 4px 8px;'
         menu.appendChild(sep)
         return
       }
       const el = document.createElement('div')
       el.textContent = item.label
       el.style.cssText = 'padding: 6px 14px; cursor: pointer; transition: background 0.1s;'
-      el.onmouseenter = () => el.style.background = 'rgba(108, 92, 231, 0.3)'
+      el.onmouseenter = () => el.style.background = 'rgba(0, 0, 0, 0.04)'
       el.onmouseleave = () => el.style.background = 'transparent'
       el.onclick = () => { menu.remove(); item.action() }
       menu.appendChild(el)

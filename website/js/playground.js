@@ -64,12 +64,12 @@
       flex: 1; padding: 10px 12px; border: 1px solid #d2d2d7; border-radius: 8px;
       font-size: 0.9rem; outline: none; font-family: inherit;
     }
-    input:focus { border-color: #6c5ce7; }
+    input:focus { border-color: #1a1a1a; }
     button {
-      padding: 10px 20px; background: #6c5ce7; color: white; border: none;
+      padding: 10px 20px; background: #1a1a1a; color: white; border: none;
       border-radius: 8px; cursor: pointer; font-size: 0.9rem; font-family: inherit;
     }
-    button:hover { background: #5b4bd5; }
+    button:hover { background: #333; }
     .todo-list { list-style: none; }
     .todo-item {
       display: flex; align-items: center; gap: 10px; padding: 10px 12px;
@@ -250,10 +250,10 @@ Use \`lightshell.fs\` to open and save files:
     }
     .hex-value { font-family: monospace; font-size: 1.1rem; font-weight: 600; }
     .copy-btn {
-      padding: 6px 12px; background: #6c5ce7; color: white; border: none;
+      padding: 6px 12px; background: #1a1a1a; color: white; border: none;
       border-radius: 6px; cursor: pointer; font-size: 0.8rem; font-family: inherit;
     }
-    .copy-btn:hover { background: #5b4bd5; }
+    .copy-btn:hover { background: #333; }
     .copied { background: #00b894 !important; }
   </style>
 </head>
@@ -335,7 +335,7 @@ Use \`lightshell.fs\` to open and save files:
     }
     .card .value { font-size: 1.25rem; font-weight: 600; color: #fff; }
     .card .value.mono { font-family: 'SF Mono', monospace; font-size: 1rem; }
-    .accent { color: #6c5ce7; }
+    .accent { color: #1a1a1a; }
     .green { color: #00b894; }
   </style>
 </head>
