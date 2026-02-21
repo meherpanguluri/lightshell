@@ -65,7 +65,7 @@ This compiles your app into a native binary:
 - **macOS**: produces a `.app` bundle in `dist/`
 - **Linux**: produces an AppImage in `dist/`
 
-The build output includes the final binary size. A typical app comes in at **~2.8MB** — that is over 60x smaller than Electron.
+The build output includes the final binary size. A typical app comes in at **~2.8MB**.
 
 ```
 ✓ Built my-app in 1.2s → 2.8MB

@@ -31,7 +31,7 @@ This template works because it tells the AI the framework (LightShell), the APIs
 
 ### 1. Include Context
 
-The AI needs to know what LightShell is and what APIs are available. Without context, it will fall back to Electron patterns, Node.js APIs, or browser-only code.
+The AI needs to know what LightShell is and what APIs are available. Without context, it may default to Node.js APIs or browser-only code.
 
 **Best approach — paste the full reference:**
 
@@ -85,7 +85,7 @@ Build a LightShell note-taking app with:
 
 ### 3. Mention LightShell Explicitly
 
-Always include "LightShell" in your prompt. This prevents the AI from defaulting to Electron, Tauri, or plain web app patterns.
+Always include "LightShell" in your prompt. This ensures the AI uses the correct APIs and patterns.
 
 Additionally, include these constraints to prevent common mistakes:
 

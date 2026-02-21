@@ -41,7 +41,7 @@ LightShell uses Go for its backend runtime. You never write Go, see Go, or confi
 Go was chosen because:
 - **Single binary**: Go compiles to a single executable with no runtime dependencies
 - **Cross-compilation**: one command builds for macOS arm64, macOS x64, Linux x64, Linux arm64
-- **Small binaries**: a typical Go binary is ~2MB, compared to 50MB+ for bundled runtimes
+- **Small binaries**: a typical Go binary is ~2MB with no bundled runtime
 - **AI fluency**: AI models generate correct Go code reliably, making the project maintainable by AI agents
 - **cgo support**: Go can call C and Objective-C code directly, which is needed for webview integration
 
@@ -54,7 +54,7 @@ LightShell does not bundle a browser. It uses the webview already installed on t
 | macOS | WKWebView | Cocoa + WebKit (via Objective-C bridge) |
 | Linux | WebKitGTK 2.40+ | GTK3 + WebKit (via C bridge) |
 
-This is the main reason LightShell binaries are small. Electron bundles Chromium (~120MB). Tauri bundles a smaller webview layer. LightShell uses what is already there — zero binary overhead for the browser engine.
+This is the main reason LightShell binaries are small — the webview is already on the user's machine, so there is zero binary overhead for the browser engine.
 
 ### macOS: WKWebView
 

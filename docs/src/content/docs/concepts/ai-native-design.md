@@ -132,7 +132,7 @@ LightShell has 15 API namespaces covering the core needs of desktop apps:
 
 This covers 95% of what desktop apps need. The total API surface is roughly 50 methods. An AI model can internalize the entire API from a single context document.
 
-Compare this to Electron, which exposes hundreds of APIs across `BrowserWindow`, `ipcMain`, `ipcRenderer`, `app`, `dialog`, `shell`, `clipboard`, `screen`, `globalShortcut`, `Menu`, `MenuItem`, `Tray`, `Notification`, `nativeTheme`, `powerMonitor`, `session`, `webContents`, `webFrame`, and more. An AI model generating Electron code must choose the right module, the right method, and the right process (main vs renderer) for each operation. With LightShell, it is always `lightshell.{namespace}.{method}()`.
+Every call follows the same pattern: `lightshell.{namespace}.{method}()`. No imports, no module selection, no process model to reason about. An AI model can internalize the full API from a single context document and generate correct code on the first try.
 
 ## Design Principle 5: No Build Tools Required
 
@@ -252,6 +252,4 @@ This app works on the first try. The AI used `lightshell.store.get` and `lightsh
 
 ## Why This Matters
 
-Desktop app development has historically been complex. Electron requires understanding Node.js, the main process / renderer process split, IPC, and a large API surface. Tauri requires Rust knowledge for the backend. Native frameworks require platform-specific languages.
-
-LightShell reduces the problem to: write HTML/CSS/JS, call `lightshell.*` when you need native features. This is a problem that AI models solve well. The result is that anyone -- regardless of programming experience -- can describe a desktop app and get a working binary.
+Desktop app development has historically required learning platform-specific languages, complex build systems, and large API surfaces. LightShell reduces the problem to: write HTML/CSS/JS, call `lightshell.*` when you need native features. This is a problem that AI models solve well. The result is that anyone — regardless of programming experience — can describe a desktop app and get a working binary.

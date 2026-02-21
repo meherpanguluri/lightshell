@@ -32,7 +32,7 @@ html[data-theme='light'] {
   --border: #DDDCD8 !important;
   --input: #DDDCD8 !important;
   --ring: #1C1B19 !important;
-  --code-background: #EDECEA !important;
+  --code-background: #E4E3DF !important;
   --mark-background: #E8E7E3 !important;
 
   --sl-color-text-accent: #1C1B19 !important;
@@ -62,7 +62,7 @@ html[data-theme='dark'] {
   --border: #333230 !important;
   --input: #333230 !important;
   --ring: #E8E7E3 !important;
-  --code-background: #1E1D1A !important;
+  --code-background: #2A2924 !important;
   --mark-background: #2A2924 !important;
 
   --sl-color-text-accent: #E8E7E3 !important;
@@ -136,7 +136,7 @@ body {
   font-size: 0.85em;
   font-weight: 500;
   color: var(--foreground) !important;
-  border: none !important;
+  border: 1px solid var(--border) !important;
 }
 
 /* ===== Code Blocks ===== */
@@ -454,10 +454,14 @@ starlight-toc a[aria-current='true'] {
 /* ===== Expressive code frame overrides ===== */
 .expressive-code {
   --ec-brdRad: var(--ls-radius) !important;
-  --ec-codePadBlk: 0.875rem !important;
-  --ec-codePadInl: 1rem !important;
-  --ec-codeFontSize: 0.8125rem !important;
-  --ec-codeLineHeight: 1.6 !important;
+  --ec-codePadBlk: 1rem !important;
+  --ec-codePadInl: 1.25rem !important;
+  --ec-codeFontSize: 0.875rem !important;
+  --ec-codeLineHeight: 1.7 !important;
+}
+
+.expressive-code .frame {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important;
 }
 
 /* ===== Starlight Card overrides (smaller, tighter) ===== */

@@ -7,7 +7,7 @@ import starlightThemeBlack from 'starlight-theme-black';
 export default defineConfig({
   integrations: [
     starlight({
-      title: 'LightShell',
+      title: 'LightShell Docs',
       tagline: 'Build native desktop apps with JS. Ship under 5MB.',
       plugins: [starlightThemeBlack({
         footerText: 'Built with [LightShell](https://lightshell.dev). Open source on [GitHub](https://github.com/lightshell-dev/lightshell).',

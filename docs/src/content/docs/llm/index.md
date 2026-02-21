@@ -9,7 +9,7 @@ This section covers the three integration points that make this work.
 
 ## Why LightShell Works Well with AI
 
-Most desktop frameworks are hard for AI to use. Electron requires understanding Node.js, IPC channels, preload scripts, and process models. Tauri requires Rust, TOML config, and a permission manifest. LightShell requires none of that:
+Most desktop frameworks have steep learning curves — complex build systems, multiple process models, and large API surfaces. LightShell keeps things simple:
 
 - **One global object.** Every API lives under `window.lightshell.*` — no imports, no modules, no bundlers.
 - **Every call is async.** No callback patterns, no sync/async split. Always `await lightshell.something()`.

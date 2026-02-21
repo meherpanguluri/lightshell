@@ -201,7 +201,7 @@ LightShell uses a Unix domain socket for IPC instead of a localhost TCP connecti
 - **File permissions:** The socket file is created with `0600` permissions (owner-only read/write). No other user on the system can connect to it.
 - **No network exposure:** A Unix domain socket is not accessible over the network, even on localhost. Other processes can only connect if they have filesystem access to the socket file.
 
-Compare this to frameworks that use a localhost WebSocket (like Neutralinojs): any process on the machine can connect to a localhost port. With a Unix domain socket, only processes running as the same user can even see the socket file, and the `0600` permissions further restrict access.
+Unlike a localhost TCP connection (where any process on the machine can connect), a Unix domain socket is only accessible to processes running as the same user, and the `0600` permissions further restrict access to the owning process.
 
 ### Socket Path Randomization
 
@@ -229,15 +229,6 @@ DevTools (the web inspector) are controlled by the build mode:
 
 In production builds, DevTools are disabled by default. This prevents end users from inspecting the DOM, viewing network requests, or executing arbitrary JavaScript in the webview. Use the `--devtools` flag on `lightshell build` for debug builds that need inspection.
 
-## Comparison to Other Frameworks
+## Summary
 
-| Feature | LightShell | Electron | Tauri |
-|---------|-----------|----------|-------|
-| Default security mode | Permissive (all allowed) | Permissive (all allowed) | Restricted (allowlist) |
-| Permission config | JSON in lightshell.json | Code-based (main process) | JSON + Rust attributes |
-| CSP injection | Automatic | Manual | Automatic |
-| Path traversal protection | Always on | Not built-in | Always on |
-| IPC transport | Unix domain socket (0600) | IPC channel (Chromium) | Custom protocol |
-| Webview sandbox | System webview sandbox | Chromium sandbox | System webview sandbox |
-
-LightShell's default is permissive because most apps built with LightShell are first-party (you build and distribute them). When you need tighter control -- for apps that load third-party content or run plugins -- switch to restricted mode with a permissions key.
+LightShell's default is permissive because most apps built with LightShell are first-party (you build and distribute them). When you need tighter control — for apps that load third-party content or run plugins — switch to restricted mode by adding a `permissions` key to `lightshell.json`.
