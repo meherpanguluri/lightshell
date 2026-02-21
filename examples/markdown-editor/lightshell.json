@@ -1,0 +1,13 @@
+{
+  "name": "markdown-editor",
+  "version": "1.0.0",
+  "entry": "src/index.html",
+  "window": {
+    "title": "Markdown Editor",
+    "width": 1024,
+    "height": 768,
+    "minWidth": 600,
+    "minHeight": 400,
+    "resizable": true
+  }
+}

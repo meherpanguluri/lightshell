@@ -1,0 +1,137 @@
+---
+description: Rules for generating LightShell desktop applications
+globs: ["*.js", "*.html", "*.css", "lightshell.json"]
+---
+
+# LightShell Code Generation Rules
+
+## Framework Basics
+
+- LightShell apps use `window.lightshell.*` APIs for all native functionality.
+- Never use Node.js APIs: no `require()`, no `process`, no `__dirname`, no `__filename`, no `Buffer`, no Node.js globals.
+- File access: use `lightshell.fs.readFile()` and `lightshell.fs.writeFile()`, NOT `fs.readFileSync()` or any Node.js `fs` module.
+- File dialogs: use `lightshell.dialog.open()` and `lightshell.dialog.save()`, NOT `window.showOpenFilePicker()` or `window.showSaveFilePicker()` (these are not available in webviews).
+- Clipboard: use `lightshell.clipboard.read()` and `lightshell.clipboard.write()`, NOT `navigator.clipboard` (may be restricted in webview context).
+- All `lightshell.*` API calls are async and return Promises. Always `await` them or handle with `.then()`.
+- Opening URLs: use `lightshell.shell.open(url)` to open links in the default browser. Do not rely on `window.open()` or `<a target="_blank">`.
+
+## Project Structure
+
+- Entry point: `src/index.html` (referenced in `lightshell.json` under `"entry"`).
+- App configuration: `lightshell.json` at project root. NOT `package.json`.
+- No `node_modules` at runtime. No npm dependencies bundled into the app.
+- External libraries (marked, highlight.js, etc.): include via CDN `<script>` tags if needed.
+- Persistent app data: use `await lightshell.app.dataDir()` to get the platform-appropriate data directory.
+
+## Available APIs
+
+All accessed via the global `window.lightshell` object:
+
+- `lightshell.window` -- setTitle, setSize, getSize, setPosition, getPosition, minimize, maximize, fullscreen, restore, close, onResize, onMove, onFocus, onBlur
+- `lightshell.fs` -- readFile, writeFile, readDir, exists, stat, mkdir, remove, watch
+- `lightshell.dialog` -- open, save, message, confirm, prompt
+- `lightshell.clipboard` -- read, write
+- `lightshell.shell` -- open
+- `lightshell.notify` -- send
+- `lightshell.tray` -- set, remove, onClick
+- `lightshell.menu` -- set
+- `lightshell.system` -- platform, arch, homeDir, tempDir, hostname
+- `lightshell.app` -- quit, version, dataDir
+- `lightshell.on` -- global event listener
+
+## Platform Considerations
+
+- Target platforms: macOS (arm64, x64) and Linux (x64, arm64). No Windows code.
+- Webview engines: WKWebView on macOS, WebKitGTK on Linux.
+- LightShell automatically injects platform classes on `<html>`: use `.platform-linux` and `.platform-darwin` in CSS for platform-specific styling.
+- Avoid `backdrop-filter` without a solid background fallback (limited or unavailable on WebKitGTK).
+- Avoid `system-ui` as the sole font-family value. Always use an explicit font stack:
+  ```css
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans",
+               Helvetica, Arial, sans-serif;
+  ```
+- Avoid CSS features with inconsistent webview support: `:has()` selector (limited on older WebKitGTK), CSS Nesting (version-dependent), Container Queries (version-dependent).
+- Do NOT use: Navigation API, View Transitions API, Web USB, Web Bluetooth, Web Serial, `showOpenFilePicker`, `showSaveFilePicker`, `showDirectoryPicker` -- none of these are available in system webviews.
+- `structuredClone` may be missing on older WebKitGTK; LightShell auto-polyfills it, but avoid deep reliance on edge-case behavior.
+- `Intl.Segmenter` is not available on WebKitGTK. Use character-level iteration or a lightweight library if grapheme segmentation is needed.
+
+## Coding Patterns
+
+- Always `await` lightshell API calls:
+  ```js
+  // Correct
+  const content = await lightshell.fs.readFile('./data.json')
+
+  // Wrong -- will get a Promise object, not the file contents
+  const content = lightshell.fs.readFile('./data.json')
+  ```
+
+- Use `lightshell.app.dataDir()` for persistent storage:
+  ```js
+  const dir = await lightshell.app.dataDir()
+  await lightshell.fs.writeFile(`${dir}/settings.json`, JSON.stringify(settings))
+  ```
+
+- Use `lightshell.shell.open(url)` for external links:
+  ```js
+  await lightshell.shell.open('https://example.com')
+  ```
+
+- Listen for window events with the `on*` methods:
+  ```js
+  lightshell.window.onResize(({ width, height }) => {
+    // Respond to window resize
+  })
+  ```
+
+- Keyboard shortcuts should use `e.metaKey || e.ctrlKey` to work on both macOS (Cmd) and Linux (Ctrl):
+  ```js
+  document.addEventListener('keydown', (e) => {
+    if ((e.metaKey || e.ctrlKey) && e.key === 's') {
+      e.preventDefault()
+      saveFile()
+    }
+  })
+  ```
+
+## HTML/CSS Guidelines
+
+- Use semantic HTML. The webview renders standard HTML5.
+- No build step for CSS. Write plain CSS, no preprocessors.
+- No build step for JS. Write vanilla ES2020+ JavaScript. No transpilation.
+- For responsive layouts, use CSS Flexbox and Grid (both well-supported across webview engines).
+- Use `box-sizing: border-box` on all elements for predictable sizing.
+- Prefer CSS custom properties (variables) for theming.
+
+## lightshell.json Configuration
+
+```json
+{
+  "name": "app-name",
+  "version": "1.0.0",
+  "entry": "src/index.html",
+  "window": {
+    "title": "Window Title",
+    "width": 1024,
+    "height": 768,
+    "minWidth": 400,
+    "minHeight": 300,
+    "resizable": true,
+    "frameless": false
+  },
+  "tray": false,
+  "build": {
+    "icon": "assets/icon.png",
+    "appId": "com.example.appname"
+  }
+}
+```
+
+## Common Mistakes to Avoid
+
+- Do NOT use `document.write()` -- it will clear the entire page.
+- Do NOT use `eval()` for loading scripts. Use `<script>` tags.
+- Do NOT assume `window.location` reflects a real URL in production -- the app is loaded from embedded assets.
+- Do NOT use `localStorage`/`sessionStorage` for important persistent data -- use `lightshell.fs` + `lightshell.app.dataDir()` instead, as webview storage may be cleared.
+- Do NOT try to spawn child processes or access native OS APIs directly. Use the lightshell API layer.
+- Do NOT use `alert()`, `confirm()`, or `prompt()` -- use `lightshell.dialog.message()`, `lightshell.dialog.confirm()`, and `lightshell.dialog.prompt()` for native-looking dialogs.

@@ -1,0 +1,27 @@
+# LightShell
+
+> LightShell is a lightweight desktop app framework. Write JS/HTML/CSS, get native apps under 5MB. Uses system webviews (WKWebView on macOS, WebKitGTK on Linux) -- no bundled browser.
+
+## Docs
+
+- [Getting Started](https://lightshell.sh/docs/getting-started): Install and create your first app in 5 minutes
+- [API Reference - Window](https://lightshell.sh/docs/api/window): Window management API
+- [API Reference - File System](https://lightshell.sh/docs/api/fs): File system operations
+- [API Reference - Dialog](https://lightshell.sh/docs/api/dialog): Native file and message dialogs
+- [API Reference - Clipboard](https://lightshell.sh/docs/api/clipboard): Clipboard read/write
+- [API Reference - Shell](https://lightshell.sh/docs/api/shell): Open URLs in default browser
+- [API Reference - Notifications](https://lightshell.sh/docs/api/notification): System notifications
+- [API Reference - Tray](https://lightshell.sh/docs/api/tray): System tray integration
+- [API Reference - Menu](https://lightshell.sh/docs/api/menu): Application and context menus
+- [API Reference - System](https://lightshell.sh/docs/api/system): OS info and paths
+- [API Reference - App](https://lightshell.sh/docs/api/app): App lifecycle and metadata
+- [Tutorial](https://lightshell.sh/docs/tutorial): Build a real app step by step
+- [Cross-Platform Guide](https://lightshell.sh/docs/guides/cross-platform): Handle platform differences
+
+## Optional
+
+- [Architecture](https://lightshell.sh/docs/concepts/architecture): How LightShell works internally
+- [IPC Protocol](https://lightshell.sh/docs/concepts/ipc): The JS-to-Go communication layer
+- [Migration from Electron](https://lightshell.sh/docs/guides/migration-electron): Moving from Electron to LightShell
+- [File System Guide](https://lightshell.sh/docs/guides/file-system): Working with files in detail
+- [Menus and Tray Guide](https://lightshell.sh/docs/guides/menus-tray): System tray and app menus

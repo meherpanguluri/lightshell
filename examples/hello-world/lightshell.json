@@ -1,0 +1,11 @@
+{
+  "name": "hello-world",
+  "version": "1.0.0",
+  "entry": "src/index.html",
+  "window": {
+    "title": "Hello World",
+    "width": 800,
+    "height": 600,
+    "resizable": true
+  }
+}

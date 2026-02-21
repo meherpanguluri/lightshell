@@ -1,0 +1,540 @@
+# LightShell -- Complete Documentation for AI Consumption
+
+LightShell is a desktop app framework where you write only JS/HTML/CSS and get a native binary under 5MB. It uses system webviews (WKWebView on macOS, WebKitGTK on Linux) instead of bundling a browser. The Go backend is invisible to the developer -- they never write or configure Go code.
+
+## Installation
+
+```bash
+# Install via npm (no Go required)
+npm install -g lightshell
+
+# Or use create script
+npm create lightshell@latest my-app
+```
+
+## Minimal Working Example
+
+**lightshell.json:**
+```json
+{
+  "name": "hello-world",
+  "version": "1.0.0",
+  "entry": "src/index.html",
+  "window": {
+    "title": "Hello World",
+    "width": 800,
+    "height": 600,
+    "resizable": true
+  }
+}
+```
+
+**src/index.html:**
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hello World</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans",
+                   Helvetica, Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      background: #f5f5f5;
+    }
+    h1 { color: #333; }
+    button {
+      padding: 10px 24px;
+      font-size: 16px;
+      border: none;
+      border-radius: 6px;
+      background: #2563eb;
+      color: white;
+      cursor: pointer;
+    }
+    button:hover { background: #1d4ed8; }
+  </style>
+</head>
+<body>
+  <h1>Hello, LightShell!</h1>
+  <button onclick="greet()">Click Me</button>
+  <script src="app.js"></script>
+</body>
+</html>
+```
+
+**src/app.js:**
+```js
+async function greet() {
+  const platform = await lightshell.system.platform()
+  await lightshell.dialog.message('Hello!', `Running on ${platform}`)
+}
+```
+
+**Run it:**
+```bash
+lightshell dev
+```
+
+## Complete API Reference
+
+All APIs are accessed via the global `window.lightshell` object. Every function is async and returns a Promise.
+
+### lightshell.window
+
+Window management.
+
+```js
+await lightshell.window.setTitle(title: string): void
+// Set the window title.
+// Example: await lightshell.window.setTitle('My App - document.md')
+
+await lightshell.window.setSize(width: number, height: number): void
+// Set window dimensions in pixels.
+// Example: await lightshell.window.setSize(1200, 800)
+
+await lightshell.window.getSize(): { width: number, height: number }
+// Get current window dimensions.
+// Example: const { width, height } = await lightshell.window.getSize()
+
+await lightshell.window.setPosition(x: number, y: number): void
+// Set window position on screen.
+// Example: await lightshell.window.setPosition(100, 100)
+
+await lightshell.window.getPosition(): { x: number, y: number }
+// Get current window position.
+// Example: const { x, y } = await lightshell.window.getPosition()
+
+await lightshell.window.minimize(): void
+// Minimize the window.
+// Example: await lightshell.window.minimize()
+
+await lightshell.window.maximize(): void
+// Maximize the window.
+// Example: await lightshell.window.maximize()
+
+await lightshell.window.fullscreen(): void
+// Enter fullscreen mode.
+// Example: await lightshell.window.fullscreen()
+
+await lightshell.window.restore(): void
+// Restore from minimized/maximized/fullscreen.
+// Example: await lightshell.window.restore()
+
+await lightshell.window.close(): void
+// Close the window and quit the app.
+// Example: await lightshell.window.close()
+
+lightshell.window.onResize(callback: (data: { width: number, height: number }) => void): () => void
+// Listen for window resize events. Returns an unsubscribe function.
+// Example: const unsub = lightshell.window.onResize(({ width, height }) => console.log(width, height))
+
+lightshell.window.onMove(callback: (data: { x: number, y: number }) => void): () => void
+// Listen for window move events. Returns an unsubscribe function.
+// Example: lightshell.window.onMove(({ x, y }) => console.log('Moved to', x, y))
+
+lightshell.window.onFocus(callback: () => void): () => void
+// Listen for window focus events. Returns an unsubscribe function.
+// Example: lightshell.window.onFocus(() => console.log('Window focused'))
+
+lightshell.window.onBlur(callback: () => void): () => void
+// Listen for window blur events. Returns an unsubscribe function.
+// Example: lightshell.window.onBlur(() => console.log('Window blurred'))
+```
+
+### lightshell.fs
+
+File system operations. Paths are absolute or relative to the app's working directory.
+
+```js
+await lightshell.fs.readFile(path: string, encoding?: string): string
+// Read a file's contents. Default encoding is 'utf-8'.
+// Example: const data = await lightshell.fs.readFile('/tmp/config.json')
+
+await lightshell.fs.writeFile(path: string, data: string): void
+// Write string data to a file. Creates the file if it doesn't exist.
+// Example: await lightshell.fs.writeFile('/tmp/output.txt', 'Hello, world!')
+
+await lightshell.fs.readDir(path: string): string[]
+// List files and directories in a directory.
+// Example: const entries = await lightshell.fs.readDir('/tmp')
+
+await lightshell.fs.exists(path: string): boolean
+// Check if a file or directory exists.
+// Example: const fileExists = await lightshell.fs.exists('/tmp/config.json')
+
+await lightshell.fs.stat(path: string): { name: string, size: number, isDir: boolean, modTime: string }
+// Get file or directory metadata.
+// Example: const info = await lightshell.fs.stat('/tmp/config.json')
+
+await lightshell.fs.mkdir(path: string): void
+// Create a directory (and parent directories if needed).
+// Example: await lightshell.fs.mkdir('/tmp/my-app/data')
+
+await lightshell.fs.remove(path: string): void
+// Delete a file or empty directory.
+// Example: await lightshell.fs.remove('/tmp/old-file.txt')
+
+lightshell.fs.watch(path: string, callback: (data: { path: string, event: string }) => void): () => void
+// Watch a file or directory for changes. Returns an unsubscribe function.
+// Example: lightshell.fs.watch('./data', (e) => console.log(e.path, e.event))
+```
+
+### lightshell.dialog
+
+Native OS dialogs.
+
+```js
+await lightshell.dialog.open(options?: { title?: string, filters?: Array<{ name: string, extensions: string[] }>, multiple?: boolean, directory?: boolean }): string | string[] | null
+// Show a native file open dialog. Returns selected path(s) or null if cancelled.
+// Example: const file = await lightshell.dialog.open({ filters: [{ name: 'Images', extensions: ['png', 'jpg'] }] })
+
+await lightshell.dialog.save(options?: { title?: string, defaultPath?: string, filters?: Array<{ name: string, extensions: string[] }> }): string | null
+// Show a native file save dialog. Returns selected path or null if cancelled.
+// Example: const path = await lightshell.dialog.save({ defaultPath: 'untitled.txt' })
+
+await lightshell.dialog.message(title: string, message: string): void
+// Show a native message box with an OK button.
+// Example: await lightshell.dialog.message('Info', 'Operation completed successfully.')
+
+await lightshell.dialog.confirm(title: string, message: string): boolean
+// Show a native confirm dialog. Returns true if confirmed, false if cancelled.
+// Example: const yes = await lightshell.dialog.confirm('Delete?', 'This cannot be undone.')
+
+await lightshell.dialog.prompt(title: string, defaultValue?: string): string | null
+// Show a native prompt dialog with text input. Returns input string or null if cancelled.
+// Example: const name = await lightshell.dialog.prompt('Enter name', 'Untitled')
+```
+
+### lightshell.clipboard
+
+System clipboard read/write.
+
+```js
+await lightshell.clipboard.read(): string
+// Read text from the system clipboard.
+// Example: const text = await lightshell.clipboard.read()
+
+await lightshell.clipboard.write(text: string): void
+// Write text to the system clipboard.
+// Example: await lightshell.clipboard.write('Copied!')
+```
+
+### lightshell.shell
+
+Open URLs and files with the system default handler.
+
+```js
+await lightshell.shell.open(url: string): void
+// Open a URL or file path in the default system application.
+// Example: await lightshell.shell.open('https://lightshell.sh')
+// Example: await lightshell.shell.open('/Users/me/document.pdf')
+```
+
+### lightshell.notify
+
+System notifications.
+
+```js
+await lightshell.notify.send(title: string, body: string, options?: { silent?: boolean }): void
+// Send a system notification.
+// Example: await lightshell.notify.send('Download Complete', 'Your file has been saved.')
+```
+
+### lightshell.tray
+
+System tray icon.
+
+```js
+await lightshell.tray.set(options: { icon?: string, tooltip?: string, menu?: Array<{ label: string, action?: string }> }): void
+// Set or update the system tray icon and menu.
+// Example: await lightshell.tray.set({ tooltip: 'My App', menu: [{ label: 'Open', action: 'open' }, { label: 'Quit', action: 'quit' }] })
+
+await lightshell.tray.remove(): void
+// Remove the system tray icon.
+// Example: await lightshell.tray.remove()
+
+lightshell.tray.onClick(callback: (data: { action: string }) => void): () => void
+// Listen for tray menu item clicks. Returns an unsubscribe function.
+// Example: lightshell.tray.onClick(({ action }) => { if (action === 'quit') lightshell.app.quit() })
+```
+
+### lightshell.menu
+
+Application menu bar.
+
+```js
+await lightshell.menu.set(template: Array<{ label: string, submenu?: Array<{ label: string, action?: string, accelerator?: string, separator?: boolean }> }>): void
+// Set the application menu bar.
+// Example:
+// await lightshell.menu.set([
+//   { label: 'File', submenu: [
+//     { label: 'New', action: 'new', accelerator: 'CmdOrCtrl+N' },
+//     { separator: true },
+//     { label: 'Quit', action: 'quit', accelerator: 'CmdOrCtrl+Q' }
+//   ]}
+// ])
+```
+
+### lightshell.system
+
+OS and environment info.
+
+```js
+await lightshell.system.platform(): string
+// Returns 'darwin' or 'linux'.
+// Example: const os = await lightshell.system.platform()
+
+await lightshell.system.arch(): string
+// Returns CPU architecture ('arm64' or 'amd64').
+// Example: const arch = await lightshell.system.arch()
+
+await lightshell.system.homeDir(): string
+// Returns the user's home directory path.
+// Example: const home = await lightshell.system.homeDir()
+
+await lightshell.system.tempDir(): string
+// Returns the system temp directory path.
+// Example: const tmp = await lightshell.system.tempDir()
+
+await lightshell.system.hostname(): string
+// Returns the system hostname.
+// Example: const host = await lightshell.system.hostname()
+```
+
+### lightshell.app
+
+Application lifecycle.
+
+```js
+await lightshell.app.quit(): void
+// Quit the application.
+// Example: await lightshell.app.quit()
+
+await lightshell.app.version(): string
+// Returns the app version from lightshell.json.
+// Example: const v = await lightshell.app.version()
+
+await lightshell.app.dataDir(): string
+// Returns the platform-specific app data directory.
+// macOS: ~/Library/Application Support/<app-name>
+// Linux: ~/.local/share/<app-name>
+// Example: const dataPath = await lightshell.app.dataDir()
+```
+
+### lightshell.on
+
+Global event listener.
+
+```js
+lightshell.on(event: string, callback: (data: any) => void): () => void
+// Listen for any event. Returns an unsubscribe function.
+// Example: const unsub = lightshell.on('window.resize', (data) => console.log(data))
+```
+
+## Common Patterns
+
+### 1. Load and Save a File with Native Dialogs
+
+```js
+async function openFile() {
+  const path = await lightshell.dialog.open({
+    filters: [{ name: 'Text Files', extensions: ['txt', 'md'] }]
+  })
+  if (!path) return
+  const content = await lightshell.fs.readFile(path)
+  document.getElementById('editor').value = content
+  await lightshell.window.setTitle(`Editor - ${path}`)
+}
+
+async function saveFile() {
+  const path = await lightshell.dialog.save({ defaultPath: 'untitled.txt' })
+  if (!path) return
+  const content = document.getElementById('editor').value
+  await lightshell.fs.writeFile(path, content)
+  await lightshell.notify.send('Saved', `File saved to ${path}`)
+}
+```
+
+### 2. Persistent App Data
+
+```js
+async function loadSettings() {
+  const dir = await lightshell.app.dataDir()
+  const settingsPath = `${dir}/settings.json`
+  if (await lightshell.fs.exists(settingsPath)) {
+    const raw = await lightshell.fs.readFile(settingsPath)
+    return JSON.parse(raw)
+  }
+  return { theme: 'light', fontSize: 14 }
+}
+
+async function saveSettings(settings) {
+  const dir = await lightshell.app.dataDir()
+  await lightshell.fs.mkdir(dir)
+  await lightshell.fs.writeFile(`${dir}/settings.json`, JSON.stringify(settings, null, 2))
+}
+```
+
+### 3. Keyboard Shortcuts
+
+```js
+document.addEventListener('keydown', async (e) => {
+  const mod = e.metaKey || e.ctrlKey
+  if (mod && e.key === 's') {
+    e.preventDefault()
+    await saveFile()
+  }
+  if (mod && e.key === 'o') {
+    e.preventDefault()
+    await openFile()
+  }
+})
+```
+
+### 4. Responsive Window Handling
+
+```js
+lightshell.window.onResize(({ width, height }) => {
+  document.body.classList.toggle('compact', width < 600)
+})
+```
+
+### 5. Platform-Specific Styling
+
+```css
+/* Applied automatically by LightShell polyfills */
+.platform-darwin .sidebar { -webkit-backdrop-filter: blur(20px); }
+.platform-linux .sidebar { background: rgba(255, 255, 255, 0.95); }
+```
+
+```js
+const platform = await lightshell.system.platform()
+if (platform === 'darwin') {
+  document.body.classList.add('macos-style')
+}
+```
+
+### 6. System Tray with Menu
+
+```js
+await lightshell.tray.set({
+  tooltip: 'My App',
+  menu: [
+    { label: 'Show Window', action: 'show' },
+    { label: 'New File', action: 'new' },
+    { label: 'Quit', action: 'quit' }
+  ]
+})
+
+lightshell.tray.onClick(async ({ action }) => {
+  switch (action) {
+    case 'show': await lightshell.window.restore(); break
+    case 'new': createNewFile(); break
+    case 'quit': await lightshell.app.quit(); break
+  }
+})
+```
+
+### 7. Watch a File for External Changes
+
+```js
+const configPath = '/etc/myapp/config.json'
+lightshell.fs.watch(configPath, async ({ path, event }) => {
+  if (event === 'modify') {
+    const updated = await lightshell.fs.readFile(path)
+    applyConfig(JSON.parse(updated))
+    await lightshell.notify.send('Config Updated', 'Configuration reloaded.')
+  }
+})
+```
+
+## Known Platform Differences
+
+LightShell targets ~85-90% visual consistency across macOS and Linux. Some differences are inherent to the underlying webview engines.
+
+| Feature | macOS (WKWebView) | Linux (WebKitGTK 2.40+) | Workaround |
+|---------|-------------------|--------------------------|------------|
+| `backdrop-filter` | Full support | Limited/none | Use solid background fallback. LightShell auto-polyfills. |
+| Font rendering | CoreText (smooth) | FreeType (sharper) | Use explicit font stacks; avoid `system-ui` alone. |
+| `structuredClone` | Supported | May be missing on older versions | LightShell auto-polyfills with JSON-based clone. |
+| `:has()` selector | Supported | Limited in older WebKitGTK | Use JS-based class toggling instead. |
+| CSS Nesting | Supported | Version-dependent | Use flat selectors for maximum compatibility. |
+| `Intl.Segmenter` | Supported | Not available | Use character-level iteration or a library. |
+| Container Queries | Supported | Version-dependent | Use resize observer + JS-based breakpoints. |
+| View Transitions | Not in webview | Not in webview | Use CSS transitions/animations directly. |
+| Navigation API | Not in webview | Not in webview | Use History API or lightshell.window. |
+| `showOpenFilePicker` | Not in webview | Not in webview | Use `lightshell.dialog.open()` instead. |
+| Web USB/Bluetooth/Serial | Not in webview | Not in webview | Not available. Use shell commands via backend if needed. |
+
+LightShell injects `polyfills.js` and `normalize.css` automatically. It also adds `platform-linux` or `platform-darwin` as a class on `<html>` for targeted CSS.
+
+Run `lightshell doctor` to scan your code for compatibility issues before building.
+
+## Build and Packaging
+
+```bash
+# Development with hot reload
+lightshell dev
+
+# Build for current platform
+lightshell build
+
+# Check cross-platform compatibility
+lightshell doctor
+```
+
+**macOS output:** `dist/MyApp.app` (standard .app bundle)
+**Linux output:** `dist/MyApp.AppImage` (single executable)
+
+**lightshell.json build options:**
+
+```json
+{
+  "name": "my-app",
+  "version": "1.0.0",
+  "entry": "src/index.html",
+  "window": {
+    "title": "My App",
+    "width": 1024,
+    "height": 768,
+    "minWidth": 400,
+    "minHeight": 300,
+    "resizable": true,
+    "frameless": false
+  },
+  "tray": false,
+  "build": {
+    "icon": "assets/icon.png",
+    "appId": "com.example.myapp"
+  }
+}
+```
+
+Typical build output:
+```
+$ lightshell build
+  Built my-app in 1.2s -> 2.8MB
+  Output: dist/MyApp.app
+```
+
+## Important Rules for AI Code Generation
+
+- Use `window.lightshell.*` APIs, NOT Node.js APIs.
+- Never use `require()`, `process`, `__dirname`, or Node.js globals.
+- All `lightshell.*` calls are async -- always `await` them.
+- Use `lightshell.dialog.open()` for file picking, NOT `window.showOpenFilePicker()`.
+- Use `lightshell.fs.*` for file access, NOT `fs.readFileSync()`.
+- Entry point is `src/index.html`. Config is `lightshell.json`.
+- No `node_modules` or npm dependencies at runtime. Use CDN `<script>` tags for libraries.
+- Target macOS + Linux only. No Windows-specific code.
+- Avoid `backdrop-filter` without a solid fallback (limited on Linux).
+- Use explicit font stacks, not `system-ui` alone.
+- Use `.platform-linux` and `.platform-darwin` CSS classes for platform-specific styles.

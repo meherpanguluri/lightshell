@@ -1,0 +1,13 @@
+{
+  "name": "system-monitor",
+  "version": "1.0.0",
+  "entry": "src/index.html",
+  "window": {
+    "title": "System Monitor",
+    "width": 900,
+    "height": 700,
+    "minWidth": 500,
+    "minHeight": 400,
+    "resizable": true
+  }
+}

@@ -1,0 +1,495 @@
+/* desktop.css — Window chrome, taskbar, icons, wallpaper */
+
+/* Desktop surface */
+.desktop {
+  position: fixed;
+  inset: 0;
+  background: var(--bg-desktop);
+  background-image:
+    radial-gradient(ellipse at 20% 50%, rgba(108, 92, 231, 0.15) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 20%, rgba(0, 184, 148, 0.1) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 80%, rgba(253, 203, 110, 0.08) 0%, transparent 50%);
+  z-index: var(--z-desktop);
+}
+
+/* Icon grid */
+.desktop-icons {
+  position: absolute;
+  top: 24px;
+  left: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: calc(var(--z-desktop) + 1);
+}
+
+.desktop-icon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  width: 80px;
+  padding: 8px 4px;
+  border-radius: var(--radius-icon);
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+.desktop-icon:hover {
+  background: var(--bg-icon-hover);
+}
+.desktop-icon:active {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.desktop-icon .icon-img {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+.desktop-icon .icon-label {
+  font-size: 0.6875rem;
+  color: var(--text-desktop);
+  text-align: center;
+  text-shadow: 0 1px 3px var(--text-desktop-shadow);
+  line-height: 1.3;
+  word-break: break-word;
+  max-width: 76px;
+}
+
+/* Window */
+.window {
+  position: absolute;
+  background: var(--bg-window);
+  border-radius: var(--radius-window);
+  box-shadow: var(--shadow-window);
+  border: 1px solid var(--border-window);
+  display: flex;
+  flex-direction: column;
+  min-width: 280px;
+  min-height: 180px;
+  overflow: hidden;
+  transition: box-shadow var(--transition-fast);
+}
+.window.focused {
+  box-shadow: var(--shadow-window-focused);
+}
+.window.minimizing {
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  transform: scale(0.5) translateY(100px);
+  opacity: 0;
+  pointer-events: none;
+}
+.window.maximized {
+  border-radius: 0;
+  transition: all 0.2s ease;
+}
+
+/* Window header */
+.window-header {
+  display: flex;
+  align-items: center;
+  height: 38px;
+  padding: 0 12px;
+  background: var(--bg-window-header);
+  border-bottom: 1px solid var(--border-subtle);
+  cursor: default;
+  flex-shrink: 0;
+  gap: 8px;
+}
+.window.focused .window-header {
+  background: var(--bg-window-header);
+}
+.window:not(.focused) .window-header {
+  background: var(--bg-window-header-inactive);
+}
+
+/* Window controls — neutral monochrome */
+.window-controls {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+.window-control {
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  position: relative;
+  background: rgba(0, 0, 0, 0.12);
+  transition: background var(--transition-fast);
+}
+.window-control:hover {
+  background: rgba(0, 0, 0, 0.25);
+}
+.window-control::after {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity var(--transition-fast);
+  color: rgba(0, 0, 0, 0.55);
+  font-weight: 700;
+}
+.window:hover .window-control::after {
+  opacity: 1;
+}
+.window-control.close::after {
+  content: '\00D7';
+  font-size: 11px;
+  line-height: 13px;
+  text-align: center;
+}
+.window-control.close:hover {
+  background: rgba(0, 0, 0, 0.35);
+}
+.window-control.minimize::after {
+  content: '\2013';
+  font-size: 10px;
+  line-height: 13px;
+  text-align: center;
+}
+.window-control.maximize::after {
+  content: '\002B';
+  font-size: 10px;
+  line-height: 13px;
+  text-align: center;
+}
+
+.window:not(.focused) .window-control {
+  background: rgba(0, 0, 0, 0.07);
+}
+.window:not(.focused) .window-control::after {
+  color: rgba(0, 0, 0, 0.3);
+}
+
+.window-title {
+  flex: 1;
+  text-align: center;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  pointer-events: none;
+}
+.window:not(.focused) .window-title {
+  color: var(--text-muted);
+}
+
+/* Spacer to balance traffic lights */
+.window-header-spacer {
+  width: 54px;
+  flex-shrink: 0;
+}
+
+/* Window body */
+.window-body {
+  flex: 1;
+  overflow: auto;
+  padding: 20px;
+  font-size: 0.9rem;
+  line-height: 1.65;
+  color: var(--text-primary);
+}
+.window-body h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+.window-body h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-top: 1.25rem;
+  margin-bottom: 0.5rem;
+}
+.window-body p {
+  margin-bottom: 0.75rem;
+}
+.window-body ul, .window-body ol {
+  margin-bottom: 0.75rem;
+  padding-left: 1.5rem;
+}
+.window-body li {
+  margin-bottom: 0.35rem;
+}
+
+/* Resize handles */
+.window .resize-handle {
+  position: absolute;
+  z-index: 2;
+}
+.resize-handle.n  { top: -3px; left: 10px; right: 10px; height: 6px; cursor: n-resize; }
+.resize-handle.s  { bottom: -3px; left: 10px; right: 10px; height: 6px; cursor: s-resize; }
+.resize-handle.e  { right: -3px; top: 10px; bottom: 10px; width: 6px; cursor: e-resize; }
+.resize-handle.w  { left: -3px; top: 10px; bottom: 10px; width: 6px; cursor: w-resize; }
+.resize-handle.ne { top: -3px; right: -3px; width: 12px; height: 12px; cursor: ne-resize; }
+.resize-handle.nw { top: -3px; left: -3px; width: 12px; height: 12px; cursor: nw-resize; }
+.resize-handle.se { bottom: -3px; right: -3px; width: 12px; height: 12px; cursor: se-resize; }
+.resize-handle.sw { bottom: -3px; left: -3px; width: 12px; height: 12px; cursor: sw-resize; }
+
+/* Taskbar */
+.taskbar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 48px;
+  background: var(--bg-taskbar);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  z-index: var(--z-taskbar);
+  box-shadow: var(--shadow-taskbar);
+  gap: 4px;
+}
+
+.taskbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 12px 0 4px;
+  height: 34px;
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  margin-right: 4px;
+  flex-shrink: 0;
+}
+.taskbar-brand .brand-icon {
+  font-size: 18px;
+}
+.taskbar-brand .brand-text {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #fff;
+  letter-spacing: -0.01em;
+}
+
+.taskbar-windows {
+  display: flex;
+  gap: 2px;
+  flex: 1;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.taskbar-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  height: 34px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.taskbar-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+.taskbar-item.active {
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+}
+.taskbar-item .item-icon {
+  font-size: 14px;
+}
+
+.taskbar-clock {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.7);
+  padding: 0 8px;
+  flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Mobile: stacked cards */
+@media (max-width: 768px) {
+  .desktop-icons {
+    display: none;
+  }
+
+  .desktop {
+    overflow-y: auto;
+    padding: 16px;
+    padding-bottom: 64px;
+  }
+
+  .window {
+    position: relative !important;
+    width: 100% !important;
+    height: auto !important;
+    margin-bottom: 12px;
+    transform: none !important;
+  }
+  .window.minimizing {
+    display: none;
+  }
+
+  .window-body {
+    max-height: 60vh;
+  }
+
+  .resize-handle {
+    display: none !important;
+  }
+
+  .taskbar {
+    height: 44px;
+  }
+  .taskbar-windows {
+    display: none;
+  }
+}
+
+/* Comparison table */
+.comparison-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8125rem;
+  margin: 1rem 0;
+}
+.comparison-table th,
+.comparison-table td {
+  padding: 0.6rem 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.comparison-table th {
+  font-weight: 600;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+}
+.comparison-table tr:last-child td {
+  border-bottom: none;
+}
+.comparison-table .highlight {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* Welcome window special styling */
+.welcome-content {
+  text-align: center;
+  padding: 2rem 1.5rem;
+}
+.welcome-content h1 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.02em;
+}
+.welcome-content .tagline {
+  font-size: 1.05rem;
+  color: var(--text-secondary);
+  margin-bottom: 1.75rem;
+}
+.welcome-content .cta-group {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* Getting started content */
+.steps {
+  counter-reset: step;
+}
+.steps .step {
+  position: relative;
+  padding-left: 2.5rem;
+  margin-bottom: 1.25rem;
+}
+.steps .step::before {
+  counter-increment: step;
+  content: counter(step);
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 50%;
+  background: var(--accent);
+  color: white;
+  font-size: 0.8rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Example cards */
+.example-list-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 16px;
+}
+.example-card {
+  background: rgba(0,0,0,0.03);
+  border: 1px solid rgba(0,0,0,0.06);
+  border-radius: 10px;
+  padding: 14px 16px;
+}
+.example-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+.example-icon {
+  font-size: 24px;
+}
+.example-info {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.example-info strong {
+  font-size: 0.95rem;
+}
+.example-size {
+  font-size: 0.75rem;
+  color: var(--accent);
+  font-weight: 600;
+  background: rgba(108, 92, 231, 0.08);
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+.example-desc {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+  line-height: 1.4;
+}
+.example-code {
+  background: rgba(0,0,0,0.04);
+  border-radius: 6px;
+  padding: 10px 12px;
+  overflow-x: auto;
+  margin: 0;
+}
+.example-code code {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  line-height: 1.5;
+  color: var(--text);
+}

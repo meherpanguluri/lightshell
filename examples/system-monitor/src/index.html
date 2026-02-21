@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>System Monitor</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>System Monitor</h1>
+    <span class="badge" id="uptime"></span>
+  </header>
+  <main>
+    <section class="cards">
+      <div class="card" id="card-platform">
+        <div class="card-icon">&#x1F4BB;</div>
+        <div class="card-label">Platform</div>
+        <div class="card-value" id="platform">—</div>
+      </div>
+      <div class="card" id="card-arch">
+        <div class="card-icon">&#x2699;</div>
+        <div class="card-label">Architecture</div>
+        <div class="card-value" id="arch">—</div>
+      </div>
+      <div class="card" id="card-hostname">
+        <div class="card-icon">&#x1F3E0;</div>
+        <div class="card-label">Hostname</div>
+        <div class="card-value" id="hostname">—</div>
+      </div>
+      <div class="card" id="card-version">
+        <div class="card-icon">&#x1F680;</div>
+        <div class="card-label">App Version</div>
+        <div class="card-value" id="version">—</div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Directories</h2>
+      <div class="dir-grid">
+        <div class="dir-item">
+          <span class="dir-label">Home</span>
+          <span class="dir-path" id="home-dir">—</span>
+        </div>
+        <div class="dir-item">
+          <span class="dir-label">Temp</span>
+          <span class="dir-path" id="temp-dir">—</span>
+        </div>
+        <div class="dir-item">
+          <span class="dir-label">App Data</span>
+          <span class="dir-path" id="data-dir">—</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Home Directory Contents</h2>
+      <div class="file-list" id="file-list">Loading...</div>
+    </section>
+
+    <section class="panel actions-panel">
+      <button id="btn-clipboard">Copy System Info</button>
+      <button id="btn-notify">Send Test Notification</button>
+      <button id="btn-open-home">Open Home in Finder</button>
+    </section>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>

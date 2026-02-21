@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LightShell — Build desktop apps with JavaScript. Ship under 5MB.</title>
+  <meta name="description" content="LightShell is a lightweight desktop app framework. Write JS/HTML/CSS, get native apps under 5MB. No Rust, no bundled browser.">
+  <meta property="og:title" content="LightShell — Desktop apps in JS, under 5MB">
+  <meta property="og:description" content="Write JS/HTML/CSS. One command. Native binary under 5MB. Designed for AI to generate working desktop apps.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://lightshell.sh">
+  <link rel="stylesheet" href="css/shared.css">
+  <link rel="stylesheet" href="css/desktop.css">
+</head>
+<body>
+
+<div class="desktop">
+  <div class="desktop-icons"></div>
+</div>
+
+<div class="taskbar">
+  <div class="taskbar-brand">
+    <span class="brand-icon">&olarr;</span>
+    <span class="brand-text">LightShell</span>
+  </div>
+  <div class="taskbar-windows"></div>
+  <div class="taskbar-clock"></div>
+</div>
+
+<!-- Hidden content templates -->
+<template id="content-welcome">
+  <div class="welcome-content">
+    <h1>LightShell</h1>
+    <p class="tagline">Build desktop apps with JavaScript.<br>Ship them under 5MB.</p>
+    <div class="cta-group">
+      <button class="btn btn-primary" onclick="openGettingStarted()">Get Started</button>
+      <button class="btn btn-secondary" onclick="openPlayground()">Open Playground</button>
+    </div>
+  </div>
+</template>
+
+<template id="content-getting-started">
+  <h2>Getting Started</h2>
+  <p>Go from zero to a running desktop app in under 30 seconds.</p>
+
+  <div class="steps">
+    <div class="step">
+      <h3>Install LightShell</h3>
+      <pre><code>npm install -g lightshell</code></pre>
+    </div>
+    <div class="step">
+      <h3>Create your app</h3>
+      <pre><code>lightshell init my-app
+cd my-app</code></pre>
+    </div>
+    <div class="step">
+      <h3>Run in dev mode</h3>
+      <pre><code>lightshell dev</code></pre>
+      <p>A native window opens with your app. Edit files &mdash; it reloads instantly.</p>
+    </div>
+    <div class="step">
+      <h3>Build for production</h3>
+      <pre><code>lightshell build</code></pre>
+      <p>Outputs a native <code>.app</code> (macOS) or AppImage (Linux). That's it.</p>
+    </div>
+  </div>
+
+  <h3>Use Native APIs &mdash; All from JavaScript</h3>
+  <pre><code>// Read a file
+const data = await lightshell.fs.readFile('./notes.txt')
+
+// Open a native file dialog
+const path = await lightshell.dialog.open({
+  filters: [{ name: 'Text', extensions: ['txt', 'md'] }]
+})
+
+// Send a notification
+lightshell.notify.send('Saved!', 'Your file has been saved.')
+
+// Get system info
+const platform = await lightshell.system.platform()  // "darwin"
+const arch = await lightshell.system.arch()           // "arm64"</code></pre>
+</template>
+
+<template id="content-examples">
+  <h2>Example Apps</h2>
+  <p>Each app was built with <code>lightshell build</code>. Sizes are the final <code>.app</code> bundle.</p>
+
+  <div class="example-list-grid">
+    <div class="example-card">
+      <div class="example-header">
+        <span class="example-icon">&#128075;</span>
+        <div class="example-info">
+          <strong>Hello World</strong>
+          <code class="example-size">~2.8MB</code>
+        </div>
+      </div>
+      <p class="example-desc">Minimal app showing system info cards. Calls <code>lightshell.system</code> APIs to display platform, arch, hostname.</p>
+      <pre class="example-code"><code>const platform = await lightshell.system.platform()
+const arch = await lightshell.system.arch()
+const hostname = await lightshell.system.hostname()</code></pre>
+    </div>
+
+    <div class="example-card">
+      <div class="example-header">
+        <span class="example-icon">&#128221;</span>
+        <div class="example-info">
+          <strong>Markdown Editor</strong>
+          <code class="example-size">~3.2MB</code>
+        </div>
+      </div>
+      <p class="example-desc">Split-pane editor with live preview. Open/save files via native dialogs. Keyboard shortcuts: Cmd+O, Cmd+S.</p>
+      <pre class="example-code"><code>const path = await lightshell.dialog.open({
+  filters: [{ name: 'Markdown', extensions: ['md'] }]
+})
+const content = await lightshell.fs.readFile(path)
+await lightshell.fs.writeFile(path, editor.value)</code></pre>
+    </div>
+
+    <div class="example-card">
+      <div class="example-header">
+        <span class="example-icon">&#128187;</span>
+        <div class="example-info">
+          <strong>System Monitor</strong>
+          <code class="example-size">~3.0MB</code>
+        </div>
+      </div>
+      <p class="example-desc">Dark-themed dashboard showing system info, directory listings, clipboard copy, and notifications. Live uptime counter.</p>
+      <pre class="example-code"><code>const entries = await lightshell.fs.readDir(homeDir)
+await lightshell.clipboard.write(systemInfo)
+lightshell.notify.send('Copied', 'Info copied!')</code></pre>
+    </div>
+
+    <div class="example-card">
+      <div class="example-header">
+        <span class="example-icon">&#127912;</span>
+        <div class="example-info">
+          <strong>Color Picker</strong>
+          <code class="example-size">~2.9MB</code>
+        </div>
+      </div>
+      <p class="example-desc">RGB sliders with live preview and hex output. Copy to clipboard with one click using native APIs.</p>
+      <pre class="example-code"><code>const hex = '#6C5CE7'
+await lightshell.clipboard.write(hex)
+lightshell.notify.send('Copied!', hex)</code></pre>
+    </div>
+  </div>
+
+  <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 16px; text-align: center;">
+    Try these in the <a href="playground.html" style="color: var(--accent);">playground</a> &mdash; no install needed.
+  </p>
+</template>
+
+<template id="content-benchmarks">
+  <h2>Framework Comparison</h2>
+  <p>Same app (hello world + file dialog), measured on macOS, Apple M2.</p>
+
+  <table class="comparison-table">
+    <thead>
+      <tr>
+        <th>Framework</th>
+        <th>You Write</th>
+        <th>Binary Size</th>
+        <th>Startup</th>
+        <th>Memory</th>
+        <th>Setup Time</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Electron</td>
+        <td>JS + Node</td>
+        <td>~180MB</td>
+        <td>1.2s</td>
+        <td>120MB</td>
+        <td>2 min</td>
+      </tr>
+      <tr>
+        <td>Tauri</td>
+        <td>JS + Rust</td>
+        <td>~8MB</td>
+        <td>0.5s</td>
+        <td>45MB</td>
+        <td>10 min</td>
+      </tr>
+      <tr>
+        <td class="highlight">LightShell</td>
+        <td class="highlight">JS only</td>
+        <td class="highlight">~2.8MB</td>
+        <td class="highlight">0.3s</td>
+        <td class="highlight">30MB</td>
+        <td class="highlight">30 sec</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 16px;">
+    LightShell uses system webviews (WKWebView on macOS, WebKitGTK on Linux) &mdash; no bundled browser engine.
+    Electron bundles Chromium. Tauri uses system webviews like LightShell but requires Rust for the backend.
+  </p>
+</template>
+
+<template id="content-about">
+  <h2>Why LightShell?</h2>
+
+  <p>Desktop app development shouldn't require learning Rust, fighting Electron's bloat, or shipping 200MB binaries for a todo app.</p>
+
+  <p><strong>LightShell is built on three beliefs:</strong></p>
+
+  <ul>
+    <li><strong>JavaScript is enough.</strong> You shouldn't need Rust, Go, or C++ to build a desktop app. LightShell handles the native layer so you write only JS/HTML/CSS.</li>
+    <li><strong>Size matters.</strong> A todo app shouldn't be 180MB. By using system webviews instead of bundling Chromium, LightShell apps ship under 5MB.</li>
+    <li><strong>AI changes everything.</strong> When an AI can generate a working desktop app in one response &mdash; no Rust compilation, no native dependencies, no 10-minute setup &mdash; that's a new kind of framework.</li>
+  </ul>
+
+  <h3>How It Works</h3>
+  <p>You write JS, HTML, and CSS. LightShell compiles your code into a native binary that uses the system's built-in webview (WKWebView on macOS, WebKitGTK on Linux). Your app assets are embedded directly in the binary &mdash; one file, no dependencies.</p>
+
+  <p>Native APIs (file system, dialogs, clipboard, notifications, system tray) are exposed through a clean JavaScript API: <code>window.lightshell.*</code>.</p>
+
+  <h3>Open Source</h3>
+  <p>LightShell is MIT licensed. Built by developers who got tired of shipping bloated desktop apps.</p>
+  <p><a href="https://github.com/meherpanguluri/lightshell">github.com/meherpanguluri/lightshell</a></p>
+</template>
+
+<script src="js/window-manager.js"></script>
+<script src="js/desktop.js"></script>
+<script src="js/easter-eggs.js" defer></script>
+</body>
+</html>

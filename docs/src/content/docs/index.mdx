@@ -1,0 +1,34 @@
+---
+title: LightShell Docs
+description: Build native desktop apps with JavaScript. Ship them under 5MB.
+template: splash
+hero:
+  tagline: Tell AI to build you a desktop app. It works. Write JS/HTML/CSS, get native binaries under 5MB.
+  actions:
+    - text: Get Started
+      link: /getting-started/
+      icon: right-arrow
+      variant: primary
+    - text: View on GitHub
+      link: https://github.com/meherpanguluri/lightshell
+      icon: external
+---
+
+import { Card, CardGrid } from '@astrojs/starlight/components';
+
+## Why LightShell?
+
+<CardGrid stagger>
+  <Card title="JS Only" icon="seti:javascript">
+    Write your app in JavaScript, HTML, and CSS. No Rust, no Go, no native code. The Go backend is invisible.
+  </Card>
+  <Card title="Under 5MB" icon="rocket">
+    Your finished app ships as a native binary under 5MB. Electron apps are 180MB+. Tauri apps are ~8MB. LightShell wins.
+  </Card>
+  <Card title="System Webviews" icon="laptop">
+    Uses WKWebView on macOS and WebKitGTK on Linux. No bundled browser. That is how the binary stays tiny.
+  </Card>
+  <Card title="AI-Friendly" icon="star">
+    Designed so AI agents can generate working desktop apps in a single response. Simple APIs, zero config complexity.
+  </Card>
+</CardGrid>

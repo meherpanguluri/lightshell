@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Markdown Editor</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <div class="toolbar">
+      <span class="filename" id="filename">Untitled.md</span>
+      <span class="status" id="status"></span>
+    </div>
+    <div class="actions">
+      <button id="btn-open" title="Open (Cmd+O)">Open</button>
+      <button id="btn-save" title="Save (Cmd+S)">Save</button>
+      <button id="btn-new" title="New file">New</button>
+    </div>
+  </header>
+  <main>
+    <div class="editor-pane">
+      <textarea id="editor" placeholder="Start writing markdown..." spellcheck="false"></textarea>
+    </div>
+    <div class="divider"></div>
+    <div class="preview-pane">
+      <div id="preview" class="markdown-body"></div>
+    </div>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>

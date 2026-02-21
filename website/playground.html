@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LightShell Playground</title>
+  <meta name="description" content="Try LightShell in your browser. Write JS and see a simulated desktop app instantly.">
+  <link rel="stylesheet" href="css/shared.css">
+  <link rel="stylesheet" href="css/playground.css">
+</head>
+<body>
+
+<div class="playground-layout">
+  <!-- Sidebar -->
+  <div class="playground-sidebar">
+    <div class="playground-sidebar-header">
+      <h1><a href="index.html">&olarr; LightShell</a></h1>
+    </div>
+    <div class="playground-sidebar-label">Examples</div>
+    <ul class="example-list"></ul>
+  </div>
+
+  <!-- Main area -->
+  <div class="playground-main">
+    <!-- Toolbar -->
+    <div class="playground-toolbar">
+      <div class="toolbar-title">Playground</div>
+      <span class="toolbar-size">Est. binary: ~2.1MB</span>
+      <button class="toolbar-btn run">Run (Ctrl+Enter)</button>
+    </div>
+
+    <!-- Split pane -->
+    <div class="playground-split">
+      <!-- Editor -->
+      <div class="playground-editor"></div>
+
+      <div class="playground-divider"></div>
+
+      <!-- Preview -->
+      <div class="playground-preview">
+        <div class="preview-header">Preview</div>
+        <iframe class="preview-frame" sandbox="allow-scripts allow-same-origin"></iframe>
+      </div>
+    </div>
+
+    <!-- Console -->
+    <div class="playground-console"></div>
+  </div>
+</div>
+
+<script src="js/playground.js"></script>
+</body>
+</html>
