@@ -25,3 +25,7 @@ Thumbs.db
 # Temp
 *.tmp
 *.log
+
+# Claude
+claude.md
+CLAUDE.md
