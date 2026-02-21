@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/meherpanguluri/lightshell/internal/cli"
+	"github.com/lightshell-dev/lightshell/internal/cli"
 )
 
 const version = "0.1.0"

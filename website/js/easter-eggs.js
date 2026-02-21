@@ -123,7 +123,7 @@
 
     const items = [
       { label: 'New LightShell App', action: () => window.open('playground.html', '_blank') },
-      { label: 'View Source', action: () => window.open('https://github.com/meherpanguluri/lightshell', '_blank') },
+      { label: 'View Source', action: () => window.open('https://github.com/lightshell-dev/lightshell', '_blank') },
       { separator: true },
       { label: 'About LightShell', action: () => {
         if (window.WindowManager) {

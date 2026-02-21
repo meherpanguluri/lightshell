@@ -160,7 +160,7 @@ jobs:
             "license": "MIT",
             "repository": {
               "type": "git",
-              "url": "https://github.com/meherpanguluri/lightshell"
+              "url": "https://github.com/lightshell-dev/lightshell"
             },
             "os": ["${OS_FIELD[$PLATFORM]}"],
             "cpu": ["${CPU_FIELD[$PLATFORM]}"],

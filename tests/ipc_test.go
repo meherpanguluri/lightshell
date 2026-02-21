@@ -6,7 +6,7 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/meherpanguluri/lightshell/internal/ipc"
+	"github.com/lightshell-dev/lightshell/internal/ipc"
 )
 
 // parseResponse unmarshals a JSON response string into an ipc.Response.

@@ -11,7 +11,7 @@ import (
 	"text/template"
 	"time"
 
-	lsruntime "github.com/meherpanguluri/lightshell/internal/runtime"
+	lsruntime "github.com/lightshell-dev/lightshell/internal/runtime"
 )
 
 //go:embed buildfiles/webview_darwin.m

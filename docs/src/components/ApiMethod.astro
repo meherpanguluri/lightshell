@@ -1,0 +1,48 @@
+---
+interface Props {
+  name: string;
+  signature?: string;
+  returns?: string;
+  since?: string;
+}
+
+const { name, signature, returns, since } = Astro.props;
+---
+
+<div class="api-method">
+  <h3 id={name.toLowerCase().replace(/[^a-z0-9]/g, '-')}>
+    {signature || name}
+    {since && <span class="since-badge">v{since}</span>}
+  </h3>
+  {returns && <p class="returns"><strong>Returns:</strong> <code>{returns}</code></p>}
+  <slot />
+</div>
+
+<style>
+  .api-method {
+    margin-block: 2rem;
+    padding: 1.5rem;
+    border: 1px solid var(--sl-color-gray-6);
+    border-radius: 12px;
+    background: rgba(15, 23, 42, 0.5);
+  }
+
+  .api-method h3 {
+    margin-top: 0;
+    font-family: var(--sl-font-mono);
+    font-size: 1rem;
+    color: var(--sl-color-accent-high, #93c5fd);
+  }
+
+  .returns {
+    font-size: 0.875rem;
+    color: var(--sl-color-gray-3, #94a3b8);
+  }
+
+  .returns code {
+    background: var(--sl-color-gray-6, #1e293b);
+    padding: 0.15em 0.4em;
+    border-radius: 4px;
+    font-size: 0.9em;
+  }
+</style>

@@ -1,0 +1,46 @@
+---
+interface Props {
+  platform: 'macos' | 'linux' | 'both';
+}
+
+const { platform } = Astro.props;
+---
+
+{platform === 'both' ? (
+  <span>
+    <span class="platform-badge macos">macOS</span>
+    <span class="platform-badge linux">Linux</span>
+  </span>
+) : platform === 'macos' ? (
+  <span class="platform-badge macos">macOS</span>
+) : (
+  <span class="platform-badge linux">Linux</span>
+)}
+
+<style>
+  .platform-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.15em 0.5em;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    vertical-align: middle;
+    margin-left: 0.25rem;
+  }
+
+  .macos {
+    background: rgba(59, 130, 246, 0.15);
+    color: #93c5fd;
+    border: 1px solid rgba(59, 130, 246, 0.3);
+  }
+
+  .linux {
+    background: rgba(249, 115, 22, 0.15);
+    color: #fdba74;
+    border: 1px solid rgba(249, 115, 22, 0.3);
+  }
+</style>

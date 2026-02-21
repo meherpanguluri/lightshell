@@ -1,0 +1,66 @@
+---
+interface Props {
+  command: string;
+}
+
+const { command } = Astro.props;
+---
+
+<div class="install-command" data-command={command}>
+  <span class="prompt">$</span>
+  <span class="cmd">{command}</span>
+  <button class="copy-btn" aria-label="Copy to clipboard">Copy</button>
+</div>
+
+<script>
+  document.querySelectorAll('.install-command .copy-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const cmd = btn.parentElement?.getAttribute('data-command') ?? '';
+      navigator.clipboard.writeText(cmd);
+      btn.textContent = 'Copied!';
+      setTimeout(() => { btn.textContent = 'Copy'; }, 2000);
+    });
+  });
+</script>
+
+<style>
+  .install-command {
+    position: relative;
+    background: #0f172a;
+    border: 1px solid #1e293b;
+    border-radius: 12px;
+    padding: 1rem 4rem 1rem 1.25rem;
+    font-family: var(--sl-font-mono, 'JetBrains Mono', monospace);
+    font-size: 0.875rem;
+    color: #e2e8f0;
+    margin-block: 1.5rem;
+    overflow-x: auto;
+  }
+
+  .prompt {
+    color: #64748b;
+    user-select: none;
+    margin-right: 0.5rem;
+  }
+
+  .copy-btn {
+    position: absolute;
+    top: 50%;
+    right: 0.75rem;
+    transform: translateY(-50%);
+    padding: 0.25rem 0.6rem;
+    background: #1e293b;
+    border: 1px solid #475569;
+    border-radius: 4px;
+    color: #94a3b8;
+    font-size: 0.75rem;
+    font-family: var(--sl-font, sans-serif);
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .copy-btn:hover {
+    background: #475569;
+    color: #f8fafc;
+  }
+</style>

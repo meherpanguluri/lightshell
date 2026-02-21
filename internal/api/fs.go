@@ -5,8 +5,8 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/meherpanguluri/lightshell/internal/ipc"
-	"github.com/meherpanguluri/lightshell/internal/security"
+	"github.com/lightshell-dev/lightshell/internal/ipc"
+	"github.com/lightshell-dev/lightshell/internal/security"
 )
 
 // RegisterFS registers file system API handlers with security checks.

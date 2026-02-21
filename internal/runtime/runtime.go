@@ -6,7 +6,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/meherpanguluri/lightshell/internal/webview"
+	"github.com/lightshell-dev/lightshell/internal/webview"
 )
 
 // Config represents the lightshell.json configuration.

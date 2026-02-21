@@ -3,8 +3,8 @@ package api
 import (
 	"encoding/json"
 
-	"github.com/meherpanguluri/lightshell/internal/ipc"
-	"github.com/meherpanguluri/lightshell/internal/security"
+	"github.com/lightshell-dev/lightshell/internal/ipc"
+	"github.com/lightshell-dev/lightshell/internal/security"
 )
 
 // RegisterDialog registers dialog API handlers with security checks.

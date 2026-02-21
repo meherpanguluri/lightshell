@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/meherpanguluri/lightshell/internal/compat"
+	"github.com/lightshell-dev/lightshell/internal/compat"
 )
 
 // Doctor runs compatibility checks on the project.

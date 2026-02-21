@@ -1,0 +1,47 @@
+---
+interface Props {
+  highlight?: string;
+}
+
+const { highlight } = Astro.props;
+---
+
+<div class="comparison-table">
+  <slot />
+</div>
+
+<style>
+  .comparison-table {
+    margin-block: 2rem;
+    overflow-x: auto;
+  }
+
+  .comparison-table :global(table) {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .comparison-table :global(th) {
+    text-align: left;
+    padding: 0.75rem 1rem;
+    background: var(--sl-color-gray-6, #1e293b);
+    border-bottom: 2px solid var(--sl-color-gray-5, #475569);
+    font-weight: 600;
+    font-size: 0.875rem;
+    white-space: nowrap;
+  }
+
+  .comparison-table :global(td) {
+    padding: 0.65rem 1rem;
+    border-bottom: 1px solid var(--sl-color-gray-6, #1e293b);
+    font-size: 0.875rem;
+  }
+
+  .comparison-table :global(tr:last-child td) {
+    border-bottom: none;
+  }
+
+  .comparison-table :global(tbody tr:hover) {
+    background: rgba(59, 130, 246, 0.04);
+  }
+</style>

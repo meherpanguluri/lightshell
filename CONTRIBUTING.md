@@ -14,7 +14,7 @@ Thanks for your interest in contributing! LightShell is an open-source desktop a
 ### Setup
 
 ```bash
-git clone https://github.com/meherpanguluri/lightshell.git
+git clone https://github.com/lightshell-dev/lightshell.git
 cd lightshell
 go build ./cmd/lightshell
 ```
@@ -109,7 +109,7 @@ Update getting-started docs with Linux instructions
 
 ## Reporting Bugs
 
-Open an issue at [github.com/meherpanguluri/lightshell/issues](https://github.com/meherpanguluri/lightshell/issues) with:
+Open an issue at [github.com/lightshell-dev/lightshell/issues](https://github.com/lightshell-dev/lightshell/issues) with:
 
 - What you expected to happen
 - What actually happened

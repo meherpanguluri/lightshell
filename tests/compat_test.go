@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/meherpanguluri/lightshell/internal/compat"
+	"github.com/lightshell-dev/lightshell/internal/compat"
 )
 
 // createTestProject creates a temporary project directory with a src/ subdirectory

@@ -1,3 +1,3 @@
-module github.com/meherpanguluri/lightshell
+module github.com/lightshell-dev/lightshell
 
 go 1.23.2

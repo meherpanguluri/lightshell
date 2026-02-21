@@ -3,8 +3,8 @@ package api
 import (
 	"encoding/json"
 
-	"github.com/meherpanguluri/lightshell/internal/ipc"
-	"github.com/meherpanguluri/lightshell/internal/webview"
+	"github.com/lightshell-dev/lightshell/internal/ipc"
+	"github.com/lightshell-dev/lightshell/internal/webview"
 )
 
 // RegisterWindow registers window management API handlers.

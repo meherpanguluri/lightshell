@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 	goruntime "runtime"
 
-	"github.com/meherpanguluri/lightshell/internal/ipc"
+	"github.com/lightshell-dev/lightshell/internal/ipc"
 )
 
 // RegisterSystem registers system info API handlers.

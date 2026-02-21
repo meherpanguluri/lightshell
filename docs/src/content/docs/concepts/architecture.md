@@ -103,7 +103,7 @@ When you call `lightshell.fs.readFile('/tmp/test.txt')`, here is what happens:
 
 The full round-trip takes less than 5ms for local operations.
 
-See the [IPC Protocol](/concepts/ipc/) page for the message format details.
+See the [IPC Protocol](/concepts/ipc-protocol/) page for the message format details.
 
 ## Asset Embedding
 

@@ -11,11 +11,11 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/meherpanguluri/lightshell/internal/api"
-	"github.com/meherpanguluri/lightshell/internal/ipc"
-	"github.com/meherpanguluri/lightshell/internal/runtime"
-	"github.com/meherpanguluri/lightshell/internal/security"
-	"github.com/meherpanguluri/lightshell/internal/webview"
+	"github.com/lightshell-dev/lightshell/internal/api"
+	"github.com/lightshell-dev/lightshell/internal/ipc"
+	"github.com/lightshell-dev/lightshell/internal/runtime"
+	"github.com/lightshell-dev/lightshell/internal/security"
+	"github.com/lightshell-dev/lightshell/internal/webview"
 )
 
 // Dev runs the app in development mode with hot reload.

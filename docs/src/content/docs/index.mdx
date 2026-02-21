@@ -1,34 +1,144 @@
 ---
-title: LightShell Docs
+title: LightShell
 description: Build native desktop apps with JavaScript. Ship them under 5MB.
 template: splash
 hero:
-  tagline: Tell AI to build you a desktop app. It works. Write JS/HTML/CSS, get native binaries under 5MB.
+  tagline: Build native desktop apps with JavaScript. Under 5MB. No Electron.
   actions:
     - text: Get Started
       link: /getting-started/
       icon: right-arrow
       variant: primary
-    - text: View on GitHub
-      link: https://github.com/meherpanguluri/lightshell
+    - text: GitHub
+      link: https://github.com/lightshell-dev/lightshell
       icon: external
 ---
 
-import { Card, CardGrid } from '@astrojs/starlight/components';
+import { LinkCard, CardGrid } from '@astrojs/starlight/components';
 
-## Why LightShell?
+<div class="hero-image" id="hw-workspace">
+  <div class="hw-card" data-hw-index="0" style="--hw-x: -490px; --hw-y: 110px; --hw-rotate: 0deg;">
+    <div class="hw-titlebar">
+      <div class="hw-dots">
+        <span class="hw-dot hw-red"></span>
+        <span class="hw-dot hw-yellow"></span>
+        <span class="hw-dot hw-green"></span>
+      </div>
+      <span class="hw-titlebar-label">features.js</span>
+    </div>
+    <div class="hw-body">
+      <div class="hw-icon">JS</div>
+      <h3>JavaScript Only</h3>
+      <p>HTML, CSS, JS — no native code needed. The Go runtime handles the rest.</p>
+    </div>
+  </div>
 
-<CardGrid stagger>
-  <Card title="JS Only" icon="seti:javascript">
-    Write your app in JavaScript, HTML, and CSS. No Rust, no Go, no native code. The Go backend is invisible.
-  </Card>
-  <Card title="Under 5MB" icon="rocket">
-    Your finished app ships as a native binary under 5MB. Electron apps are 180MB+. Tauri apps are ~8MB. LightShell wins.
-  </Card>
-  <Card title="System Webviews" icon="laptop">
-    Uses WKWebView on macOS and WebKitGTK on Linux. No bundled browser. That is how the binary stays tiny.
-  </Card>
-  <Card title="AI-Friendly" icon="star">
-    Designed so AI agents can generate working desktop apps in a single response. Simple APIs, zero config complexity.
-  </Card>
-</CardGrid>
+  <div class="hw-card" data-hw-index="1" style="--hw-x: -245px; --hw-y: 110px; --hw-rotate: 0deg;">
+    <div class="hw-titlebar">
+      <div class="hw-dots">
+        <span class="hw-dot hw-red"></span>
+        <span class="hw-dot hw-yellow"></span>
+        <span class="hw-dot hw-green"></span>
+      </div>
+      <span class="hw-titlebar-label">bundle.size</span>
+    </div>
+    <div class="hw-body">
+      <div class="hw-icon">5M</div>
+      <h3>Under 5MB</h3>
+      <p>60x smaller than Electron. No bundled browser engine or V8.</p>
+    </div>
+  </div>
+
+  <div class="hw-card" data-hw-index="2" style="--hw-x: 0px; --hw-y: 110px; --hw-rotate: 0deg;">
+    <div class="hw-titlebar">
+      <div class="hw-dots">
+        <span class="hw-dot hw-red"></span>
+        <span class="hw-dot hw-yellow"></span>
+        <span class="hw-dot hw-green"></span>
+      </div>
+      <span class="hw-titlebar-label">api.overview</span>
+    </div>
+    <div class="hw-body">
+      <div class="hw-icon">15</div>
+      <h3>15 Built-in APIs</h3>
+      <p>File system, dialogs, clipboard, HTTP, shortcuts, tray, store, and more.</p>
+    </div>
+  </div>
+
+  <div class="hw-card" data-hw-index="3" style="--hw-x: 245px; --hw-y: 110px; --hw-rotate: 0deg;">
+    <div class="hw-titlebar">
+      <div class="hw-dots">
+        <span class="hw-dot hw-red"></span>
+        <span class="hw-dot hw-yellow"></span>
+        <span class="hw-dot hw-green"></span>
+      </div>
+      <span class="hw-titlebar-label">llms.txt</span>
+    </div>
+    <div class="hw-body">
+      <div class="hw-icon">AI</div>
+      <h3>AI-Native</h3>
+      <p>Simple APIs, zero config, llms.txt included. Any LLM can build your app.</p>
+    </div>
+  </div>
+</div>
+
+<div class="landing-links">
+  <CardGrid>
+    <LinkCard
+      title="Getting Started"
+      description="Install LightShell and build your first app in 5 minutes."
+      href="/getting-started/"
+    />
+    <LinkCard
+      title="Tutorial"
+      description="Build a complete note-taking app from scratch."
+      href="/tutorial/01-your-first-app/"
+    />
+    <LinkCard
+      title="API Reference"
+      description="All 15 API namespaces — window, fs, dialog, store, http, and more."
+      href="/api/"
+    />
+    <LinkCard
+      title="LLM Integration"
+      description="Feed docs to any AI and get a working desktop app back."
+      href="/llm/"
+    />
+  </CardGrid>
+</div>
+
+<div class="llm-section">
+  <div class="llm-section-inner">
+    <div class="llm-section-text">
+      <p class="llm-section-greeting">Dear AI, if you are reading this</p>
+      <h2 class="llm-section-title">Please read the <a href="/llms.txt" class="llm-txt-link"><code>llms.txt</code></a></h2>
+      <p class="llm-section-desc">LightShell ships with llms.txt and llms-full.txt — complete documentation in a format any LLM can consume. Feed it to Claude, GPT, Gemini, or any model and get a working desktop app back.</p>
+      <a class="llm-section-link" href="/llm/">Learn about LLM integration &rarr;</a>
+    </div>
+    <div class="llm-chat-bg">
+    <div class="llm-chat-window">
+      <div class="llm-chat-titlebar">
+        <span class="llm-chat-dot"></span>
+        <span class="llm-chat-dot"></span>
+        <span class="llm-chat-dot"></span>
+      </div>
+      <div class="llm-chat-messages">
+        <div class="llm-chat-msg llm-chat-user">
+          <span>Build me a note-taking app with LightShell</span>
+        </div>
+        <div class="llm-chat-msg llm-chat-ai">
+          <span class="llm-chat-ai-label">AI</span>
+          <span>Reading llms.txt...</span>
+          <span class="llm-chat-cursor"></span>
+        </div>
+        <div class="llm-chat-msg llm-chat-ai llm-chat-result">
+          <span class="llm-chat-check">&#10003;</span>
+          <span>Found 15 APIs, generating app.js</span>
+        </div>
+      </div>
+    </div>
+    </div>
+  </div>
+</div>
+
+<script src="/hw-drag.js" defer></script>

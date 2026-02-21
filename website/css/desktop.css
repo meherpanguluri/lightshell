@@ -20,11 +20,22 @@
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
-/* Icon grid */
+/* Icon grid — single column */
 .desktop-icons {
   position: absolute;
   top: 24px;
   left: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: calc(var(--z-desktop) + 2);
+}
+
+/* Right-side icons */
+.desktop-icons-right {
+  position: absolute;
+  top: 24px;
+  right: 24px;
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -331,7 +342,8 @@
 
 /* Mobile: stacked cards */
 @media (max-width: 768px) {
-  .desktop-icons {
+  .desktop-icons,
+  .desktop-icons-right {
     display: none;
   }
 
@@ -625,4 +637,19 @@
 .prompt-copy {
   font-size: 0.75rem;
   padding: 5px 14px;
+}
+
+/* Showcase "Try it" link */
+.showcase-try {
+  font-family: var(--font-sans) !important;
+  color: var(--accent) !important;
+  font-weight: 600;
+  background: none !important;
+  padding: 0 !important;
+  margin-left: auto;
+}
+
+/* JSON viewer collapse */
+.jv-collapsed {
+  display: none;
 }

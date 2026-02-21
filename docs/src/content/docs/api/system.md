@@ -1,11 +1,11 @@
 ---
-title: System & App API
-description: Complete reference for lightshell.system and lightshell.app — OS info, paths, and app lifecycle.
+title: System API
+description: Complete reference for lightshell.system — operating system information and paths.
 ---
 
-The `lightshell.system` module provides information about the operating system. The `lightshell.app` module manages the application lifecycle and provides app-specific paths. All methods are async and return Promises.
+The `lightshell.system` module provides information about the operating system, CPU architecture, and standard system paths. All methods are async and return Promises.
 
-## lightshell.system
+## Methods
 
 ### platform()
 
@@ -91,145 +91,7 @@ console.log(`Running on: ${name}`)
 
 ---
 
-## lightshell.app
-
-### quit()
-
-Quit the application. This closes the window and terminates the process.
-
-**Parameters:** none
-
-**Returns:** `Promise<void>`
-
-**Example:**
-```js
-document.getElementById('quit-btn').addEventListener('click', async () => {
-  const confirmed = await lightshell.dialog.confirm('Quit', 'Are you sure?')
-  if (confirmed) {
-    await lightshell.app.quit()
-  }
-})
-```
-
----
-
-### version()
-
-Get the application version as defined in `lightshell.json`.
-
-**Parameters:** none
-
-**Returns:** `Promise<string>` — the version string (e.g., `"1.0.0"`)
-
-**Example:**
-```js
-const ver = await lightshell.app.version()
-document.getElementById('version').textContent = `v${ver}`
-```
-
----
-
-### dataDir()
-
-Get the persistent data directory for this application. This is a platform-appropriate location for storing user data, settings, and caches.
-
-**Parameters:** none
-
-**Returns:** `Promise<string>` — absolute path to the app's data directory
-
-**Example:**
-```js
-const dataDir = await lightshell.app.dataDir()
-console.log(dataDir)
-// macOS: ~/Library/Application Support/com.example.myapp/
-// Linux: ~/.local/share/com.example.myapp/
-```
-
-The directory is derived from the `build.appId` in `lightshell.json`. It is not created automatically — use `lightshell.fs.mkdir()` on first run.
-
----
-
-## lightshell.shell
-
-### open(url)
-
-Open a URL in the user's default browser, or a file path in the default application.
-
-**Parameters:**
-- `url` (string) — a URL (e.g., `https://example.com`) or file path
-
-**Returns:** `Promise<void>`
-
-**Example:**
-```js
-// Open a website in the default browser
-await lightshell.shell.open('https://lightshell.sh')
-
-// Open a file in the default application
-await lightshell.shell.open('/Users/me/document.pdf')
-```
-
-**Important:** Do not use `window.open()` for external URLs — it will try to navigate the webview. Always use `lightshell.shell.open()` to launch the system browser.
-
----
-
-## lightshell.notify
-
-### send(title, body, options?)
-
-Show a system notification.
-
-**Parameters:**
-- `title` (string) — notification title
-- `body` (string) — notification body text
-- `options` (object, optional) — additional options (reserved for future use)
-
-**Returns:** `Promise<void>`
-
-**Example:**
-```js
-await lightshell.notify.send('Download Complete', 'report.pdf has been saved.')
-```
-
----
-
 ## Common Patterns
-
-### App Initialization
-
-```js
-async function initApp() {
-  // Ensure data directory exists
-  const dataDir = await lightshell.app.dataDir()
-  await lightshell.fs.mkdir(dataDir)
-
-  // Load or create settings
-  const settingsPath = `${dataDir}/settings.json`
-  let settings = { theme: 'light', recentFiles: [] }
-
-  if (await lightshell.fs.exists(settingsPath)) {
-    const raw = await lightshell.fs.readFile(settingsPath)
-    settings = JSON.parse(raw)
-  }
-
-  return settings
-}
-```
-
-### About Dialog
-
-```js
-async function showAbout() {
-  const version = await lightshell.app.version()
-  const platform = await lightshell.system.platform()
-  const arch = await lightshell.system.arch()
-
-  await lightshell.dialog.message(
-    'About My App',
-    `Version: ${version}\nPlatform: ${platform} (${arch})`
-  )
-}
-```
 
 ### Platform-Specific Behavior
 
@@ -246,31 +108,54 @@ async function getDefaultSavePath(filename) {
 }
 ```
 
-### External Links
+### System Info Panel
 
 ```js
-// Make all <a> tags with href starting with http open in system browser
-document.addEventListener('click', (e) => {
-  const link = e.target.closest('a[href^="http"]')
-  if (link) {
-    e.preventDefault()
-    lightshell.shell.open(link.href)
+async function getSystemInfo() {
+  const platform = await lightshell.system.platform()
+  const arch = await lightshell.system.arch()
+  const hostname = await lightshell.system.hostname()
+  const home = await lightshell.system.homeDir()
+  const temp = await lightshell.system.tempDir()
+
+  return {
+    os: platform === 'darwin' ? 'macOS' : 'Linux',
+    arch,
+    hostname,
+    home,
+    temp
   }
-})
+}
+
+// Display in UI
+const info = await getSystemInfo()
+document.getElementById('sys-info').innerHTML = `
+  <p>OS: ${info.os} (${info.arch})</p>
+  <p>Hostname: ${info.hostname}</p>
+  <p>Home: ${info.home}</p>
+`
 ```
 
-### Quit with Cleanup
+### Platform-Conditional UI
 
 ```js
-async function gracefulQuit() {
-  // Save state
-  const dataDir = await lightshell.app.dataDir()
-  await lightshell.fs.writeFile(
-    `${dataDir}/state.json`,
-    JSON.stringify({ lastOpen: Date.now() })
-  )
+async function setupUI() {
+  const platform = await lightshell.system.platform()
 
-  // Quit
-  await lightshell.app.quit()
+  if (platform === 'darwin') {
+    // macOS uses Cmd key
+    document.getElementById('shortcut-hint').textContent = 'Cmd+S to save'
+  } else {
+    // Linux uses Ctrl key
+    document.getElementById('shortcut-hint').textContent = 'Ctrl+S to save'
+  }
 }
 ```
+
+## Platform Notes
+
+- On macOS, `platform()` returns `"darwin"` (the underlying OS name), not `"macos"`
+- `arch()` returns Go-style architecture names: `"arm64"` for Apple Silicon, `"amd64"` for Intel
+- `homeDir()` returns `/Users/{user}` on macOS and `/home/{user}` on Linux
+- `tempDir()` returns `/tmp` on both platforms
+- All return values are strings, not objects — they resolve directly to the value

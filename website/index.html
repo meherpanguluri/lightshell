@@ -8,7 +8,7 @@
   <meta property="og:title" content="LightShell — Desktop apps in JS, under 5MB">
   <meta property="og:description" content="Write JS/HTML/CSS. One command. Native binary under 5MB. Designed for AI to generate working desktop apps.">
   <meta property="og:type" content="website">
-  <meta property="og:url" content="https://lightshell.sh">
+  <meta property="og:url" content="https://lightshell.dev">
   <link rel="stylesheet" href="css/shared.css">
   <link rel="stylesheet" href="css/desktop.css">
 </head>
@@ -16,6 +16,7 @@
 
 <div class="desktop">
   <div class="desktop-icons"></div>
+  <div class="desktop-icons-right"></div>
 </div>
 
 <div class="taskbar">
@@ -220,7 +221,7 @@ lightshell.notify.send('Copied!', hex)</code></pre>
 
   <h3>Open Source</h3>
   <p>LightShell is MIT licensed. Built by developers who got tired of shipping bloated desktop apps.</p>
-  <p><a href="https://github.com/meherpanguluri/lightshell">github.com/meherpanguluri/lightshell</a></p>
+  <p><a href="https://github.com/lightshell-dev/lightshell">github.com/lightshell-dev/lightshell</a></p>
 </template>
 
 <template id="content-showcase">
@@ -228,7 +229,7 @@ lightshell.notify.send('Copied!', hex)</code></pre>
   <p>Apps built with LightShell. All under 5MB.</p>
 
   <div class="showcase-grid">
-    <div class="showcase-card">
+    <div class="showcase-card" onclick="openDemoApp('markdown-editor')" style="cursor:pointer">
       <div class="showcase-header">
         <span class="showcase-icon">&#128221;</span>
         <div class="showcase-meta">
@@ -238,11 +239,11 @@ lightshell.notify.send('Copied!', hex)</code></pre>
       </div>
       <p class="showcase-desc">Split-pane editor with live preview. Native file dialogs, keyboard shortcuts, and system notifications.</p>
       <div class="showcase-tags">
-        <span>fs</span><span>dialog</span><span>notify</span>
+        <span>fs</span><span>dialog</span><span>notify</span><span class="showcase-try">Try it &rarr;</span>
       </div>
     </div>
 
-    <div class="showcase-card">
+    <div class="showcase-card" onclick="openDemoApp('system-monitor')" style="cursor:pointer">
       <div class="showcase-header">
         <span class="showcase-icon">&#128187;</span>
         <div class="showcase-meta">
@@ -252,11 +253,11 @@ lightshell.notify.send('Copied!', hex)</code></pre>
       </div>
       <p class="showcase-desc">Real-time dashboard showing platform info, directory listings, and clipboard integration.</p>
       <div class="showcase-tags">
-        <span>system</span><span>clipboard</span><span>fs</span>
+        <span>system</span><span>clipboard</span><span>fs</span><span class="showcase-try">Try it &rarr;</span>
       </div>
     </div>
 
-    <div class="showcase-card">
+    <div class="showcase-card" onclick="openDemoApp('color-picker')" style="cursor:pointer">
       <div class="showcase-header">
         <span class="showcase-icon">&#127912;</span>
         <div class="showcase-meta">
@@ -266,11 +267,11 @@ lightshell.notify.send('Copied!', hex)</code></pre>
       </div>
       <p class="showcase-desc">RGB/HSL sliders with live preview. One-click copy hex values to clipboard.</p>
       <div class="showcase-tags">
-        <span>clipboard</span><span>notify</span>
+        <span>clipboard</span><span>notify</span><span class="showcase-try">Try it &rarr;</span>
       </div>
     </div>
 
-    <div class="showcase-card">
+    <div class="showcase-card" onclick="openDemoApp('todo-app')" style="cursor:pointer">
       <div class="showcase-header">
         <span class="showcase-icon">&#128203;</span>
         <div class="showcase-meta">
@@ -280,11 +281,11 @@ lightshell.notify.send('Copied!', hex)</code></pre>
       </div>
       <p class="showcase-desc">Persistent todos with JSON file storage. Add, complete, delete &mdash; all saved locally.</p>
       <div class="showcase-tags">
-        <span>fs</span><span>window</span>
+        <span>fs</span><span>window</span><span class="showcase-try">Try it &rarr;</span>
       </div>
     </div>
 
-    <div class="showcase-card">
+    <div class="showcase-card" onclick="openDemoApp('json-viewer')" style="cursor:pointer">
       <div class="showcase-header">
         <span class="showcase-icon">&#128240;</span>
         <div class="showcase-meta">
@@ -294,11 +295,11 @@ lightshell.notify.send('Copied!', hex)</code></pre>
       </div>
       <p class="showcase-desc">Open any JSON file with a native dialog. Collapsible tree view with syntax highlighting.</p>
       <div class="showcase-tags">
-        <span>dialog</span><span>fs</span>
+        <span>dialog</span><span>fs</span><span class="showcase-try">Try it &rarr;</span>
       </div>
     </div>
 
-    <div class="showcase-card">
+    <div class="showcase-card" onclick="openDemoApp('pomodoro')" style="cursor:pointer">
       <div class="showcase-header">
         <span class="showcase-icon">&#9201;</span>
         <div class="showcase-meta">
@@ -308,13 +309,13 @@ lightshell.notify.send('Copied!', hex)</code></pre>
       </div>
       <p class="showcase-desc">Focus timer with system notifications when sessions end. Minimal, distraction-free UI.</p>
       <div class="showcase-tags">
-        <span>notify</span><span>window</span>
+        <span>notify</span><span>window</span><span class="showcase-try">Try it &rarr;</span>
       </div>
     </div>
   </div>
 
   <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 20px; text-align: center;">
-    Every app above was generated by AI in a single prompt. <a href="https://github.com/meherpanguluri/lightshell" style="color: var(--accent);">Build yours &rarr;</a>
+    Every app above was generated by AI in a single prompt. <a href="https://github.com/lightshell-dev/lightshell" style="color: var(--accent);">Build yours &rarr;</a>
   </p>
 </template>
 
@@ -387,6 +388,152 @@ lightshell.notify.send('Copied!', hex)</code></pre>
   <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 20px; text-align: center;">
     LightShell's simple API surface means AI gets it right on the first try.
   </p>
+</template>
+
+<!-- Demo app templates -->
+<template id="demo-markdown-editor">
+  <div style="display:flex;height:100%;gap:0">
+    <div style="flex:1;display:flex;flex-direction:column;border-right:1px solid rgba(0,0,0,0.06)">
+      <div style="padding:8px 12px;font-size:0.7rem;color:var(--text-muted);border-bottom:1px solid rgba(0,0,0,0.04)">EDITOR</div>
+      <textarea id="md-input" style="flex:1;border:none;outline:none;resize:none;padding:12px;font-family:var(--font-mono);font-size:0.8rem;line-height:1.6;background:transparent" placeholder="Type markdown here...">## Hello LightShell
+
+This is a **markdown editor** built with LightShell.
+
+- Split pane layout
+- Live preview
+- Native file dialogs
+
+### Code Example
+
+The entire app is `3.2MB` as a native binary.
+
+> Built with one AI prompt.</textarea>
+    </div>
+    <div style="flex:1;display:flex;flex-direction:column">
+      <div style="padding:8px 12px;font-size:0.7rem;color:var(--text-muted);border-bottom:1px solid rgba(0,0,0,0.04)">PREVIEW</div>
+      <div id="md-preview" style="flex:1;padding:12px;overflow:auto;font-size:0.85rem;line-height:1.6"></div>
+    </div>
+  </div>
+</template>
+
+<template id="demo-todo-app">
+  <div style="padding:20px;max-width:400px;margin:0 auto">
+    <div style="display:flex;gap:8px;margin-bottom:16px">
+      <input id="todo-input" type="text" placeholder="What needs to be done?" style="flex:1;padding:10px 14px;border:1px solid rgba(0,0,0,0.1);border-radius:10px;font-size:0.85rem;outline:none;font-family:var(--font-sans)" onkeydown="if(event.key==='Enter')addTodo()">
+      <button onclick="addTodo()" style="padding:10px 18px;background:var(--accent);color:white;border:none;border-radius:10px;font-size:0.85rem;font-weight:600;cursor:pointer">Add</button>
+    </div>
+    <div id="todo-list"></div>
+    <div id="todo-empty" style="text-align:center;padding:30px;color:var(--text-muted);font-size:0.85rem">No todos yet. Add one above!</div>
+  </div>
+</template>
+
+<template id="demo-color-picker">
+  <div style="padding:20px;text-align:center">
+    <div id="color-swatch" style="width:120px;height:120px;border-radius:20px;margin:0 auto 20px;background:#6C5CE7;box-shadow:0 8px 24px rgba(108,92,231,0.3);transition:all 0.2s"></div>
+    <div id="color-hex" style="font-family:var(--font-mono);font-size:1.5rem;font-weight:700;margin-bottom:20px;cursor:pointer;letter-spacing:0.02em" onclick="copyColor()" title="Click to copy">#6C5CE7</div>
+    <div style="max-width:280px;margin:0 auto">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+        <span style="font-size:0.75rem;font-weight:600;width:14px;color:var(--text-muted)">R</span>
+        <input type="range" id="color-r" min="0" max="255" value="108" oninput="updateColor()" style="flex:1;accent-color:#e07a5f">
+        <span id="color-r-val" style="font-family:var(--font-mono);font-size:0.75rem;width:28px;text-align:right">108</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+        <span style="font-size:0.75rem;font-weight:600;width:14px;color:var(--text-muted)">G</span>
+        <input type="range" id="color-g" min="0" max="255" value="92" oninput="updateColor()" style="flex:1;accent-color:#2d5a4c">
+        <span id="color-g-val" style="font-family:var(--font-mono);font-size:0.75rem;width:28px;text-align:right">92</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+        <span style="font-size:0.75rem;font-weight:600;width:14px;color:var(--text-muted)">B</span>
+        <input type="range" id="color-b" min="0" max="255" value="231" oninput="updateColor()" style="flex:1;accent-color:#4a6fa5">
+        <span id="color-b-val" style="font-family:var(--font-mono);font-size:0.75rem;width:28px;text-align:right">231</span>
+      </div>
+    </div>
+    <button onclick="copyColor()" style="padding:8px 20px;background:var(--accent-light);border:none;border-radius:100px;font-size:0.8rem;font-weight:600;cursor:pointer">Copy Hex</button>
+  </div>
+</template>
+
+<template id="demo-pomodoro">
+  <div style="padding:30px;text-align:center">
+    <div id="pomo-label" style="font-size:0.8rem;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);margin-bottom:8px">Focus</div>
+    <div id="pomo-time" style="font-family:var(--font-mono);font-size:3.5rem;font-weight:700;letter-spacing:-0.02em;margin-bottom:24px">25:00</div>
+    <div style="display:flex;gap:10px;justify-content:center">
+      <button id="pomo-start" onclick="togglePomo()" style="padding:10px 28px;background:var(--accent);color:white;border:none;border-radius:100px;font-size:0.85rem;font-weight:600;cursor:pointer">Start</button>
+      <button onclick="resetPomo()" style="padding:10px 28px;background:var(--accent-light);border:none;border-radius:100px;font-size:0.85rem;font-weight:600;cursor:pointer">Reset</button>
+    </div>
+    <div style="display:flex;gap:6px;justify-content:center;margin-top:20px">
+      <div class="pomo-dot" style="width:8px;height:8px;border-radius:50%;background:var(--accent)"></div>
+      <div class="pomo-dot" style="width:8px;height:8px;border-radius:50%;background:rgba(0,0,0,0.1)"></div>
+      <div class="pomo-dot" style="width:8px;height:8px;border-radius:50%;background:rgba(0,0,0,0.1)"></div>
+      <div class="pomo-dot" style="width:8px;height:8px;border-radius:50%;background:rgba(0,0,0,0.1)"></div>
+    </div>
+  </div>
+</template>
+
+<template id="demo-system-monitor">
+  <div style="padding:16px;display:grid;grid-template-columns:1fr 1fr;gap:10px">
+    <div style="background:rgba(0,0,0,0.03);border-radius:12px;padding:14px">
+      <div style="font-size:0.65rem;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;color:var(--text-muted);margin-bottom:6px">Platform</div>
+      <div style="font-size:1rem;font-weight:600">macOS</div>
+      <div style="font-size:0.75rem;color:var(--text-secondary)">darwin</div>
+    </div>
+    <div style="background:rgba(0,0,0,0.03);border-radius:12px;padding:14px">
+      <div style="font-size:0.65rem;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;color:var(--text-muted);margin-bottom:6px">Architecture</div>
+      <div style="font-size:1rem;font-weight:600">ARM64</div>
+      <div style="font-size:0.75rem;color:var(--text-secondary)">Apple Silicon</div>
+    </div>
+    <div style="background:rgba(0,0,0,0.03);border-radius:12px;padding:14px">
+      <div style="font-size:0.65rem;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;color:var(--text-muted);margin-bottom:6px">Hostname</div>
+      <div style="font-size:1rem;font-weight:600" id="sysmon-hostname">lightshell-dev</div>
+    </div>
+    <div style="background:rgba(0,0,0,0.03);border-radius:12px;padding:14px">
+      <div style="font-size:0.65rem;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;color:var(--text-muted);margin-bottom:6px">Uptime</div>
+      <div style="font-size:1rem;font-weight:600" id="sysmon-uptime">0s</div>
+    </div>
+    <div style="grid-column:1/-1;background:rgba(0,0,0,0.03);border-radius:12px;padding:14px">
+      <div style="font-size:0.65rem;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;color:var(--text-muted);margin-bottom:8px">Home Directory</div>
+      <div style="font-family:var(--font-mono);font-size:0.8rem">/Users/you</div>
+      <div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:6px" id="sysmon-files">
+        <span style="font-size:0.7rem;background:rgba(0,0,0,0.04);padding:3px 10px;border-radius:6px;font-family:var(--font-mono)">Desktop/</span>
+        <span style="font-size:0.7rem;background:rgba(0,0,0,0.04);padding:3px 10px;border-radius:6px;font-family:var(--font-mono)">Documents/</span>
+        <span style="font-size:0.7rem;background:rgba(0,0,0,0.04);padding:3px 10px;border-radius:6px;font-family:var(--font-mono)">Downloads/</span>
+        <span style="font-size:0.7rem;background:rgba(0,0,0,0.04);padding:3px 10px;border-radius:6px;font-family:var(--font-mono)">.config/</span>
+        <span style="font-size:0.7rem;background:rgba(0,0,0,0.04);padding:3px 10px;border-radius:6px;font-family:var(--font-mono)">Projects/</span>
+      </div>
+    </div>
+  </div>
+</template>
+
+<template id="demo-json-viewer">
+  <div style="padding:16px;font-family:var(--font-mono);font-size:0.8rem;line-height:1.8">
+    <div style="margin-bottom:12px;font-family:var(--font-sans);font-size:0.75rem;color:var(--text-muted)">lightshell.json</div>
+    <div style="cursor:pointer" onclick="this.querySelector('.jv-children').classList.toggle('jv-collapsed')">
+      <span style="color:#6b6b6b">{</span> <span style="color:var(--text-muted);font-size:0.7rem">5 keys</span>
+      <div class="jv-children" style="padding-left:20px">
+        <div><span style="color:#2d5a4c">"name"</span>: <span style="color:#e07a5f">"my-app"</span>,</div>
+        <div><span style="color:#2d5a4c">"version"</span>: <span style="color:#e07a5f">"1.0.0"</span>,</div>
+        <div><span style="color:#2d5a4c">"entry"</span>: <span style="color:#e07a5f">"src/index.html"</span>,</div>
+        <div style="cursor:pointer" onclick="event.stopPropagation();this.querySelector('.jv-children').classList.toggle('jv-collapsed')">
+          <span style="color:#2d5a4c">"window"</span>: <span style="color:#6b6b6b">{</span> <span style="color:var(--text-muted);font-size:0.7rem">4 keys</span>
+          <div class="jv-children" style="padding-left:20px">
+            <div><span style="color:#2d5a4c">"title"</span>: <span style="color:#e07a5f">"My App"</span>,</div>
+            <div><span style="color:#2d5a4c">"width"</span>: <span style="color:#dda15e">1024</span>,</div>
+            <div><span style="color:#2d5a4c">"height"</span>: <span style="color:#dda15e">768</span>,</div>
+            <div><span style="color:#2d5a4c">"resizable"</span>: <span style="color:#2d5a4c">true</span></div>
+          </div>
+          <span style="color:#6b6b6b">}</span>,
+        </div>
+        <div style="cursor:pointer" onclick="event.stopPropagation();this.querySelector('.jv-children').classList.toggle('jv-collapsed')">
+          <span style="color:#2d5a4c">"build"</span>: <span style="color:#6b6b6b">{</span> <span style="color:var(--text-muted);font-size:0.7rem">2 keys</span>
+          <div class="jv-children" style="padding-left:20px">
+            <div><span style="color:#2d5a4c">"icon"</span>: <span style="color:#e07a5f">"assets/icon.png"</span>,</div>
+            <div><span style="color:#2d5a4c">"appId"</span>: <span style="color:#e07a5f">"com.example.myapp"</span></div>
+          </div>
+          <span style="color:#6b6b6b">}</span>
+        </div>
+      </div>
+      <span style="color:#6b6b6b">}</span>
+    </div>
+  </div>
 </template>
 
 <script src="js/window-manager.js"></script>

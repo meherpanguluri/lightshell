@@ -34,8 +34,8 @@ jobs:
         run: npm run build
 
       # Combine website + docs into a single site
-      # website/ → root (lightshell.sh/)
-      # docs/    → /docs/ (lightshell.sh/docs/)
+      # website/ → root (lightshell.dev/)
+      # docs/    → /docs/ (lightshell.dev/docs/)
       - name: Assemble site
         run: |
           mkdir -p _site
