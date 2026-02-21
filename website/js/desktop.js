@@ -19,7 +19,9 @@
     { id: 'getting-started', label: 'getting-started.md', icon: '\uD83D\uDCD6', action: openGettingStarted },
     { id: 'examples',        label: 'examples/',          icon: '\uD83D\uDDC2\uFE0F', action: openExamples },
     { id: 'playground',      label: 'playground.app',     icon: '\u26A1',       action: openPlayground },
-    { id: 'docs',            label: 'docs/',              icon: '\uD83D\uDCDA', action: () => window.open('https://github.com/meherpanguluri/lightshell', '_blank') },
+    { id: 'docs',            label: 'docs/',              icon: '\uD83D\uDCDA', action: () => window.open('https://lightshell.sh/docs/', '_blank') },
+    { id: 'showcase',        label: 'showcase/',          icon: '\uD83C\uDFC6', action: openShowcase },
+    { id: 'prompts',         label: 'prompts.txt',        icon: '\uD83E\uDD16', action: openPrompts },
     { id: 'benchmarks',      label: 'benchmarks.csv',     icon: '\uD83D\uDCC8', action: openBenchmarks },
     { id: 'about',           label: 'about.txt',          icon: '\uD83D\uDCA1', action: openAbout },
     { id: 'github',          label: 'github.link',        icon: '<img src="assets/icons/github.svg" width="36" height="36" alt="GitHub" style="filter: brightness(0.2)">', action: () => window.open('https://github.com/meherpanguluri/lightshell', '_blank') },
@@ -92,6 +94,32 @@
     window.open('playground.html', '_blank')
   }
 
+  function openPrompts() {
+    WindowManager.open({
+      id: 'prompts',
+      title: 'prompts.txt',
+      icon: '\uD83E\uDD16',
+      width: 600,
+      height: 540,
+      x: 240,
+      y: 50,
+      content: document.getElementById('content-prompts')?.innerHTML || '',
+    })
+  }
+
+  function openShowcase() {
+    WindowManager.open({
+      id: 'showcase',
+      title: 'showcase/',
+      icon: '\uD83C\uDFC6',
+      width: 620,
+      height: 520,
+      x: 160,
+      y: 70,
+      content: document.getElementById('content-showcase')?.innerHTML || '',
+    })
+  }
+
   function openBenchmarks() {
     WindowManager.open({
       id: 'benchmarks',
@@ -115,6 +143,16 @@
       x: 220,
       y: 80,
       content: document.getElementById('content-about')?.innerHTML || '',
+    })
+  }
+
+  // Copy prompt text to clipboard
+  window.copyPrompt = function(btn) {
+    const text = btn.parentElement.querySelector('.prompt-text p').textContent
+    navigator.clipboard.writeText(text).then(() => {
+      const orig = btn.textContent
+      btn.textContent = 'Copied!'
+      setTimeout(() => { btn.textContent = orig }, 1500)
     })
   }
 

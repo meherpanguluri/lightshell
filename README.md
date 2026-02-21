@@ -32,7 +32,8 @@ That's it. No Rust toolchain. No C++ compiler. No 10-minute setup. You write JS/
 | Startup time | ~1.2s | ~0.5s | **~0.3s** |
 | Memory usage | ~120MB | ~45MB | **~30MB** |
 | Setup time | 2 min | 10 min | **30 sec** |
-| AI can generate | Barely | No (Rust) | **Yes** |
+
+LightShell apps are pure JS/HTML/CSS with a simple API surface — making them easy for AI to generate end-to-end.
 
 ## How It Works
 
@@ -162,8 +163,8 @@ sudo apt-get install libgtk-3-dev libwebkit2gtk-4.1-dev
 ## Documentation
 
 - [Getting Started](https://lightshell.sh/docs/getting-started) -- Install and build your first app in 5 minutes
-- [API Reference](https://lightshell.sh/docs/api) -- Complete API documentation
-- [Tutorial](https://lightshell.sh/docs/tutorial) -- Build a real app step by step
+- [API Reference](https://lightshell.sh/docs/api/window) -- Complete API documentation
+- [Tutorial](https://lightshell.sh/docs/tutorial/01-your-first-app) -- Build a real app step by step
 - [Cross-Platform Guide](https://lightshell.sh/docs/guides/cross-platform) -- Handle platform differences
 - [Playground](https://lightshell.sh/playground) -- Try LightShell in your browser
 
