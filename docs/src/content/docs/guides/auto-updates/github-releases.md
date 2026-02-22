@@ -93,7 +93,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install LightShell
-        run: npm install -g lightshell
+        run: npm install -g @lightshell/cli
 
       - name: Install Linux dependencies
         if: runner.os == 'Linux'
@@ -125,7 +125,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install LightShell
-        run: npm install -g lightshell
+        run: npm install -g @lightshell/cli
 
       - name: Download all artifacts
         uses: actions/download-artifact@v4

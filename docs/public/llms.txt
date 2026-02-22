@@ -2,6 +2,8 @@
 
 > LightShell is a lightweight desktop app framework. Write JS/HTML/CSS, get native apps under 5MB. Uses system webviews (WKWebView on macOS, WebKitGTK on Linux). 15 API namespaces covering window management, file system, dialogs, clipboard, HTTP, storage, process execution, global shortcuts, auto-updates, and more. Built-in MCP server for AI-assisted development -- AI agents can screenshot, inspect DOM, eval JS, and reload your app live. Designed for AI code generation.
 
+> For the complete API reference with full type signatures, parameters, return types, examples, and code patterns, see: [llms-full.txt](https://lightshell.dev/docs/llms-full.txt)
+
 ## Docs
 
 - [Getting Started](https://lightshell.dev/docs/getting-started/): Install LightShell and create your first app in 5 minutes
