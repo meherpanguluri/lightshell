@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Screenshot Tool</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: var(--ls-font-family);
+      background: var(--ls-color-bg);
+      color: var(--ls-color-text);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      user-select: none;
+    }
+    header {
+      padding: 24px 24px 16px;
+      text-align: center;
+      border-bottom: 1px solid var(--ls-color-border);
+    }
+    header h1 { font-size: 22px; font-weight: 700; letter-spacing: -0.3px; }
+    header p {
+      font-size: 12px;
+      color: var(--ls-color-text-secondary);
+      margin-top: 4px;
+    }
+    .capture-area {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 24px;
+      padding: 24px;
+    }
+    .capture-btn {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      border: 3px solid var(--ls-color-accent);
+      background: transparent;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+      position: relative;
+    }
+    .capture-btn:hover {
+      background: var(--ls-color-accent);
+      transform: scale(1.05);
+    }
+    .capture-btn:hover .cam-icon { color: #fff; }
+    .capture-btn:active { transform: scale(0.95); }
+    .cam-icon {
+      font-size: 40px;
+      color: var(--ls-color-accent);
+      transition: color 0.2s;
+      line-height: 1;
+    }
+    .capture-label {
+      font-size: 13px;
+      color: var(--ls-color-text-secondary);
+    }
+    .shortcut-badge {
+      display: inline-block;
+      font-family: var(--ls-font-mono);
+      font-size: 11px;
+      padding: 2px 8px;
+      border: 1px solid var(--ls-color-border);
+      border-radius: 4px;
+      background: var(--ls-color-surface);
+      margin-top: 2px;
+    }
+    .options {
+      padding: 0 24px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .option-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px;
+      background: var(--ls-color-surface);
+      border-radius: 8px;
+      border: 1px solid var(--ls-color-border);
+    }
+    .option-label {
+      font-size: 13px;
+    }
+    .option-desc {
+      font-size: 11px;
+      color: var(--ls-color-text-secondary);
+    }
+    .toggle {
+      width: 40px;
+      height: 22px;
+      border-radius: 11px;
+      background: var(--ls-color-border);
+      border: none;
+      cursor: pointer;
+      position: relative;
+      transition: background 0.2s;
+    }
+    .toggle.active { background: var(--ls-color-accent); }
+    .toggle::after {
+      content: '';
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #fff;
+      transition: transform 0.2s;
+    }
+    .toggle.active::after { transform: translateX(18px); }
+    .log {
+      border-top: 1px solid var(--ls-color-border);
+      padding: 12px 24px;
+      background: var(--ls-color-surface);
+    }
+    .log-title {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--ls-color-text-secondary);
+      margin-bottom: 6px;
+    }
+    .log-entries {
+      max-height: 100px;
+      overflow-y: auto;
+      font-family: var(--ls-font-mono);
+      font-size: 11px;
+      line-height: 1.6;
+    }
+    .log-entry { color: var(--ls-color-text-secondary); }
+    .log-entry.success { color: light-dark(#16a34a, #4ade80); }
+    .log-entry.error { color: light-dark(#dc2626, #f87171); }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Screenshot Tool</h1>
+    <p>Capture your screen with a global hotkey</p>
+  </header>
+
+  <div class="capture-area">
+    <button class="capture-btn" id="btn-capture">
+      <span class="cam-icon">&#x1F4F7;</span>
+    </button>
+    <div>
+      <div class="capture-label">Click to capture or press</div>
+      <div class="shortcut-badge" id="shortcut-label">Cmd+Shift+4</div>
+    </div>
+  </div>
+
+  <div class="options">
+    <div class="option-row">
+      <div>
+        <div class="option-label">Copy to clipboard</div>
+        <div class="option-desc">Also copy the screenshot to clipboard</div>
+      </div>
+      <button class="toggle active" id="toggle-clipboard"></button>
+    </div>
+    <div class="option-row">
+      <div>
+        <div class="option-label">Save to file</div>
+        <div class="option-desc">Save screenshot to chosen location</div>
+      </div>
+      <button class="toggle active" id="toggle-save"></button>
+    </div>
+  </div>
+
+  <div class="log">
+    <div class="log-title">Activity Log</div>
+    <div class="log-entries" id="log"></div>
+  </div>
+
+  <script>
+    // -- State --
+    let copyToClipboard = true
+    let saveToFile = true
+    let isMac = true
+    const logEl = document.getElementById('log')
+
+    function log(msg, type = '') {
+      const time = new Date().toLocaleTimeString()
+      const el = document.createElement('div')
+      el.className = 'log-entry ' + type
+      el.textContent = `[${time}] ${msg}`
+      logEl.prepend(el)
+      // Keep log trimmed to 20 entries
+      while (logEl.children.length > 20) logEl.lastChild.remove()
+    }
+
+    // -- Detect platform using lightshell.system --
+    async function detectPlatform() {
+      const platform = await lightshell.system.platform()
+      isMac = platform === 'darwin'
+      // Update shortcut label for platform
+      document.getElementById('shortcut-label').textContent =
+        isMac ? 'Cmd+Shift+4' : 'Ctrl+Shift+4'
+      log(`Platform: ${platform} (${await lightshell.system.arch()})`)
+    }
+
+    // -- Generate a screenshot filename --
+    function screenshotName() {
+      const now = new Date()
+      const pad = n => String(n).padStart(2, '0')
+      return `screenshot-${now.getFullYear()}${pad(now.getMonth()+1)}${pad(now.getDate())}-${pad(now.getHours())}${pad(now.getMinutes())}${pad(now.getSeconds())}.png`
+    }
+
+    // -- Capture screenshot using platform-specific commands --
+    async function capture() {
+      log('Starting capture...')
+
+      try {
+        const home = await lightshell.system.homeDir()
+        const tmpFile = `${await lightshell.system.tempDir()}/${screenshotName()}`
+
+        if (isMac) {
+          // macOS: use screencapture command
+          // -i = interactive selection, -x = no sound
+          const result = await lightshell.process.exec('screencapture', ['-i', '-x', tmpFile])
+          if (result.code !== 0) {
+            // User cancelled the selection (exit code 1) or other error
+            log('Capture cancelled or failed', 'error')
+            return
+          }
+        } else {
+          // Linux: use gnome-screenshot for area capture
+          const result = await lightshell.process.exec('gnome-screenshot', ['-a', '-f', tmpFile])
+          if (result.code !== 0) {
+            log('Capture failed. Is gnome-screenshot installed?', 'error')
+            return
+          }
+        }
+
+        // Verify the file was created
+        const exists = await lightshell.fs.exists(tmpFile)
+        if (!exists) {
+          log('Capture cancelled by user', 'error')
+          return
+        }
+
+        log('Screenshot captured!', 'success')
+
+        // Copy to clipboard if enabled (macOS-specific via pbcopy-like approach)
+        if (copyToClipboard && isMac) {
+          // Use osascript to set clipboard to the image file
+          await lightshell.process.exec('osascript', [
+            '-e', `set the clipboard to (read (POSIX file "${tmpFile}") as TIFF picture)`
+          ])
+          log('Copied to clipboard', 'success')
+        }
+
+        // Save to chosen location if enabled
+        if (saveToFile) {
+          // Open native save dialog to let user pick destination
+          const dest = await lightshell.dialog.save({
+            defaultPath: `${home}/Desktop/${screenshotName()}`,
+            filters: [{ name: 'Images', extensions: ['png'] }]
+          })
+          if (dest) {
+            // Read from temp and write to destination
+            const content = await lightshell.fs.readFile(tmpFile, 'binary')
+            await lightshell.fs.writeFile(dest, content)
+            log(`Saved to ${dest.split('/').pop()}`, 'success')
+          }
+        }
+
+        // Clean up temp file
+        await lightshell.fs.remove(tmpFile)
+
+        // Send system notification about the capture
+        await lightshell.notify.send(
+          'Screenshot Captured',
+          saveToFile ? 'Screenshot saved successfully' : 'Screenshot copied to clipboard'
+        )
+
+      } catch (err) {
+        log(`Error: ${err.message || err}`, 'error')
+      }
+    }
+
+    // -- Toggle buttons --
+    document.getElementById('toggle-clipboard').addEventListener('click', function() {
+      copyToClipboard = !copyToClipboard
+      this.classList.toggle('active', copyToClipboard)
+    })
+
+    document.getElementById('toggle-save').addEventListener('click', function() {
+      saveToFile = !saveToFile
+      this.classList.toggle('active', saveToFile)
+    })
+
+    // Capture button
+    document.getElementById('btn-capture').addEventListener('click', capture)
+
+    // -- Open screenshots folder via lightshell.shell --
+    async function openScreenshotsFolder() {
+      const desktop = `${await lightshell.system.homeDir()}/Desktop`
+      // Open folder in system file manager
+      await lightshell.shell.open(desktop)
+    }
+
+    // -- Register global keyboard shortcut via lightshell.shortcuts --
+    // This works even when the app window is not focused
+    lightshell.shortcuts.register('CommandOrControl+Shift+4', capture)
+
+    // -- Set up system tray with menu using lightshell.tray and lightshell.menu --
+    async function setupTray() {
+      await lightshell.tray.set({
+        title: 'SS',
+        menu: [
+          { label: 'Capture Screenshot', click: capture },
+          { type: 'separator' },
+          { label: 'Open Screenshots Folder', click: openScreenshotsFolder },
+          { type: 'separator' },
+          { label: 'Quit', click: () => lightshell.app.quit() }
+        ]
+      })
+    }
+
+    // -- Set up application menu using lightshell.menu --
+    async function setupMenu() {
+      await lightshell.menu.set([
+        {
+          label: 'Screenshot Tool',
+          submenu: [
+            { label: 'About Screenshot Tool', disabled: true },
+            { type: 'separator' },
+            { label: 'Quit', accelerator: 'CommandOrControl+Q', click: () => lightshell.app.quit() }
+          ]
+        },
+        {
+          label: 'Capture',
+          submenu: [
+            { label: 'Take Screenshot', accelerator: 'CommandOrControl+Shift+4', click: capture },
+            { type: 'separator' },
+            { label: 'Open Screenshots Folder', click: openScreenshotsFolder }
+          ]
+        }
+      ])
+    }
+
+    // -- Initialize --
+    async function init() {
+      await detectPlatform()
+      await setupTray()
+      await setupMenu()
+      log('Ready. Use the hotkey or click the button.')
+    }
+
+    init()
+  </script>
+</body>
+</html>

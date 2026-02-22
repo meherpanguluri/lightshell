@@ -162,10 +162,10 @@ sudo apt-get install libgtk-3-dev libwebkit2gtk-4.1-dev
 
 ## Documentation
 
-- [Getting Started](https://docs.lightshell.dev/getting-started) -- Install and build your first app in 5 minutes
-- [API Reference](https://docs.lightshell.dev/api/window) -- Complete API documentation
-- [Tutorial](https://docs.lightshell.dev/tutorial/01-your-first-app) -- Build a real app step by step
-- [Cross-Platform Guide](https://docs.lightshell.dev/guides/cross-platform) -- Handle platform differences
+- [Getting Started](https://lightshell.dev/docs/getting-started) -- Install and build your first app in 5 minutes
+- [API Reference](https://lightshell.dev/docs/api/window) -- Complete API documentation
+- [Tutorial](https://lightshell.dev/docs/tutorial/01-your-first-app) -- Build a real app step by step
+- [Cross-Platform Guide](https://lightshell.dev/docs/guides/cross-platform) -- Handle platform differences
 - [Playground](https://lightshell.dev/playground) -- Try LightShell in your browser
 
 ## License

@@ -25,6 +25,10 @@ extern void WebviewRestore();
 extern void WebviewClose();
 extern void WebviewRun();
 extern void WebviewDestroy();
+extern void WebviewSetContentProtection(int enabled);
+extern void WebviewSetVibrancy(const char* style);
+extern void WebviewSetColorScheme(const char* scheme);
+extern void WebviewEnableFileDrop(void);
 */
 import "C"
 import (
@@ -150,6 +154,34 @@ func (w *DarwinWebview) Restore() error {
 
 func (w *DarwinWebview) Close() error {
 	C.WebviewClose()
+	return nil
+}
+
+func (w *DarwinWebview) SetContentProtection(enabled bool) error {
+	e := 0
+	if enabled {
+		e = 1
+	}
+	C.WebviewSetContentProtection(C.int(e))
+	return nil
+}
+
+func (w *DarwinWebview) SetVibrancy(style string) error {
+	cStyle := C.CString(style)
+	defer C.free(unsafe.Pointer(cStyle))
+	C.WebviewSetVibrancy(cStyle)
+	return nil
+}
+
+func (w *DarwinWebview) SetColorScheme(scheme string) error {
+	cScheme := C.CString(scheme)
+	defer C.free(unsafe.Pointer(cScheme))
+	C.WebviewSetColorScheme(cScheme)
+	return nil
+}
+
+func (w *DarwinWebview) EnableFileDrop() error {
+	C.WebviewEnableFileDrop()
 	return nil
 }
 

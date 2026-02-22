@@ -4,66 +4,397 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>System Monitor</title>
-  <link rel="stylesheet" href="style.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: var(--ls-font-family);
+      background: var(--ls-color-bg);
+      color: var(--ls-color-text);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      user-select: none;
+    }
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--ls-color-border);
+      -webkit-app-region: drag;
+    }
+    header h1 { font-size: 18px; font-weight: 700; letter-spacing: -0.3px; }
+    .uptime {
+      font-family: var(--ls-font-mono);
+      font-size: 11px;
+      color: var(--ls-color-text-secondary);
+      background: var(--ls-color-surface);
+      padding: 3px 10px;
+      border-radius: 10px;
+      -webkit-app-region: no-drag;
+    }
+    main {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .info-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+    .info-card {
+      background: var(--ls-color-surface);
+      border: 1px solid var(--ls-color-border);
+      border-radius: 10px;
+      padding: 14px 16px;
+    }
+    .info-label {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--ls-color-text-secondary);
+      margin-bottom: 4px;
+    }
+    .info-value {
+      font-family: var(--ls-font-mono);
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--ls-color-accent);
+    }
+    .meter-section {
+      background: var(--ls-color-surface);
+      border: 1px solid var(--ls-color-border);
+      border-radius: 10px;
+      padding: 16px;
+    }
+    .meter-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    .meter-title {
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .meter-value {
+      font-family: var(--ls-font-mono);
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .meter-bar {
+      height: 8px;
+      border-radius: 4px;
+      background: var(--ls-color-border);
+      overflow: hidden;
+    }
+    .meter-fill {
+      height: 100%;
+      border-radius: 4px;
+      transition: width 0.8s ease;
+      background: var(--ls-color-accent);
+    }
+    .meter-fill.warn { background: light-dark(#d97706, #fbbf24); }
+    .meter-fill.danger { background: light-dark(#dc2626, #f87171); }
+    .meter-detail {
+      display: flex;
+      gap: 16px;
+      margin-top: 8px;
+      font-size: 11px;
+      color: var(--ls-color-text-secondary);
+      font-family: var(--ls-font-mono);
+    }
+    .disk-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .disk-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .disk-name {
+      font-family: var(--ls-font-mono);
+      font-size: 12px;
+      min-width: 100px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .disk-bar-wrap {
+      flex: 1;
+      height: 6px;
+      border-radius: 3px;
+      background: var(--ls-color-border);
+      overflow: hidden;
+    }
+    .disk-bar-fill {
+      height: 100%;
+      border-radius: 3px;
+      background: var(--ls-color-accent);
+      transition: width 0.8s ease;
+    }
+    .disk-bar-fill.warn { background: light-dark(#d97706, #fbbf24); }
+    .disk-bar-fill.danger { background: light-dark(#dc2626, #f87171); }
+    .disk-size {
+      font-family: var(--ls-font-mono);
+      font-size: 11px;
+      color: var(--ls-color-text-secondary);
+      min-width: 110px;
+      text-align: right;
+    }
+    .refresh-note {
+      text-align: center;
+      font-size: 11px;
+      color: var(--ls-color-text-secondary);
+      padding: 8px;
+      border-top: 1px solid var(--ls-color-border);
+    }
+  </style>
 </head>
 <body>
   <header>
     <h1>System Monitor</h1>
-    <span class="badge" id="uptime"></span>
+    <span class="uptime" id="uptime">0:00</span>
   </header>
+
   <main>
-    <section class="cards">
-      <div class="card" id="card-platform">
-        <div class="card-icon">&#x1F4BB;</div>
-        <div class="card-label">Platform</div>
-        <div class="card-value" id="platform">—</div>
+    <div class="info-row">
+      <div class="info-card">
+        <div class="info-label">Platform</div>
+        <div class="info-value" id="v-platform">--</div>
       </div>
-      <div class="card" id="card-arch">
-        <div class="card-icon">&#x2699;</div>
-        <div class="card-label">Architecture</div>
-        <div class="card-value" id="arch">—</div>
+      <div class="info-card">
+        <div class="info-label">Architecture</div>
+        <div class="info-value" id="v-arch">--</div>
       </div>
-      <div class="card" id="card-hostname">
-        <div class="card-icon">&#x1F3E0;</div>
-        <div class="card-label">Hostname</div>
-        <div class="card-value" id="hostname">—</div>
+      <div class="info-card">
+        <div class="info-label">Hostname</div>
+        <div class="info-value" id="v-hostname">--</div>
       </div>
-      <div class="card" id="card-version">
-        <div class="card-icon">&#x1F680;</div>
-        <div class="card-label">App Version</div>
-        <div class="card-value" id="version">—</div>
-      </div>
-    </section>
+    </div>
 
-    <section class="panel">
-      <h2>Directories</h2>
-      <div class="dir-grid">
-        <div class="dir-item">
-          <span class="dir-label">Home</span>
-          <span class="dir-path" id="home-dir">—</span>
-        </div>
-        <div class="dir-item">
-          <span class="dir-label">Temp</span>
-          <span class="dir-path" id="temp-dir">—</span>
-        </div>
-        <div class="dir-item">
-          <span class="dir-label">App Data</span>
-          <span class="dir-path" id="data-dir">—</span>
-        </div>
+    <div class="meter-section" id="cpu-section">
+      <div class="meter-header">
+        <span class="meter-title">CPU Usage</span>
+        <span class="meter-value" id="cpu-pct">--</span>
       </div>
-    </section>
+      <div class="meter-bar"><div class="meter-fill" id="cpu-bar" style="width:0%"></div></div>
+      <div class="meter-detail" id="cpu-detail"></div>
+    </div>
 
-    <section class="panel">
-      <h2>Home Directory Contents</h2>
-      <div class="file-list" id="file-list">Loading...</div>
-    </section>
+    <div class="meter-section" id="mem-section">
+      <div class="meter-header">
+        <span class="meter-title">Memory Usage</span>
+        <span class="meter-value" id="mem-pct">--</span>
+      </div>
+      <div class="meter-bar"><div class="meter-fill" id="mem-bar" style="width:0%"></div></div>
+      <div class="meter-detail" id="mem-detail"></div>
+    </div>
 
-    <section class="panel actions-panel">
-      <button id="btn-clipboard">Copy System Info</button>
-      <button id="btn-notify">Send Test Notification</button>
-      <button id="btn-open-home">Open Home in Finder</button>
-    </section>
+    <div class="meter-section">
+      <div class="meter-header">
+        <span class="meter-title">Disk Usage</span>
+      </div>
+      <div class="disk-list" id="disk-list"></div>
+    </div>
   </main>
-  <script src="app.js"></script>
+
+  <div class="refresh-note">Auto-refreshing every 2 seconds</div>
+
+  <script>
+    // -- State --
+    let isMac = true
+    const startTime = Date.now()
+
+    // -- Load static system info using lightshell.system --
+    async function loadSystemInfo() {
+      // Fetch platform, architecture, and hostname in parallel
+      const [platform, arch, hostname] = await Promise.all([
+        lightshell.system.platform(),
+        lightshell.system.arch(),
+        lightshell.system.hostname()
+      ])
+      isMac = platform === 'darwin'
+      document.getElementById('v-platform').textContent = platform
+      document.getElementById('v-arch').textContent = arch
+      document.getElementById('v-hostname').textContent = hostname
+
+      // Set window title with hostname
+      await lightshell.window.setTitle(`System Monitor \u2014 ${hostname}`)
+    }
+
+    // -- Parse CPU usage via lightshell.process.exec --
+    async function updateCPU() {
+      try {
+        let cpuPct = 0
+        let detail = ''
+
+        if (isMac) {
+          // Run top in logging mode for 1 sample to get CPU usage
+          const r = await lightshell.process.exec('top', ['-l', '1', '-n', '0', '-s', '0'])
+          const lines = r.stdout.split('\n')
+          const cpuLine = lines.find(l => l.includes('CPU usage'))
+          if (cpuLine) {
+            // Parse: "CPU usage: 5.26% user, 10.52% sys, 84.21% idle"
+            const m = cpuLine.match(/([\d.]+)% user.*?([\d.]+)% sys.*?([\d.]+)% idle/)
+            if (m) {
+              const user = parseFloat(m[1])
+              const sys = parseFloat(m[2])
+              cpuPct = Math.round(user + sys)
+              detail = `User: ${m[1]}%  Sys: ${m[2]}%  Idle: ${m[3]}%`
+            }
+          }
+        } else {
+          // Linux: read /proc/stat for CPU times
+          const r = await lightshell.process.exec('cat', ['/proc/stat'])
+          const line = r.stdout.split('\n')[0] // "cpu  user nice system idle ..."
+          const parts = line.split(/\s+/).slice(1).map(Number)
+          const idle = parts[3]
+          const total = parts.reduce((a, b) => a + b, 0)
+          cpuPct = Math.round(((total - idle) / total) * 100)
+          detail = `Total: ${total}  Idle: ${idle}`
+        }
+
+        document.getElementById('cpu-pct').textContent = cpuPct + '%'
+        const bar = document.getElementById('cpu-bar')
+        bar.style.width = cpuPct + '%'
+        bar.className = 'meter-fill' + (cpuPct > 80 ? ' danger' : cpuPct > 50 ? ' warn' : '')
+        document.getElementById('cpu-detail').textContent = detail
+      } catch (e) {
+        document.getElementById('cpu-pct').textContent = 'N/A'
+      }
+    }
+
+    // -- Parse memory usage via lightshell.process.exec --
+    async function updateMemory() {
+      try {
+        let usedGB = 0, totalGB = 0, pct = 0
+
+        if (isMac) {
+          // Run vm_stat for memory page stats
+          const r = await lightshell.process.exec('vm_stat', [])
+          const lines = r.stdout.split('\n')
+          const get = (key) => {
+            const line = lines.find(l => l.includes(key))
+            if (!line) return 0
+            const m = line.match(/([\d]+)/)
+            return m ? parseInt(m[1]) : 0
+          }
+          // Each page is 4096 bytes (16384 on ARM, but vm_stat reports in 4K pages)
+          const pageSize = 4096
+          // Also get total memory from sysctl
+          const sc = await lightshell.process.exec('sysctl', ['-n', 'hw.memsize'])
+          totalGB = parseInt(sc.stdout.trim()) / (1024 ** 3)
+
+          const active = get('Pages active') * pageSize
+          const wired = get('Pages wired') * pageSize
+          const compressed = get('Pages occupied by compressor') * pageSize
+          usedGB = (active + wired + compressed) / (1024 ** 3)
+          pct = Math.round((usedGB / totalGB) * 100)
+        } else {
+          // Linux: read /proc/meminfo
+          const r = await lightshell.process.exec('cat', ['/proc/meminfo'])
+          const get = (key) => {
+            const m = r.stdout.match(new RegExp(key + ':\\s+(\\d+)'))
+            return m ? parseInt(m[1]) : 0
+          }
+          const totalKB = get('MemTotal')
+          const availKB = get('MemAvailable')
+          totalGB = totalKB / (1024 ** 2)
+          usedGB = (totalKB - availKB) / (1024 ** 2)
+          pct = Math.round((usedGB / totalGB) * 100)
+        }
+
+        document.getElementById('mem-pct').textContent = pct + '%'
+        const bar = document.getElementById('mem-bar')
+        bar.style.width = pct + '%'
+        bar.className = 'meter-fill' + (pct > 85 ? ' danger' : pct > 60 ? ' warn' : '')
+        document.getElementById('mem-detail').textContent =
+          `Used: ${usedGB.toFixed(1)} GB  Total: ${totalGB.toFixed(1)} GB`
+      } catch (e) {
+        document.getElementById('mem-pct').textContent = 'N/A'
+      }
+    }
+
+    // -- Parse disk usage via lightshell.process.exec --
+    async function updateDisks() {
+      try {
+        // Run df -h to get human-readable disk usage
+        const r = await lightshell.process.exec('df', ['-h'])
+        const lines = r.stdout.trim().split('\n').slice(1) // skip header
+        const el = document.getElementById('disk-list')
+        el.innerHTML = ''
+
+        // Filter to physical disks (skip tmpfs, devfs, etc.)
+        const disks = lines
+          .map(line => line.split(/\s+/))
+          .filter(p => {
+            if (p.length < 6) return false
+            const fs = p[0]
+            // Show only real filesystem mounts
+            return fs.startsWith('/dev/') || fs.startsWith('//')
+          })
+          .map(p => ({
+            name: p[p.length - 1],  // mount point is last column
+            size: p[1],
+            used: p[2],
+            avail: p[3],
+            pct: parseInt(p[4]) || 0
+          }))
+
+        if (disks.length === 0) {
+          el.innerHTML = '<div style="font-size:12px;color:var(--ls-color-text-secondary)">No disks found</div>'
+          return
+        }
+
+        disks.forEach(d => {
+          const colorClass = d.pct > 90 ? ' danger' : d.pct > 70 ? ' warn' : ''
+          el.innerHTML += `
+            <div class="disk-row">
+              <span class="disk-name" title="${d.name}">${d.name}</span>
+              <div class="disk-bar-wrap">
+                <div class="disk-bar-fill${colorClass}" style="width:${d.pct}%"></div>
+              </div>
+              <span class="disk-size">${d.used} / ${d.size} (${d.pct}%)</span>
+            </div>
+          `
+        })
+      } catch (e) {
+        document.getElementById('disk-list').innerHTML =
+          '<div style="font-size:12px;color:var(--ls-color-text-secondary)">Unable to read disk info</div>'
+      }
+    }
+
+    // -- Uptime ticker --
+    function updateUptime() {
+      const secs = Math.floor((Date.now() - startTime) / 1000)
+      const m = Math.floor(secs / 60)
+      const s = secs % 60
+      document.getElementById('uptime').textContent = `${m}:${String(s).padStart(2, '0')}`
+    }
+
+    // -- Refresh all dynamic data --
+    async function refresh() {
+      // Run CPU, memory, and disk queries in parallel
+      await Promise.all([updateCPU(), updateMemory(), updateDisks()])
+    }
+
+    // -- Initialize --
+    async function init() {
+      await loadSystemInfo()
+      await refresh()
+      // Auto-refresh every 2 seconds
+      setInterval(refresh, 2000)
+      setInterval(updateUptime, 1000)
+    }
+
+    init()
+  </script>
 </body>
 </html>

@@ -42,6 +42,21 @@ func main() {
 			fmt.Fprintf(os.Stderr, "Error: %v\n", err)
 			os.Exit(1)
 		}
+	case "keys":
+		if err := cli.Keys(os.Args[2:]); err != nil {
+			fmt.Fprintf(os.Stderr, "Error: %v\n", err)
+			os.Exit(1)
+		}
+	case "release":
+		if err := cli.Release(os.Args[2:]); err != nil {
+			fmt.Fprintf(os.Stderr, "Error: %v\n", err)
+			os.Exit(1)
+		}
+	case "config":
+		if err := cli.Config(os.Args[2:]); err != nil {
+			fmt.Fprintf(os.Stderr, "Error: %v\n", err)
+			os.Exit(1)
+		}
 	case "help", "--help", "-h":
 		printUsage()
 	default:
@@ -62,6 +77,9 @@ Commands:
   dev            Run app with hot reload (dev mode)
   build          Build app for current platform
   doctor         Check for cross-platform compatibility issues
+  keys           Manage signing keys (keys generate)
+  release        Sign and publish a release
+  config         Get/set global config (config get/set <key> [value])
   version        Print version
 
 Run 'lightshell help' for more information.`)

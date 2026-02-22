@@ -153,6 +153,35 @@ lightshell.window.onFocus(callback: () => void): () => void
 lightshell.window.onBlur(callback: () => void): () => void
   Listen for window blur events. Returns unsubscribe function.
   Example: lightshell.window.onBlur(() => console.log('Blurred'))
+
+await lightshell.window.setContentProtection(enabled: boolean): void
+  Prevent window from being captured by screen recording or screenshots.
+  When enabled, window appears as black rectangle in recordings.
+  macOS: uses NSWindow.sharingType. Linux: varies by compositor.
+  Example: await lightshell.window.setContentProtection(true)
+
+await lightshell.window.setVibrancy(style: string | null): void
+  Apply translucent vibrancy effect to window background. macOS only.
+  Styles: 'titlebar', 'selection', 'menu', 'popover', 'sidebar', 'header',
+  'sheet', 'window', 'hud', 'fullscreen-ui', 'tooltip', 'content',
+  'under-window', 'under-page', or null to remove.
+  Set html/body background to transparent to see the effect.
+  Example: await lightshell.window.setVibrancy('sidebar')
+  Example: await lightshell.window.setVibrancy(null)
+
+lightshell.window.onFileDrop(callback: ({ paths, x, y }) => void): () => void
+  Handle files dragged from Finder/file manager onto the window.
+  paths: array of absolute file paths. x/y: drop coordinates.
+  Returns unsubscribe function.
+  Example: lightshell.window.onFileDrop(({ paths }) => {
+    for (const path of paths) console.log('Dropped:', path)
+  })
+
+await lightshell.window.setColorScheme(scheme: 'light' | 'dark' | 'system'): void
+  Force light or dark color scheme, overriding OS preference.
+  Affects prefers-color-scheme media query and light-dark() CSS function.
+  Example: await lightshell.window.setColorScheme('dark')
+  Example: await lightshell.window.setColorScheme('system')
 ```
 
 ### lightshell.fs
@@ -364,6 +393,29 @@ await lightshell.app.dataDir(): string
   macOS: ~/Library/Application Support/<app-name>
   Linux: ~/.config/<app-name>
   Example: const dataPath = await lightshell.app.dataDir()
+
+await lightshell.app.setBadgeCount(count: number): void
+  Set dock badge count (macOS only). Pass 0 to clear.
+  Linux: no-op.
+  Example: await lightshell.app.setBadgeCount(5)
+  Example: await lightshell.app.setBadgeCount(0)
+
+lightshell.app.onProtocol(callback: (url: string) => void): () => void
+  Handle custom URL protocol opens (e.g. myapp://open/doc/123).
+  Requires protocols.schemes in lightshell.json.
+  Fires when app launches via deep link or when already running.
+  Example: lightshell.app.onProtocol((url) => {
+    const parsed = new URL(url)
+    navigateTo(parsed.pathname)
+  })
+
+lightshell.app.onSecondInstance(callback: ({ args, cwd }) => void): () => void
+  Handle duplicate app launches. Existing instance receives this event.
+  args: command-line arguments from second launch. cwd: its working directory.
+  Example: lightshell.app.onSecondInstance(async ({ args }) => {
+    await lightshell.window.restore()
+    if (args[1]) openFile(args[1])
+  })
 ```
 
 ### lightshell.store
@@ -664,6 +716,105 @@ if (update) {
   }
 }
 ```
+
+## Default CSS Variables
+
+LightShell injects a default stylesheet with CSS custom properties. All use the --ls- prefix. Override them in your CSS to customize the look. Disable with { "defaults": { "css": false } } in lightshell.json.
+
+Colors (all use light-dark() for automatic dark mode):
+  --ls-bg, --ls-bg-secondary, --ls-bg-tertiary
+  --ls-text, --ls-text-secondary, --ls-text-tertiary
+  --ls-border, --ls-accent, --ls-accent-hover
+  --ls-danger, --ls-success, --ls-warning
+
+Typography:
+  --ls-font-family: system font stack (-apple-system, BlinkMacSystemFont, "Noto Sans", etc.)
+  --ls-font-mono: monospace font stack (ui-monospace, "SF Mono", "JetBrains Mono", etc.)
+  --ls-font-size: 14px (default), --ls-font-size-sm: 12px, --ls-font-size-lg: 16px, --ls-font-size-xl: 20px
+  --ls-line-height: 1.5
+
+Spacing: --ls-space-xs: 4px, --ls-space-sm: 8px, --ls-space-md: 16px, --ls-space-lg: 24px, --ls-space-xl: 32px
+Radius: --ls-radius-sm: 4px, --ls-radius-md: 8px, --ls-radius-lg: 12px, --ls-radius-full: 9999px
+Shadows: --ls-shadow-sm, --ls-shadow-md, --ls-shadow-lg
+
+Example override:
+  :root { --ls-accent: #8b5cf6; --ls-radius-md: 4px; }
+
+## Error Code Catalog
+
+All errors have a `code` property (string) and `method` property. Use err.code for programmatic error handling.
+
+File System:
+  FS_NOT_FOUND -- file or directory does not exist
+  FS_PERMISSION_DENIED -- path not in allowed list (restricted mode)
+  FS_IS_DIRECTORY -- expected file, got directory
+  FS_IS_FILE -- expected directory, got file
+  FS_PARENT_NOT_FOUND -- parent directory does not exist
+  FS_PATH_TRAVERSAL -- path resolves outside allowed directories
+  FS_NOT_EMPTY -- directory not empty (remove without recursive)
+  FS_ALREADY_EXISTS -- directory already exists
+  FS_DISK_FULL -- no space left on device
+
+Permission:
+  PERMISSION_DENIED -- operation blocked by permission engine
+  PERMISSION_NOT_ENABLED -- required permission not declared
+
+HTTP:
+  HTTP_TIMEOUT -- request exceeded timeout
+  HTTP_NETWORK_ERROR -- DNS failure, connection refused, TLS error
+  HTTP_INVALID_URL -- URL is not valid HTTP/HTTPS
+  HTTP_URL_NOT_ALLOWED -- URL not in permissions.http.allow
+
+Process:
+  PROCESS_TIMEOUT -- command exceeded timeout
+  PROCESS_NOT_FOUND -- command not in system PATH
+  PROCESS_EXIT_CODE -- command failed to start
+  PROCESS_NOT_ALLOWED -- command not in permissions.process.exec
+
+Updater:
+  UPDATER_SHA256_MISMATCH -- hash does not match manifest
+  UPDATER_SIGNATURE_INVALID -- Ed25519 signature verification failed
+  UPDATER_HTTPS_REQUIRED -- HTTP endpoint in production build
+  UPDATER_MANIFEST_INVALID -- malformed manifest JSON
+  UPDATER_NO_PLATFORM -- no entry for current platform in manifest
+  UPDATER_NETWORK_ERROR -- failed to fetch manifest or download
+
+General:
+  INVALID_ARGUMENT -- missing, wrong type, or invalid parameter
+  INTERNAL_ERROR -- unexpected backend error (bug)
+  PLATFORM_UNSUPPORTED -- method not available on current OS
+
+## Permission System
+
+LightShell has two modes: permissive (default) and restricted.
+- Permissive: no permissions key in lightshell.json = everything allowed
+- Restricted: add a permissions key to scope API access
+
+```json
+{
+  "permissions": {
+    "fs": {
+      "read": ["$APP_DATA/**", "$HOME/Documents/**"],
+      "write": ["$APP_DATA/**"]
+    },
+    "http": {
+      "allow": ["https://api.example.com/**"],
+      "deny": ["https://api.example.com/admin/**"]
+    },
+    "process": {
+      "exec": [
+        { "cmd": "git", "args": ["status", "log", "diff"] },
+        { "cmd": "python3", "args": ["*"] }
+      ]
+    }
+  }
+}
+```
+
+Path variables: $APP_DATA, $HOME, $TEMP, $DOWNLOADS, $DESKTOP
+Glob patterns: * matches within directory, ** matches recursively
+Process args: list specific allowed args, or ["*"] for any args
+Path traversal protection is always on (even in permissive mode)
 
 ## Known Platform Differences
 

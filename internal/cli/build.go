@@ -45,11 +45,12 @@ func Build() error {
 		return fmt.Errorf("failed to stage source files: %w", err)
 	}
 
-	// Copy scripts (polyfills + lightshell client)
+	// Copy scripts (polyfills + lightshell client + defaults CSS)
 	stageScripts := filepath.Join(staging, "scripts")
 	os.MkdirAll(stageScripts, 0o755)
 	os.WriteFile(filepath.Join(stageScripts, "polyfills.js"), []byte(polyfillsJS), 0o644)
 	os.WriteFile(filepath.Join(stageScripts, "lightshell.js"), []byte(clientJS), 0o644)
+	os.WriteFile(filepath.Join(stageScripts, "defaults.css"), []byte(defaultsCSS), 0o644)
 
 	// Generate the embed-based main.go for the built app
 	buildMain := filepath.Join(staging, "main.go")
@@ -135,6 +136,11 @@ extern void WebviewRestore();
 extern void WebviewClose();
 extern void WebviewRun();
 extern void WebviewDestroy();
+extern void WebviewSetContentProtection(int enabled);
+extern void WebviewSetVibrancy(const char* style);
+extern void WebviewSetColorScheme(const char* scheme);
+extern void WebviewEnableFileDrop(void);
+extern void AppSetBadgeCount(int count);
 */
 import "C"
 
@@ -149,6 +155,7 @@ import (
 	"os/signal"
 	"path/filepath"
 	"runtime"
+	"strings"
 	"syscall"
 	"unsafe"
 )
@@ -161,6 +168,9 @@ var polyfillsJS string
 
 //go:embed scripts/lightshell.js
 var clientJS string
+
+//go:embed scripts/defaults.css
+var defaultsCSS string
 
 var msgHandler func(string)
 var ipcHandlers = map[string]func(json.RawMessage)(any, error){}
@@ -215,6 +225,11 @@ func evalJS(js string) {
 	cJS := C.CString(js)
 	C.WebviewEval(cJS)
 	C.free(unsafe.Pointer(cJS))
+}
+
+func injectCSS(css string) {
+	js := fmt.Sprintf("(function(){var s=document.createElement('style');s.id='lightshell-defaults';s.textContent=%s;document.head.insertBefore(s,document.head.firstChild)})()", fmt.Sprintf("%q", css))
+	evalJS(js)
 }
 
 func registerHandler(method string, fn func(json.RawMessage)(any, error)) {
@@ -381,6 +396,83 @@ func registerAPIs() {
 		C.WebviewClose()
 		return nil, nil
 	})
+
+	// Extended window APIs
+	registerHandler("window.setContentProtection", func(p json.RawMessage) (any, error) {
+		var params struct { Enabled bool {{.BTick}}json:"enabled"{{.BTick}} }
+		json.Unmarshal(p, &params)
+		e := 0
+		if params.Enabled { e = 1 }
+		C.WebviewSetContentProtection(C.int(e))
+		return nil, nil
+	})
+	registerHandler("window.setVibrancy", func(p json.RawMessage) (any, error) {
+		var params struct { Style string {{.BTick}}json:"style"{{.BTick}} }
+		json.Unmarshal(p, &params)
+		valid := map[string]bool{"sidebar": true, "header": true, "content": true, "sheet": true}
+		if !valid[params.Style] {
+			return nil, fmt.Errorf("invalid vibrancy style %q", params.Style)
+		}
+		cStyle := C.CString(params.Style)
+		defer C.free(unsafe.Pointer(cStyle))
+		C.WebviewSetVibrancy(cStyle)
+		return nil, nil
+	})
+	registerHandler("window.setColorScheme", func(p json.RawMessage) (any, error) {
+		var params struct { Scheme string {{.BTick}}json:"scheme"{{.BTick}} }
+		json.Unmarshal(p, &params)
+		valid := map[string]bool{"light": true, "dark": true, "system": true}
+		if !valid[params.Scheme] {
+			return nil, fmt.Errorf("invalid color scheme %q", params.Scheme)
+		}
+		cScheme := C.CString(params.Scheme)
+		defer C.free(unsafe.Pointer(cScheme))
+		C.WebviewSetColorScheme(cScheme)
+		return nil, nil
+	})
+	registerHandler("window.enableFileDrop", func(p json.RawMessage) (any, error) {
+		C.WebviewEnableFileDrop()
+		return nil, nil
+	})
+
+	// Extended app APIs
+	registerHandler("app.setBadgeCount", func(p json.RawMessage) (any, error) {
+		var params struct { Count int {{.BTick}}json:"count"{{.BTick}} }
+		json.Unmarshal(p, &params)
+		C.AppSetBadgeCount(C.int(params.Count))
+		return nil, nil
+	})
+	registerHandler("app.enableSingleInstance", func(p json.RawMessage) (any, error) {
+		sockPath := filepath.Join(os.TempDir(), fmt.Sprintf("lightshell-{{.Name}}.sock"))
+		conn, err := net.Dial("unix", sockPath)
+		if err == nil {
+			args := strings.Join(os.Args[1:], "\n")
+			conn.Write([]byte(args))
+			conn.Close()
+			return map[string]bool{"isSecondInstance": true}, nil
+		}
+		os.Remove(sockPath)
+		listener, err := net.Listen("unix", sockPath)
+		if err != nil {
+			return nil, fmt.Errorf("failed to create single instance lock: %w", err)
+		}
+		go func() {
+			defer listener.Close()
+			for {
+				c, err := listener.Accept()
+				if err != nil { return }
+				buf := make([]byte, 4096)
+				n, _ := c.Read(buf)
+				c.Close()
+				if n > 0 {
+					args := strings.Split(string(buf[:n]), "\n")
+					evt, _ := json.Marshal(map[string]any{"event": "app.secondInstance", "data": map[string]any{"args": args}})
+					evalJS(fmt.Sprintf("__lightshell_receive(%s)", string(evt)))
+				}
+			}
+		}()
+		return map[string]bool{"isSecondInstance": false}, nil
+	})
 }
 
 func init() {
@@ -420,6 +512,8 @@ func main() {
 
 	evalJS(polyfillsJS)
 	evalJS(clientJS)
+	// Inject defaults CSS as a style tag
+	injectCSS(defaultsCSS)
 
 	url := fmt.Sprintf("http://127.0.0.1:%d/{{.EntryFile}}", port)
 	cURL := C.CString(url)

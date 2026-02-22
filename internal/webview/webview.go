@@ -16,6 +16,10 @@ type Webview interface {
 	Maximize() error
 	Restore() error
 	Close() error
+	SetContentProtection(enabled bool) error
+	SetVibrancy(style string) error
+	SetColorScheme(scheme string) error
+	EnableFileDrop() error
 	OnMessage(handler func(msg string))
 	Run() error
 	Destroy()

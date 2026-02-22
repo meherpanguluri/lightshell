@@ -248,7 +248,8 @@ func TestIPCHandlerError(t *testing.T) {
 	router := ipc.NewRouter()
 
 	router.Handle("test.fail", func(params json.RawMessage) (any, error) {
-		return nil, json.Unmarshal([]byte("bad"), nil) // produces a real error
+		var dummy int
+		return nil, json.Unmarshal([]byte("bad"), &dummy) // produces a real error
 	})
 
 	reqMsg := `{"id":"req-fail","method":"test.fail","params":{}}`

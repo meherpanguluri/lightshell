@@ -1,0 +1,10 @@
+{
+  "name": "Markdown Previewer",
+  "version": "1.0.0",
+  "entry": "src/index.html",
+  "window": {
+    "width": 1000,
+    "height": 700,
+    "title": "Markdown Previewer"
+  }
+}

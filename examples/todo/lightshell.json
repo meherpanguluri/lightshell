@@ -1,0 +1,10 @@
+{
+  "name": "Todo",
+  "version": "1.0.0",
+  "entry": "src/index.html",
+  "window": {
+    "width": 480,
+    "height": 640,
+    "title": "Todo"
+  }
+}

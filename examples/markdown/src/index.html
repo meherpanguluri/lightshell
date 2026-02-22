@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Markdown Previewer</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: var(--ls-font-family);
+      background: var(--ls-color-bg);
+      color: var(--ls-color-text);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      user-select: none;
+    }
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 16px;
+      border-bottom: 1px solid var(--ls-color-border);
+      background: var(--ls-color-surface);
+      -webkit-app-region: drag;
+    }
+    .file-info {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      -webkit-app-region: no-drag;
+    }
+    .filename {
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .badge {
+      font-size: 11px;
+      padding: 1px 6px;
+      border-radius: 4px;
+      background: light-dark(#e8f0fe, #1e3a5f);
+      color: var(--ls-color-accent);
+    }
+    .badge.modified {
+      background: light-dark(#fef3e0, #3a3020);
+      color: light-dark(#c77700, #ffb84d);
+    }
+    .toolbar {
+      display: flex;
+      gap: 4px;
+      -webkit-app-region: no-drag;
+    }
+    .toolbar button {
+      padding: 5px 12px;
+      border: 1px solid var(--ls-color-border);
+      border-radius: 6px;
+      background: var(--ls-color-bg);
+      color: var(--ls-color-text);
+      font-size: 12px;
+      font-family: var(--ls-font-family);
+      cursor: pointer;
+      transition: all 0.12s;
+    }
+    .toolbar button:hover {
+      background: var(--ls-color-accent);
+      color: #fff;
+      border-color: var(--ls-color-accent);
+    }
+    .panes {
+      flex: 1;
+      display: flex;
+      overflow: hidden;
+    }
+    .editor-pane {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      border-right: 1px solid var(--ls-color-border);
+    }
+    .editor-pane .label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--ls-color-text-secondary);
+      padding: 6px 12px;
+      background: var(--ls-color-surface);
+      border-bottom: 1px solid var(--ls-color-border);
+    }
+    textarea {
+      flex: 1;
+      padding: 16px;
+      border: none;
+      resize: none;
+      background: var(--ls-color-bg);
+      color: var(--ls-color-text);
+      font-family: var(--ls-font-mono);
+      font-size: 13px;
+      line-height: 1.6;
+      outline: none;
+      tab-size: 2;
+    }
+    textarea::placeholder { color: var(--ls-color-text-secondary); }
+    .preview-pane {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    .preview-pane .label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--ls-color-text-secondary);
+      padding: 6px 12px;
+      background: var(--ls-color-surface);
+      border-bottom: 1px solid var(--ls-color-border);
+    }
+    .preview {
+      flex: 1;
+      padding: 16px;
+      overflow-y: auto;
+      font-size: 14px;
+      line-height: 1.7;
+    }
+    .preview h1 { font-size: 24px; margin: 16px 0 8px; font-weight: 700; }
+    .preview h2 { font-size: 20px; margin: 14px 0 6px; font-weight: 600; }
+    .preview h3 { font-size: 16px; margin: 12px 0 4px; font-weight: 600; }
+    .preview p { margin: 8px 0; }
+    .preview strong { font-weight: 600; }
+    .preview em { font-style: italic; }
+    .preview code {
+      font-family: var(--ls-font-mono);
+      background: var(--ls-color-surface);
+      padding: 2px 5px;
+      border-radius: 3px;
+      font-size: 0.9em;
+    }
+    .preview pre {
+      background: var(--ls-color-surface);
+      padding: 12px 16px;
+      border-radius: 6px;
+      overflow-x: auto;
+      margin: 10px 0;
+    }
+    .preview pre code { background: none; padding: 0; }
+    .preview blockquote {
+      border-left: 3px solid var(--ls-color-accent);
+      padding: 4px 12px;
+      margin: 8px 0;
+      color: var(--ls-color-text-secondary);
+    }
+    .preview ul { padding-left: 24px; margin: 8px 0; }
+    .preview li { margin: 2px 0; }
+    .preview hr { border: none; border-top: 1px solid var(--ls-color-border); margin: 16px 0; }
+    .preview a { color: var(--ls-color-accent); text-decoration: none; }
+    .preview a:hover { text-decoration: underline; }
+    .preview img { max-width: 100%; border-radius: 4px; margin: 8px 0; }
+    .recent-bar {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      background: var(--ls-color-surface);
+      border-top: 1px solid var(--ls-color-border);
+      font-size: 11px;
+      color: var(--ls-color-text-secondary);
+      overflow-x: auto;
+    }
+    .recent-bar span { white-space: nowrap; }
+    .recent-file {
+      padding: 2px 8px;
+      border-radius: 4px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.12s;
+    }
+    .recent-file:hover {
+      background: var(--ls-color-border);
+      color: var(--ls-color-text);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="file-info">
+      <span class="filename" id="filename">Untitled.md</span>
+      <span class="badge" id="status">New</span>
+    </div>
+    <div class="toolbar">
+      <button id="btn-new" title="New (Cmd+N)">New</button>
+      <button id="btn-open" title="Open (Cmd+O)">Open</button>
+      <button id="btn-save" title="Save (Cmd+S)">Save</button>
+    </div>
+  </header>
+
+  <div class="panes">
+    <div class="editor-pane">
+      <div class="label">Markdown</div>
+      <textarea id="editor" placeholder="Start writing markdown..." spellcheck="false"></textarea>
+    </div>
+    <div class="preview-pane">
+      <div class="label">Preview</div>
+      <div class="preview" id="preview"></div>
+    </div>
+  </div>
+
+  <div class="recent-bar" id="recent-bar">
+    <span>Recent:</span>
+  </div>
+
+  <script>
+    // -- Simple Markdown-to-HTML parser (~50 lines) --
+    function md(src) {
+      function esc(s) {
+        return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      }
+      // Fenced code blocks first (preserve content)
+      let html = src.replace(/```(\w*)\n([\s\S]*?)```/g, (_, lang, code) =>
+        `<pre><code>${esc(code.trim())}</code></pre>`)
+      // Inline transforms
+      html = html
+        .replace(/`([^`]+)`/g, '<code>$1</code>')
+        .replace(/^### (.+)$/gm, '<h3>$1</h3>')
+        .replace(/^## (.+)$/gm, '<h2>$1</h2>')
+        .replace(/^# (.+)$/gm, '<h1>$1</h1>')
+        .replace(/\*\*\*(.+?)\*\*\*/g, '<strong><em>$1</em></strong>')
+        .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\*(.+?)\*/g, '<em>$1</em>')
+        .replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1">')
+        .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>')
+        .replace(/^> (.+)$/gm, '<blockquote><p>$1</p></blockquote>')
+        .replace(/^---$/gm, '<hr>')
+        .replace(/^[*\-] (.+)$/gm, '<li>$1</li>')
+        .replace(/^(?!<[hpuolbdi]|<li|<hr|<pre|<block)(.+)$/gm, '<p>$1</p>')
+      // Wrap consecutive <li> in <ul>
+      html = html.replace(/(<li>[\s\S]*?<\/li>\n?)+/g, m => `<ul>${m}</ul>`)
+      return html
+    }
+
+    // -- State --
+    let currentPath = null
+    let dirty = false
+
+    const editor = document.getElementById('editor')
+    const preview = document.getElementById('preview')
+    const filenameEl = document.getElementById('filename')
+    const statusEl = document.getElementById('status')
+
+    // -- Live preview on every keystroke --
+    editor.addEventListener('input', () => {
+      preview.innerHTML = md(editor.value)
+      setDirty(true)
+    })
+
+    function setDirty(d) {
+      dirty = d
+      statusEl.textContent = d ? 'Modified' : 'Saved'
+      statusEl.className = 'badge' + (d ? ' modified' : '')
+    }
+
+    function setFile(path, content) {
+      currentPath = path
+      const name = path ? path.split('/').pop() : 'Untitled.md'
+      filenameEl.textContent = name
+      // Update window title to show current file name
+      lightshell.window.setTitle(name + ' \u2014 Markdown Previewer')
+      editor.value = content
+      preview.innerHTML = md(content)
+      setDirty(false)
+    }
+
+    // -- File operations using lightshell.fs and lightshell.dialog --
+    async function openFile() {
+      // Native open dialog filtered to markdown files
+      const result = await lightshell.dialog.open({
+        filters: [{ name: 'Markdown', extensions: ['md', 'markdown', 'txt'] }]
+      })
+      if (!result) return
+      const path = Array.isArray(result) ? result[0] : result
+      // Read file contents from disk
+      const content = await lightshell.fs.readFile(path)
+      setFile(path, content)
+      addRecent(path)
+    }
+
+    async function saveFile() {
+      if (!currentPath) {
+        // Native save dialog to pick destination
+        const path = await lightshell.dialog.save({
+          defaultPath: 'untitled.md',
+          filters: [{ name: 'Markdown', extensions: ['md'] }]
+        })
+        if (!path) return
+        currentPath = path
+        filenameEl.textContent = path.split('/').pop()
+      }
+      // Write content to disk
+      await lightshell.fs.writeFile(currentPath, editor.value)
+      setDirty(false)
+      addRecent(currentPath)
+    }
+
+    function newFile() {
+      if (dirty) { /* Could confirm, but keep simple */ }
+      setFile(null, '')
+      editor.focus()
+    }
+
+    // -- Recent files stored with lightshell.store --
+    async function addRecent(path) {
+      const recents = (await lightshell.store.get('recentFiles')) || []
+      const updated = [path, ...recents.filter(p => p !== path)].slice(0, 8)
+      // Persist recent files list across app restarts
+      await lightshell.store.set('recentFiles', updated)
+      renderRecents(updated)
+    }
+
+    async function loadRecents() {
+      const recents = (await lightshell.store.get('recentFiles')) || []
+      renderRecents(recents)
+    }
+
+    function renderRecents(recents) {
+      const bar = document.getElementById('recent-bar')
+      bar.innerHTML = '<span>Recent:</span>'
+      if (recents.length === 0) {
+        bar.innerHTML += '<span style="opacity:0.5">None yet</span>'
+        return
+      }
+      recents.forEach(path => {
+        const el = document.createElement('span')
+        el.className = 'recent-file'
+        el.textContent = path.split('/').pop()
+        el.title = path
+        el.addEventListener('click', async () => {
+          // Check file still exists before opening
+          const exists = await lightshell.fs.exists(path)
+          if (!exists) {
+            await lightshell.dialog.message('File Not Found', `${path} no longer exists.`)
+            return
+          }
+          const content = await lightshell.fs.readFile(path)
+          setFile(path, content)
+        })
+        bar.appendChild(el)
+      })
+    }
+
+    // -- Button handlers --
+    document.getElementById('btn-new').addEventListener('click', newFile)
+    document.getElementById('btn-open').addEventListener('click', openFile)
+    document.getElementById('btn-save').addEventListener('click', saveFile)
+
+    // -- Register global keyboard shortcuts via lightshell.shortcuts --
+    // Cmd+O / Ctrl+O to open a file
+    lightshell.shortcuts.register('CommandOrControl+O', openFile)
+    // Cmd+S / Ctrl+S to save the current file
+    lightshell.shortcuts.register('CommandOrControl+S', saveFile)
+    // Cmd+N / Ctrl+N to create a new file
+    lightshell.shortcuts.register('CommandOrControl+N', newFile)
+
+    // -- Initialize with sample content --
+    setFile(null, `# Welcome to Markdown Previewer
+
+A **LightShell** desktop app for editing markdown files.
+
+## Features
+
+- Live preview as you type
+- Open and save **.md** files with native dialogs
+- Recent files remembered across restarts
+- Global keyboard shortcuts: **Cmd+O**, **Cmd+S**, **Cmd+N**
+
+## Code Example
+
+\`\`\`js
+const content = await lightshell.fs.readFile('readme.md')
+lightshell.window.setTitle('readme.md')
+\`\`\`
+
+> LightShell apps use system webviews \u2014 no bundled browser engine.
+
+### Inline Formatting
+
+This is *italic*, **bold**, and ***both***. Here is \`inline code\`.
+
+- First item
+- Second item
+- Third item
+
+---
+
+Start editing on the left to see the preview update in real time.
+`)
+    loadRecents()
+  </script>
+</body>
+</html>

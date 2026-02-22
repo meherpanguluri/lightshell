@@ -62,6 +62,10 @@
       fullscreen: () => call('window.fullscreen'),
       restore: () => call('window.restore'),
       close: () => call('window.close'),
+      setContentProtection: (enabled) => call('window.setContentProtection', { enabled }),
+      setVibrancy: (style) => call('window.setVibrancy', { style }),
+      setColorScheme: (scheme) => call('window.setColorScheme', { scheme }),
+      onFileDrop: (cb) => { call('window.enableFileDrop'); return on('window.fileDrop', cb) },
       onResize: (cb) => on('window.resize', cb),
       onMove: (cb) => on('window.move', cb),
       onFocus: (cb) => on('window.focus', cb),
@@ -113,6 +117,41 @@
       quit: () => call('app.quit'),
       version: () => call('app.version'),
       dataDir: () => call('app.dataDir'),
+      setBadgeCount: (count) => call('app.setBadgeCount', { count }),
+      enableSingleInstance: () => call('app.enableSingleInstance'),
+      onSecondInstance: (cb) => on('app.secondInstance', cb),
+      onProtocol: (cb) => on('app.openUrl', cb),
+    },
+    store: {
+      get:    (key)        => call('store.get', { key }),
+      set:    (key, value) => call('store.set', { key, value }),
+      delete: (key)        => call('store.delete', { key }),
+      has:    (key)        => call('store.has', { key }),
+      keys:   (prefix)     => call('store.keys', { prefix: prefix || '' }),
+      clear:  ()           => call('store.clear'),
+    },
+    http: {
+      fetch: (url, opts) => call('http.fetch', Object.assign({ url }, opts || {})),
+      download: (url, opts) => {
+        const p = call('http.download', Object.assign({ url }, opts || {}))
+        if (opts && opts.onProgress) on('http.download.progress', opts.onProgress)
+        return p
+      },
+    },
+    process: {
+      exec: (cmd, args, opts) => call('process.exec', Object.assign({ cmd, args: args || [] }, opts || {})),
+    },
+    shortcuts: {
+      register:     (combo, cb) => { call('shortcuts.register', { combo }); return on('shortcut.' + combo, cb) },
+      unregister:   (combo)     => call('shortcuts.unregister', { combo }),
+      unregisterAll: ()         => call('shortcuts.unregisterAll'),
+      isRegistered: (combo)     => call('shortcuts.isRegistered', { combo }),
+    },
+    updater: {
+      check:           ()   => call('updater.check'),
+      install:         ()   => call('updater.install'),
+      checkAndInstall: ()   => call('updater.checkAndInstall'),
+      onProgress:      (cb) => on('updater.progress', cb),
     },
     on,
   }

@@ -245,3 +245,86 @@ void WebviewDestroy(void) {
         });
     }
 }
+
+void WebviewSetContentProtection(int enabled) {
+    if (mainWindow) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (enabled) {
+                mainWindow.sharingType = NSWindowSharingNone;
+            } else {
+                mainWindow.sharingType = NSWindowSharingReadWrite;
+            }
+        });
+    }
+}
+
+void WebviewSetVibrancy(const char* style) {
+    if (mainWindow && webView) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            NSString *nsStyle = [NSString stringWithUTF8String:style];
+
+            // Remove any existing vibrancy view
+            for (NSView *subview in [mainWindow.contentView.subviews copy]) {
+                if ([subview isKindOfClass:[NSVisualEffectView class]]) {
+                    [subview removeFromSuperview];
+                }
+            }
+
+            NSVisualEffectMaterial material;
+            if ([nsStyle isEqualToString:@"sidebar"]) {
+                material = NSVisualEffectMaterialSidebar;
+            } else if ([nsStyle isEqualToString:@"header"]) {
+                material = NSVisualEffectMaterialHeaderView;
+            } else if ([nsStyle isEqualToString:@"content"]) {
+                material = NSVisualEffectMaterialContentBackground;
+            } else if ([nsStyle isEqualToString:@"sheet"]) {
+                material = NSVisualEffectMaterialSheet;
+            } else {
+                return;
+            }
+
+            NSVisualEffectView *effectView = [[NSVisualEffectView alloc] initWithFrame:mainWindow.contentView.bounds];
+            effectView.material = material;
+            effectView.blendingMode = NSVisualEffectBlendingModeBehindWindow;
+            effectView.state = NSVisualEffectStateActive;
+            effectView.autoresizingMask = NSViewWidthSizable | NSViewHeightSizable;
+
+            // Make the webview transparent so vibrancy shows through
+            [webView setValue:@NO forKey:@"drawsBackground"];
+
+            // Insert vibrancy view behind the webview
+            [mainWindow.contentView addSubview:effectView positioned:NSWindowBelow relativeTo:webView];
+        });
+    }
+}
+
+void WebviewSetColorScheme(const char* scheme) {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        NSString *nsScheme = [NSString stringWithUTF8String:scheme];
+        if ([nsScheme isEqualToString:@"light"]) {
+            NSApp.appearance = [NSAppearance appearanceNamed:NSAppearanceNameAqua];
+        } else if ([nsScheme isEqualToString:@"dark"]) {
+            NSApp.appearance = [NSAppearance appearanceNamed:NSAppearanceNameDarkAqua];
+        } else {
+            NSApp.appearance = nil;
+        }
+    });
+}
+
+void WebviewEnableFileDrop(void) {
+    if (webView) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [webView registerForDraggedTypes:@[NSPasteboardTypeFileURL]];
+        });
+    }
+}
+
+void AppSetBadgeCount(int count) {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (count > 0) {
+            [[NSApp dockTile] setBadgeLabel:[NSString stringWithFormat:@"%d", count]];
+        } else {
+            [[NSApp dockTile] setBadgeLabel:@""];
+        }
+    });
+}

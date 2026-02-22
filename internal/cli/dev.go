@@ -99,6 +99,7 @@ func Dev() error {
 
 	// Register all APIs with security policy
 	api.RegisterWindow(router, wv)
+	api.RegisterWindowExtended(router, wv)
 	api.RegisterFS(router, policy)
 	api.RegisterDialog(router, policy)
 	api.RegisterClipboard(router, policy)
@@ -107,6 +108,7 @@ func Dev() error {
 	api.RegisterNotification(router, policy)
 	api.RegisterTray(router, policy)
 	api.RegisterMenu(router, policy)
+	api.RegisterAppExtended(router, cfg.Name)
 
 	// Inject polyfills + client library
 	injectScripts(wv)
@@ -140,6 +142,9 @@ func Dev() error {
 func injectScripts(wv webview.Webview) {
 	wv.Eval(polyfillsJS)
 	wv.Eval(clientJS)
+	// Inject defaults CSS as a <style> tag
+	cssInjection := fmt.Sprintf(`(function(){var s=document.createElement('style');s.id='lightshell-defaults';s.textContent=%q;document.head.insertBefore(s,document.head.firstChild)})()`, defaultsCSS)
+	wv.Eval(cssInjection)
 }
 
 func watchFiles(dir string, onchange func()) {

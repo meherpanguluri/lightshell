@@ -1,0 +1,10 @@
+{
+  "name": "API Client",
+  "version": "1.0.0",
+  "entry": "src/index.html",
+  "window": {
+    "width": 960,
+    "height": 720,
+    "title": "API Client"
+  }
+}

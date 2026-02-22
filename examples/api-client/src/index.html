@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>API Client</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: var(--ls-font-family);
+      background: var(--ls-color-bg);
+      color: var(--ls-color-text);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      user-select: none;
+    }
+    header {
+      padding: 16px 20px 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    header h1 { font-size: 20px; font-weight: 700; letter-spacing: -0.3px; }
+    .clear-btn {
+      font-size: 12px;
+      padding: 4px 10px;
+      border: 1px solid var(--ls-color-border);
+      border-radius: 5px;
+      background: transparent;
+      color: var(--ls-color-text-secondary);
+      cursor: pointer;
+      font-family: var(--ls-font-family);
+    }
+    .clear-btn:hover { color: var(--ls-color-text); }
+    .request-bar {
+      display: flex;
+      gap: 6px;
+      padding: 12px 20px;
+    }
+    .method-select {
+      padding: 8px 10px;
+      border: 1px solid var(--ls-color-border);
+      border-radius: 8px;
+      background: var(--ls-color-surface);
+      color: var(--ls-color-text);
+      font-size: 13px;
+      font-weight: 600;
+      font-family: var(--ls-font-mono);
+      cursor: pointer;
+      outline: none;
+    }
+    .url-input {
+      flex: 1;
+      padding: 8px 12px;
+      border: 1px solid var(--ls-color-border);
+      border-radius: 8px;
+      background: var(--ls-color-surface);
+      color: var(--ls-color-text);
+      font-size: 13px;
+      font-family: var(--ls-font-mono);
+      outline: none;
+    }
+    .url-input:focus { border-color: var(--ls-color-accent); }
+    .url-input::placeholder { color: var(--ls-color-text-secondary); }
+    .send-btn {
+      padding: 8px 20px;
+      border: none;
+      border-radius: 8px;
+      background: var(--ls-color-accent);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: var(--ls-font-family);
+      transition: opacity 0.12s;
+    }
+    .send-btn:hover { opacity: 0.85; }
+    .send-btn:disabled { opacity: 0.5; cursor: default; }
+    .tabs {
+      display: flex;
+      gap: 0;
+      padding: 0 20px;
+      border-bottom: 1px solid var(--ls-color-border);
+    }
+    .tab {
+      padding: 8px 16px;
+      font-size: 12px;
+      color: var(--ls-color-text-secondary);
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      font-family: var(--ls-font-family);
+      transition: color 0.12s;
+    }
+    .tab.active {
+      color: var(--ls-color-accent);
+      border-bottom-color: var(--ls-color-accent);
+    }
+    .tab-panels {
+      position: relative;
+    }
+    .tab-panel {
+      display: none;
+      padding: 12px 20px;
+    }
+    .tab-panel.active { display: block; }
+    .tab-panel textarea {
+      width: 100%;
+      min-height: 80px;
+      padding: 10px;
+      border: 1px solid var(--ls-color-border);
+      border-radius: 6px;
+      background: var(--ls-color-surface);
+      color: var(--ls-color-text);
+      font-family: var(--ls-font-mono);
+      font-size: 12px;
+      resize: vertical;
+      outline: none;
+    }
+    .tab-panel textarea:focus { border-color: var(--ls-color-accent); }
+    .tab-panel textarea::placeholder { color: var(--ls-color-text-secondary); }
+    .response-section {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      border-top: 1px solid var(--ls-color-border);
+    }
+    .response-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 20px;
+      background: var(--ls-color-surface);
+      border-bottom: 1px solid var(--ls-color-border);
+    }
+    .response-header .title { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+    .response-meta {
+      display: flex;
+      gap: 12px;
+      font-size: 11px;
+      font-family: var(--ls-font-mono);
+    }
+    .status-badge {
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-weight: 600;
+    }
+    .status-2xx { background: light-dark(#dcfce7, #1a3a2a); color: light-dark(#166534, #4ade80); }
+    .status-3xx { background: light-dark(#e0f2fe, #1a2e3a); color: light-dark(#0369a1, #38bdf8); }
+    .status-4xx { background: light-dark(#fef3c7, #3a3520); color: light-dark(#92400e, #fbbf24); }
+    .status-5xx { background: light-dark(#fee2e2, #3a2020); color: light-dark(#b91c1c, #f87171); }
+    .copy-btn {
+      font-size: 11px;
+      padding: 3px 8px;
+      border: 1px solid var(--ls-color-border);
+      border-radius: 4px;
+      background: transparent;
+      color: var(--ls-color-text-secondary);
+      cursor: pointer;
+      font-family: var(--ls-font-family);
+    }
+    .copy-btn:hover { color: var(--ls-color-text); }
+    .response-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px 20px;
+    }
+    .response-body pre {
+      font-family: var(--ls-font-mono);
+      font-size: 12px;
+      line-height: 1.6;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .empty-response {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      color: var(--ls-color-text-secondary);
+      font-size: 13px;
+    }
+    .history-panel {
+      width: 220px;
+      border-left: 1px solid var(--ls-color-border);
+      background: var(--ls-color-surface);
+      overflow-y: auto;
+      flex-shrink: 0;
+    }
+    .history-title {
+      padding: 10px 12px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--ls-color-text-secondary);
+      border-bottom: 1px solid var(--ls-color-border);
+    }
+    .history-item {
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--ls-color-border);
+      cursor: pointer;
+      transition: background 0.1s;
+    }
+    .history-item:hover { background: var(--ls-color-bg); }
+    .history-method {
+      font-size: 10px;
+      font-weight: 700;
+      font-family: var(--ls-font-mono);
+      margin-right: 4px;
+    }
+    .history-method.GET { color: light-dark(#059669, #34d399); }
+    .history-method.POST { color: light-dark(#d97706, #fbbf24); }
+    .history-method.PUT { color: light-dark(#2563eb, #60a5fa); }
+    .history-method.DELETE { color: light-dark(#dc2626, #f87171); }
+    .history-url {
+      font-size: 11px;
+      color: var(--ls-color-text-secondary);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      display: block;
+      margin-top: 2px;
+    }
+    .main-area {
+      flex: 1;
+      display: flex;
+      overflow: hidden;
+    }
+    .main-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>API Client</h1>
+    <button class="clear-btn" id="btn-clear-history">Clear History</button>
+  </header>
+
+  <div class="request-bar">
+    <select class="method-select" id="method">
+      <option>GET</option>
+      <option>POST</option>
+      <option>PUT</option>
+      <option>DELETE</option>
+    </select>
+    <input class="url-input" id="url" type="text" placeholder="https://api.example.com/endpoint" value="https://jsonplaceholder.typicode.com/posts/1">
+    <button class="send-btn" id="btn-send">Send</button>
+  </div>
+
+  <div class="tabs" id="req-tabs">
+    <div class="tab active" data-tab="headers">Headers</div>
+    <div class="tab" data-tab="body">Body</div>
+  </div>
+  <div class="tab-panels">
+    <div class="tab-panel active" id="panel-headers">
+      <textarea id="headers" placeholder='{"Authorization": "Bearer token", "Content-Type": "application/json"}'></textarea>
+    </div>
+    <div class="tab-panel" id="panel-body">
+      <textarea id="body" placeholder='{"key": "value"}'></textarea>
+    </div>
+  </div>
+
+  <div class="main-area">
+    <div class="main-content">
+      <div class="response-section">
+        <div class="response-header">
+          <div style="display:flex;align-items:center;gap:12px">
+            <span class="title">Response</span>
+            <span class="response-meta" id="resp-meta"></span>
+          </div>
+          <button class="copy-btn" id="btn-copy">Copy</button>
+        </div>
+        <div class="response-body" id="resp-body">
+          <div class="empty-response">Send a request to see the response here.</div>
+        </div>
+      </div>
+    </div>
+    <div class="history-panel">
+      <div class="history-title">History</div>
+      <div id="history-list"></div>
+    </div>
+  </div>
+
+  <script>
+    // -- State --
+    let history = []
+    let lastResponse = null
+
+    // -- DOM refs --
+    const methodEl = document.getElementById('method')
+    const urlEl = document.getElementById('url')
+    const headersEl = document.getElementById('headers')
+    const bodyEl = document.getElementById('body')
+    const respBody = document.getElementById('resp-body')
+    const respMeta = document.getElementById('resp-meta')
+
+    // -- Tab switching --
+    document.getElementById('req-tabs').addEventListener('click', (e) => {
+      if (!e.target.dataset.tab) return
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'))
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'))
+      e.target.classList.add('active')
+      document.getElementById('panel-' + e.target.dataset.tab).classList.add('active')
+    })
+
+    // -- Send request using lightshell.http.fetch (CORS-free!) --
+    async function sendRequest() {
+      const method = methodEl.value
+      const url = urlEl.value.trim()
+      if (!url) return
+
+      // Parse headers JSON, default to empty object
+      let headers = {}
+      try { if (headersEl.value.trim()) headers = JSON.parse(headersEl.value) } catch (e) {
+        respBody.innerHTML = '<pre style="color:light-dark(#c44,#f66)">Invalid headers JSON: ' + e.message + '</pre>'
+        return
+      }
+
+      const sendBtn = document.getElementById('btn-send')
+      sendBtn.disabled = true
+      sendBtn.textContent = '...'
+      respBody.innerHTML = '<div class="empty-response">Sending...</div>'
+
+      const start = performance.now()
+      try {
+        // lightshell.http.fetch makes the HTTP call through Go backend,
+        // bypassing CORS restrictions that browser fetch would enforce.
+        const opts = { method, headers }
+        if (['POST', 'PUT'].includes(method) && bodyEl.value.trim()) {
+          opts.body = bodyEl.value
+        }
+        const resp = await lightshell.http.fetch(url, opts)
+        const elapsed = Math.round(performance.now() - start)
+        lastResponse = resp
+
+        // Display status badge
+        const cat = Math.floor(resp.status / 100)
+        respMeta.innerHTML = `
+          <span class="status-badge status-${cat}xx">${resp.status}</span>
+          <span>${elapsed}ms</span>
+          <span>${formatBytes((resp.body || '').length)}</span>
+        `
+
+        // Pretty-print JSON body if possible
+        let display = resp.body || ''
+        try {
+          display = JSON.stringify(JSON.parse(display), null, 2)
+        } catch (_) { /* not JSON, show raw */ }
+        respBody.innerHTML = `<pre>${escapeHtml(display)}</pre>`
+
+        // Save to history using lightshell.store
+        addHistory({ method, url, status: resp.status, time: Date.now() })
+      } catch (err) {
+        respMeta.innerHTML = ''
+        respBody.innerHTML = `<pre style="color:light-dark(#c44,#f66)">Error: ${escapeHtml(err.message || String(err))}</pre>`
+      }
+      sendBtn.disabled = false
+      sendBtn.textContent = 'Send'
+    }
+
+    // -- Copy response to clipboard using lightshell.clipboard --
+    document.getElementById('btn-copy').addEventListener('click', async () => {
+      if (!lastResponse) return
+      // Write the response body text to system clipboard
+      await lightshell.clipboard.write(lastResponse.body || '')
+      const btn = document.getElementById('btn-copy')
+      btn.textContent = 'Copied!'
+      setTimeout(() => btn.textContent = 'Copy', 1500)
+    })
+
+    // -- Request history persisted in lightshell.store --
+    async function loadHistory() {
+      const saved = await lightshell.store.get('apiHistory')
+      if (saved) history = saved
+      renderHistory()
+    }
+
+    async function addHistory(entry) {
+      // Keep only last 50 entries
+      history = [entry, ...history].slice(0, 50)
+      await lightshell.store.set('apiHistory', history)
+      renderHistory()
+    }
+
+    function renderHistory() {
+      const el = document.getElementById('history-list')
+      if (history.length === 0) {
+        el.innerHTML = '<div style="padding:12px;font-size:11px;color:var(--ls-color-text-secondary)">No requests yet</div>'
+        return
+      }
+      el.innerHTML = history.map((h, i) => `
+        <div class="history-item" data-idx="${i}">
+          <span class="history-method ${h.method}">${h.method}</span>
+          <span class="status-badge status-${Math.floor(h.status / 100)}xx" style="font-size:10px">${h.status}</span>
+          <span class="history-url">${escapeHtml(h.url)}</span>
+        </div>
+      `).join('')
+    }
+
+    // Click history item to load it
+    document.getElementById('history-list').addEventListener('click', (e) => {
+      const item = e.target.closest('.history-item')
+      if (!item) return
+      const h = history[item.dataset.idx]
+      methodEl.value = h.method
+      urlEl.value = h.url
+    })
+
+    // Clear history
+    document.getElementById('btn-clear-history').addEventListener('click', async () => {
+      const ok = await lightshell.dialog.confirm('Clear History', 'Delete all request history?')
+      if (!ok) return
+      history = []
+      await lightshell.store.delete('apiHistory')
+      renderHistory()
+    })
+
+    // -- Helpers --
+    function escapeHtml(s) {
+      const d = document.createElement('div')
+      d.textContent = s
+      return d.innerHTML
+    }
+
+    function formatBytes(b) {
+      if (b < 1024) return b + ' B'
+      return (b / 1024).toFixed(1) + ' KB'
+    }
+
+    // -- Event listeners --
+    document.getElementById('btn-send').addEventListener('click', sendRequest)
+    urlEl.addEventListener('keydown', (e) => { if (e.key === 'Enter') sendRequest() })
+
+    // -- Initialize --
+    loadHistory()
+  </script>
+</body>
+</html>

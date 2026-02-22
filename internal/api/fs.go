@@ -22,7 +22,7 @@ func RegisterFS(router *ipc.Router, policy *security.Policy) {
 		if err := json.Unmarshal(params, &p); err != nil {
 			return nil, err
 		}
-		if err := policy.CheckPath(p.Path); err != nil {
+		if err := policy.CheckFSRead(p.Path); err != nil {
 			return nil, err
 		}
 		data, err := os.ReadFile(p.Path)
@@ -43,7 +43,7 @@ func RegisterFS(router *ipc.Router, policy *security.Policy) {
 		if err := json.Unmarshal(params, &p); err != nil {
 			return nil, err
 		}
-		if err := policy.CheckPath(p.Path); err != nil {
+		if err := policy.CheckFSWrite(p.Path); err != nil {
 			return nil, err
 		}
 		dir := filepath.Dir(p.Path)
@@ -63,7 +63,7 @@ func RegisterFS(router *ipc.Router, policy *security.Policy) {
 		if err := json.Unmarshal(params, &p); err != nil {
 			return nil, err
 		}
-		if err := policy.CheckPath(p.Path); err != nil {
+		if err := policy.CheckFSRead(p.Path); err != nil {
 			return nil, err
 		}
 		entries, err := os.ReadDir(p.Path)
@@ -96,7 +96,7 @@ func RegisterFS(router *ipc.Router, policy *security.Policy) {
 		if err := json.Unmarshal(params, &p); err != nil {
 			return nil, err
 		}
-		if err := policy.CheckPath(p.Path); err != nil {
+		if err := policy.CheckFSRead(p.Path); err != nil {
 			return nil, err
 		}
 		_, err := os.Stat(p.Path)
@@ -113,7 +113,7 @@ func RegisterFS(router *ipc.Router, policy *security.Policy) {
 		if err := json.Unmarshal(params, &p); err != nil {
 			return nil, err
 		}
-		if err := policy.CheckPath(p.Path); err != nil {
+		if err := policy.CheckFSRead(p.Path); err != nil {
 			return nil, err
 		}
 		info, err := os.Stat(p.Path)
@@ -139,7 +139,7 @@ func RegisterFS(router *ipc.Router, policy *security.Policy) {
 		if err := json.Unmarshal(params, &p); err != nil {
 			return nil, err
 		}
-		if err := policy.CheckPath(p.Path); err != nil {
+		if err := policy.CheckFSWrite(p.Path); err != nil {
 			return nil, err
 		}
 		return nil, os.MkdirAll(p.Path, 0o755)
@@ -155,9 +155,9 @@ func RegisterFS(router *ipc.Router, policy *security.Policy) {
 		if err := json.Unmarshal(params, &p); err != nil {
 			return nil, err
 		}
-		if err := policy.CheckPath(p.Path); err != nil {
+		if err := policy.CheckFSWrite(p.Path); err != nil {
 			return nil, err
 		}
-		return nil, os.RemoveAll(p.Path)
+		return nil, os.Remove(p.Path)
 	})
 }

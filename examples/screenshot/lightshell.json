@@ -1,0 +1,10 @@
+{
+  "name": "Screenshot Tool",
+  "version": "1.0.0",
+  "entry": "src/index.html",
+  "window": {
+    "width": 400,
+    "height": 500,
+    "title": "Screenshot Tool"
+  }
+}

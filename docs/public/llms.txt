@@ -11,12 +11,12 @@
 - [Tutorial 4: Packaging](https://lightshell.dev/tutorial/04-packaging/): Build and distribute your app as .app, .dmg, AppImage, .deb, or .rpm
 - [Tutorial 5: Adding Persistence](https://lightshell.dev/tutorial/05-adding-persistence/): Save and load data with lightshell.store and lightshell.fs
 - [Tutorial 6: Connecting to APIs](https://lightshell.dev/tutorial/06-connecting-to-apis/): Make CORS-free HTTP requests from your desktop app
-- [API: Window](https://lightshell.dev/api/window/): Window management — title, size, position, minimize, maximize, fullscreen, events
+- [API: Window](https://lightshell.dev/api/window/): Window management — title, size, position, minimize, maximize, fullscreen, content protection, vibrancy, file drop, color scheme, events
 - [API: File System](https://lightshell.dev/api/fs/): Read, write, list, watch files and directories
 - [API: Dialogs](https://lightshell.dev/api/dialog/): Native open, save, message, confirm, and prompt dialogs
 - [API: Clipboard](https://lightshell.dev/api/clipboard/): System clipboard read and write
 - [API: System](https://lightshell.dev/api/system/): Platform, architecture, home directory, temp directory, hostname
-- [API: App](https://lightshell.dev/api/app/): App lifecycle — quit, version, data directory
+- [API: App](https://lightshell.dev/api/app/): App lifecycle — quit, version, data directory, badge count, protocol handler, second instance
 - [API: Shell](https://lightshell.dev/api/shell/): Open URLs and files in the default system handler
 - [API: Notifications](https://lightshell.dev/api/notify/): Send native system notifications
 - [API: Tray](https://lightshell.dev/api/tray/): System tray icon and menu
@@ -29,12 +29,14 @@
 - [API: Events](https://lightshell.dev/api/events/): Global event listener (lightshell.on)
 - [API: Configuration](https://lightshell.dev/api/config/): Complete lightshell.json reference
 - [API: CLI](https://lightshell.dev/api/cli/): Command-line interface — dev, build, doctor, init
-- [API: Error Codes](https://lightshell.dev/api/errors/): All error codes and their meanings
+- [API: Error Codes](https://lightshell.dev/api/errors/): All error codes (FS_NOT_FOUND, FS_PERMISSION_DENIED, HTTP_TIMEOUT, PROCESS_NOT_FOUND, etc.) and troubleshooting
 - [Guide: File System](https://lightshell.dev/guides/file-system/): Working with files, paths, and directories in detail
 - [Guide: Menus & Tray](https://lightshell.dev/guides/menus-tray/): System tray icons, menus, and app menu bars
 - [Guide: Dialogs & Prompts](https://lightshell.dev/guides/dialogs-and-prompts/): File pickers, confirmations, and user input
 - [Guide: Keyboard Shortcuts](https://lightshell.dev/guides/keyboard-shortcuts/): In-app and global keyboard shortcuts
 - [Guide: Security & Permissions](https://lightshell.dev/guides/security-and-permissions/): Permission engine, path validation, and CSP
+- [Guide: Default Styles](https://lightshell.dev/guides/default-css/): Built-in CSS, system fonts, dark mode, CSS variables (--ls-*)
+- [Guide: Deep Linking](https://lightshell.dev/guides/deep-linking/): Custom URL protocols (myapp://...) for launching your app
 - [Guide: Cross-Platform](https://lightshell.dev/guides/cross-platform/): Handle macOS vs Linux differences
 - [Packaging: Overview](https://lightshell.dev/guides/packaging/): All packaging formats and build targets
 - [Packaging: App Bundle](https://lightshell.dev/guides/packaging/app-bundle/): macOS .app bundle format
@@ -52,6 +54,10 @@
 - [Auto-Updates: Update Flow](https://lightshell.dev/guides/auto-updates/update-flow/): How the update check-download-install cycle works
 - [Auto-Updates: Security](https://lightshell.dev/guides/auto-updates/security/): SHA256 verification, HTTPS enforcement
 - [Auto-Updates: UI Patterns](https://lightshell.dev/guides/auto-updates/ui-patterns/): UX patterns for showing update prompts
+- [Auto-Updates: Release Server](https://lightshell.dev/guides/auto-updates/release-server/): Deploy and configure the lightshell-server for hosting updates
+- [Auto-Updates: Signing Keys](https://lightshell.dev/guides/auto-updates/signing-keys/): Ed25519 key generation, storage, rotation, and threat model
+- [Auto-Updates: CI/CD](https://lightshell.dev/guides/auto-updates/ci-cd/): GitHub Actions workflow for automated build-sign-upload
+- [Auto-Updates: GitHub Releases](https://lightshell.dev/guides/auto-updates/github-releases/): Publish updates via GitHub Releases
 
 ## Optional
 

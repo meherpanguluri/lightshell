@@ -156,6 +156,139 @@ async function checkVersion() {
 }
 ```
 
+---
+
+### setBadgeCount(count)
+
+Set the badge count on the app's dock icon (macOS). This is used to indicate unread items, pending tasks, or other numeric notifications. Pass `0` to clear the badge.
+
+**Parameters:**
+- `count` (number) — the badge number to display. `0` clears the badge.
+
+**Returns:** `Promise<void>`
+
+**Example:**
+```js
+// Show 5 unread messages
+await lightshell.app.setBadgeCount(5)
+
+// Clear the badge
+await lightshell.app.setBadgeCount(0)
+```
+
+**Example: Track Unread Count**
+```js
+let unreadCount = 0
+
+function onNewMessage(message) {
+  unreadCount++
+  lightshell.app.setBadgeCount(unreadCount)
+  showNotification(message)
+}
+
+function onMessagesRead() {
+  unreadCount = 0
+  lightshell.app.setBadgeCount(0)
+}
+```
+
+**Platform Notes:**
+- macOS: Displays a red badge with the number on the dock icon. Uses `NSApp.dockTile.badgeLabel`.
+- Linux: Not supported on most desktop environments. The call is a no-op.
+
+---
+
+### onProtocol(callback)
+
+Handle custom URL protocol opens. When the user opens a URL like `myapp://action/data` in their browser or another app, your app launches (or comes to the foreground) and the callback receives the full URL.
+
+Requires the `protocols.schemes` field in `lightshell.json`:
+```json
+{
+  "protocols": {
+    "schemes": ["myapp"]
+  }
+}
+```
+
+**Parameters:**
+- `callback` (function) — receives the full URL string (e.g., `"myapp://open/doc/123"`)
+
+**Returns:** unsubscribe function
+
+**Example:**
+```js
+const unsubscribe = lightshell.app.onProtocol((url) => {
+  console.log('Received URL:', url)
+  const parsed = new URL(url)
+
+  switch (parsed.hostname) {
+    case 'open':
+      openDocument(parsed.pathname.slice(1))
+      break
+    case 'settings':
+      showSettings(parsed.searchParams.get('tab'))
+      break
+  }
+})
+```
+
+**Example: OAuth Callback**
+```js
+lightshell.app.onProtocol(async (url) => {
+  const parsed = new URL(url)
+  if (parsed.hostname === 'auth' && parsed.pathname === '/callback') {
+    const code = parsed.searchParams.get('code')
+    await exchangeCodeForToken(code)
+  }
+})
+```
+
+See the [Deep Linking](/guides/deep-linking/) guide for detailed examples and platform-specific behavior.
+
+---
+
+### onSecondInstance(callback)
+
+Handle duplicate app launches. When the user tries to open a second instance of your app (e.g., double-clicking the app icon while it is already running), the existing instance receives this callback instead of a second window opening.
+
+**Parameters:**
+- `callback` (function) — receives `{ args: string[], cwd: string }` where `args` is the command-line arguments from the second launch and `cwd` is its working directory
+
+**Returns:** unsubscribe function
+
+**Example:**
+```js
+lightshell.app.onSecondInstance(async ({ args, cwd }) => {
+  // Bring the existing window to front
+  await lightshell.window.restore()
+
+  // If launched with a file argument, open it
+  if (args.length > 1) {
+    const filePath = args[1]
+    const content = await lightshell.fs.readFile(filePath)
+    openInEditor(content)
+  }
+})
+```
+
+**Example: Single Instance with File Association**
+```js
+lightshell.app.onSecondInstance(async ({ args }) => {
+  await lightshell.window.restore()
+
+  // Filter for file paths in arguments
+  const files = args.slice(1).filter(arg => !arg.startsWith('-'))
+  for (const file of files) {
+    if (await lightshell.fs.exists(file)) {
+      openFile(file)
+    }
+  }
+})
+```
+
+**Note:** Single-instance behavior is the default in production builds. When the user opens the app while it is already running, the first instance receives the `onSecondInstance` event and the second process exits. In development (`lightshell dev`), multiple instances are allowed.
+
 ## Platform Notes
 
 - On macOS, `dataDir()` resolves to `~/Library/Application Support/{appId}/`
@@ -163,3 +296,6 @@ async function checkVersion() {
 - The `appId` is read from `build.appId` in `lightshell.json` (e.g., `"com.example.myapp"`)
 - `quit()` terminates the entire process, including any background tasks or tray icons
 - `version()` reads the `version` field from `lightshell.json` at build time — it is baked into the binary
+- `setBadgeCount()` only works on macOS. On Linux it is a no-op.
+- `onProtocol()` requires `protocols.schemes` in `lightshell.json` and a built app (`.app` or packaged format)
+- `onSecondInstance()` only applies to production builds. During development, multiple instances can run simultaneously.

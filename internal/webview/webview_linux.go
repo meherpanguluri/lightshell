@@ -66,6 +66,22 @@ func (w *LinuxWebview) Close() error {
 	return fmt.Errorf("linux webview not yet implemented")
 }
 
+func (w *LinuxWebview) SetContentProtection(enabled bool) error {
+	return fmt.Errorf("linux webview not yet implemented")
+}
+
+func (w *LinuxWebview) SetVibrancy(style string) error {
+	return fmt.Errorf("linux webview not yet implemented")
+}
+
+func (w *LinuxWebview) SetColorScheme(scheme string) error {
+	return fmt.Errorf("linux webview not yet implemented")
+}
+
+func (w *LinuxWebview) EnableFileDrop() error {
+	return fmt.Errorf("linux webview not yet implemented")
+}
+
 func (w *LinuxWebview) OnMessage(handler func(msg string)) {}
 
 func (w *LinuxWebview) Run() error {

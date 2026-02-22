@@ -42,9 +42,7 @@ func Doctor() error {
 			fmt.Println(issue.File)
 		}
 
-		marker := "warning"
 		if issue.Severity == "error" {
-			marker = "error"
 			errors++
 		} else {
 			warnings++
@@ -61,7 +59,6 @@ func Doctor() error {
 				fmt.Printf("     -> %s\n", issue.Fix)
 			}
 		}
-		_ = marker
 	}
 
 	fmt.Println()

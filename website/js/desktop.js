@@ -19,7 +19,7 @@
     { id: 'getting-started', label: 'getting-started.md', icon: '\uD83D\uDCD6', action: openGettingStarted },
     { id: 'examples',        label: 'examples/',          icon: '\uD83D\uDDC2\uFE0F', action: openExamples },
     { id: 'playground',      label: 'playground.app',     icon: '\u26A1',       action: openPlayground },
-    { id: 'docs',            label: 'docs/',              icon: '\uD83D\uDCDA', action: () => window.open('https://docs.lightshell.dev/', '_blank') },
+    { id: 'docs',            label: 'docs/',              icon: '\uD83D\uDCDA', action: () => window.open('/docs/', '_blank') },
     { id: 'benchmarks',      label: 'benchmarks.csv',     icon: '\uD83D\uDCC8', action: openBenchmarks },
     { id: 'about',           label: 'about.txt',          icon: '\uD83D\uDCA1', action: openAbout },
     { id: 'github',          label: 'github.link',        icon: '<img src="assets/icons/github.svg" width="36" height="36" alt="GitHub" style="filter: brightness(0.2)">', action: () => window.open('https://github.com/lightshell-dev/lightshell', '_blank') },

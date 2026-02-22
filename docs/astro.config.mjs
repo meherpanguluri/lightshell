@@ -5,6 +5,8 @@ import starlightThemeBlack from 'starlight-theme-black';
 
 // https://astro.build/config
 export default defineConfig({
+  site: 'https://lightshell.dev',
+  base: '/docs',
   integrations: [
     starlight({
       title: 'LightShell Docs',
@@ -77,6 +79,8 @@ export default defineConfig({
             { label: 'Menus & Tray', slug: 'guides/menus-tray' },
             { label: 'Dialogs & Prompts', slug: 'guides/dialogs-and-prompts' },
             { label: 'Keyboard Shortcuts', slug: 'guides/keyboard-shortcuts' },
+            { label: 'Default Styles', slug: 'guides/default-css' },
+            { label: 'Deep Linking', slug: 'guides/deep-linking' },
             { label: 'Security & Permissions', slug: 'guides/security-and-permissions' },
             { label: 'Single-File Apps', slug: 'guides/single-file-apps' },
             { label: 'Error Handling', slug: 'guides/error-handling' },
@@ -109,6 +113,10 @@ export default defineConfig({
             { label: 'Update Flow', slug: 'guides/auto-updates/update-flow' },
             { label: 'Security', slug: 'guides/auto-updates/security' },
             { label: 'UI Patterns', slug: 'guides/auto-updates/ui-patterns' },
+            { label: 'Release Server', slug: 'guides/auto-updates/release-server' },
+            { label: 'Signing Keys', slug: 'guides/auto-updates/signing-keys' },
+            { label: 'CI/CD', slug: 'guides/auto-updates/ci-cd' },
+            { label: 'GitHub Releases', slug: 'guides/auto-updates/github-releases' },
           ],
         },
         {
