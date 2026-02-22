@@ -13,7 +13,7 @@ Deploy the release server to your preferred platform in one click. Each button w
 
 | Platform | Deploy | Free Tier | Notes |
 |----------|--------|-----------|-------|
-| **Railway** | [![Deploy on Railway](https://railway.com/button.svg)](https://railway.com/deploy/Kvwoxh?referralCode=oLNtQ-) | $5/mo credit | Persistent disk, automatic HTTPS |
+| **Railway** | [![Deploy on Railway](https://railway.com/button.svg)](https://railway.com/deploy/lightshell-server?referralCode=oLNtQ-) | $5/mo credit | Persistent disk, automatic HTTPS |
 | **Render** | [![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/lightshell-dev/lightshell-server) | Free tier available | Auto-deploy from GitHub, managed TLS |
 | **Cloudflare Workers** | -- | 100K req/day free | Fastest option, see [manual setup](#cloudflare-workers-recommended) below |
 | **Fly.io** | -- | 3 shared VMs free | See [manual setup](#flyio) below |
