@@ -7,10 +7,11 @@ import (
 	goruntime "runtime"
 
 	"github.com/lightshell-dev/lightshell/internal/ipc"
+	"github.com/lightshell-dev/lightshell/internal/webview"
 )
 
 // RegisterSystem registers system info API handlers.
-func RegisterSystem(router *ipc.Router, appVersion string, appName string) {
+func RegisterSystem(router *ipc.Router, appVersion string, appName string, wv webview.Webview) {
 	router.Handle("system.platform", func(params json.RawMessage) (any, error) {
 		return goruntime.GOOS, nil
 	})
@@ -33,7 +34,7 @@ func RegisterSystem(router *ipc.Router, appVersion string, appName string) {
 	})
 
 	router.Handle("app.quit", func(params json.RawMessage) (any, error) {
-		os.Exit(0)
+		wv.Close()
 		return nil, nil
 	})
 

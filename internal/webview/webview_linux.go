@@ -34,6 +34,10 @@ func (w *LinuxWebview) SetSize(w2, h int) error {
 	return fmt.Errorf("linux webview not yet implemented")
 }
 
+func (w *LinuxWebview) GetSize() (int, int) {
+	return 0, 0
+}
+
 func (w *LinuxWebview) SetMinSize(w2, h int) error {
 	return fmt.Errorf("linux webview not yet implemented")
 }
@@ -44,6 +48,10 @@ func (w *LinuxWebview) SetMaxSize(w2, h int) error {
 
 func (w *LinuxWebview) SetPosition(x, y int) error {
 	return fmt.Errorf("linux webview not yet implemented")
+}
+
+func (w *LinuxWebview) GetPosition() (int, int) {
+	return 0, 0
 }
 
 func (w *LinuxWebview) Fullscreen() error {

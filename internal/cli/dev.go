@@ -104,7 +104,7 @@ func Dev() error {
 	api.RegisterDialog(router, policy)
 	api.RegisterClipboard(router, policy)
 	api.RegisterShell(router, policy)
-	api.RegisterSystem(router, cfg.Version, cfg.Name)
+	api.RegisterSystem(router, cfg.Version, cfg.Name, wv)
 	api.RegisterNotification(router, policy)
 	api.RegisterTray(router, policy)
 	api.RegisterMenu(router, policy)

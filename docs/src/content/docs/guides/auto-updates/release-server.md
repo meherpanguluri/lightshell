@@ -5,11 +5,36 @@ description: How to set up and deploy the lightshell-server for hosting app upda
 
 The **lightshell-server** is a lightweight Hono-based TypeScript server purpose-built for hosting signed LightShell releases. It handles update manifests, binary storage, Ed25519 signature verification, and provides a dashboard for monitoring downloads.
 
-You do not need this server to ship updates -- you can host update manifests on any static file server or [GitHub Releases](/guides/auto-updates/github-releases/). The release server adds convenience features like automatic manifest generation, a web dashboard, and download analytics.
+You do not need this server to ship updates -- you can host update manifests on any static file server or [GitHub Releases](/docs/guides/auto-updates/github-releases/). The release server adds convenience features like automatic manifest generation, a web dashboard, and download analytics.
 
-## Quick Deploy
+## One-Click Deploy
 
-The fastest way to get a release server running is Cloudflare Workers. It is free for most apps (up to 100K requests/day) and deploys in under a minute.
+Deploy the release server to your preferred platform in one click. Each button will fork the repo, prompt you for environment variables, and deploy automatically.
+
+| Platform | Deploy | Free Tier | Notes |
+|----------|--------|-----------|-------|
+| **Railway** | [![Deploy on Railway](https://railway.com/button.svg)](https://railway.com/deploy/Kvwoxh?referralCode=oLNtQ-) | $5/mo credit | Persistent disk, automatic HTTPS |
+| **Render** | [![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/lightshell-dev/lightshell-server) | Free tier available | Auto-deploy from GitHub, managed TLS |
+| **Cloudflare Workers** | -- | 100K req/day free | Fastest option, see [manual setup](#cloudflare-workers-recommended) below |
+| **Fly.io** | -- | 3 shared VMs free | See [manual setup](#flyio) below |
+
+After deploying, you will need to set two environment variables:
+
+- **`LIGHTSHELL_API_KEY`** -- generate with `openssl rand -hex 32`
+- **`PUBLIC_KEY`** -- your Ed25519 public key (see [Signing Keys](/docs/guides/auto-updates/signing-keys/))
+
+### What the one-click deploy does
+
+1. Forks `lightshell-dev/lightshell-server` into your account
+2. Prompts you for required environment variables
+3. Builds and deploys the server
+4. Gives you a public HTTPS URL to use as your updater endpoint
+
+---
+
+## Manual Deploy
+
+If you prefer CLI deployments or need more control over configuration, use one of the methods below.
 
 ### Cloudflare Workers (Recommended)
 
@@ -41,7 +66,7 @@ Your server will be live at `https://lightshell-server.<your-subdomain>.workers.
 git clone https://github.com/lightshell-dev/lightshell-server
 cd lightshell-server
 
-# Install Railway CLI: https://docs.railway.app/guides/cli
+# Install Railway CLI: https://docs.railway.com/guides/cli
 railway login
 railway init
 railway up
@@ -49,13 +74,29 @@ railway up
 # Set environment variables in the Railway dashboard
 ```
 
+Or use the Railway dashboard directly:
+
+1. Go to [railway.com/new](https://railway.com/new)
+2. Select **Deploy from GitHub repo**
+3. Connect `lightshell-dev/lightshell-server` (or your fork)
+4. Add environment variables: `LIGHTSHELL_API_KEY`, `PUBLIC_KEY`, `STORAGE_BACKEND=local`, `STORAGE_PATH=/data/releases`
+5. Add a volume mounted at `/data` for persistent storage
+6. Deploy
+
 ### Render
 
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/lightshell-dev/lightshell-server)
+
+Or manually:
+
 1. Fork `lightshell-dev/lightshell-server` on GitHub
-2. Create a new Web Service on [render.com](https://render.com)
+2. Create a new **Web Service** on [render.com](https://render.com)
 3. Connect your forked repository
-4. Set the environment variables in the Render dashboard
-5. Deploy
+4. Set **Build Command** to `npm install && npm run build`
+5. Set **Start Command** to `npm start`
+6. Add environment variables in the Render dashboard
+7. Add a **Disk** mounted at `/data` for local storage (if not using S3)
+8. Deploy
 
 ### Fly.io
 
@@ -71,7 +112,7 @@ fly deploy
 
 ### Self-Hosted
 
-Run the server on any machine with Node.js 20+:
+Run the server on any machine with Node.js 20+ or Bun:
 
 ```bash
 git clone https://github.com/lightshell-dev/lightshell-server
@@ -91,12 +132,14 @@ npm start
 
 Put it behind a reverse proxy (Caddy, nginx) with HTTPS. The updater requires HTTPS in production builds.
 
+---
+
 ## Environment Variables
 
 | Variable | Required | Description |
 |----------|----------|-------------|
 | `LIGHTSHELL_API_KEY` | Yes | API key for authenticating upload requests from CI/CD. Generate with `openssl rand -hex 32`. |
-| `PUBLIC_KEY` | Yes | Your Ed25519 public key for verifying release signatures. See [Signing Keys](/guides/auto-updates/signing-keys/). |
+| `PUBLIC_KEY` | Yes | Your Ed25519 public key for verifying release signatures. See [Signing Keys](/docs/guides/auto-updates/signing-keys/). |
 | `STORAGE_BACKEND` | No | Where to store release binaries. Options: `r2` (Cloudflare R2, default for Workers), `s3`, `local`. |
 | `STORAGE_PATH` | No | Path for local storage backend. Default: `./releases`. |
 | `S3_BUCKET` | No | S3 bucket name (when using `s3` backend). |
@@ -194,6 +237,6 @@ For development or simple self-hosted setups. Set `STORAGE_BACKEND=local` and `S
 
 ## Next Steps
 
-- [Signing Keys](/guides/auto-updates/signing-keys/) -- generate Ed25519 keys for signing releases
-- [CI/CD](/guides/auto-updates/ci-cd/) -- automate the build-sign-upload pipeline with GitHub Actions
-- [Update Security](/guides/auto-updates/security/) -- understand the security model
+- [Signing Keys](/docs/guides/auto-updates/signing-keys/) -- generate Ed25519 keys for signing releases
+- [CI/CD](/docs/guides/auto-updates/ci-cd/) -- automate the build-sign-upload pipeline with GitHub Actions
+- [Update Security](/docs/guides/auto-updates/security/) -- understand the security model

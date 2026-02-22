@@ -35,6 +35,8 @@ func RegisterAppExtended(router *ipc.Router, appName string) {
 		if err != nil {
 			return nil, fmt.Errorf("failed to create single instance lock: %w", err)
 		}
+		// Restrict socket to owner-only access
+		os.Chmod(sockPath, 0600)
 
 		// Listen for connections from second instances in the background
 		go func() {

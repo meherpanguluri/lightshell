@@ -31,8 +31,8 @@ func RegisterWindow(router *ipc.Router, wv webview.Webview) {
 	})
 
 	router.Handle("window.getSize", func(params json.RawMessage) (any, error) {
-		// TODO: implement actual size retrieval from native window
-		return map[string]int{"width": 0, "height": 0}, nil
+		w, h := wv.GetSize()
+		return map[string]int{"width": w, "height": h}, nil
 	})
 
 	router.Handle("window.setPosition", func(params json.RawMessage) (any, error) {
@@ -47,8 +47,8 @@ func RegisterWindow(router *ipc.Router, wv webview.Webview) {
 	})
 
 	router.Handle("window.getPosition", func(params json.RawMessage) (any, error) {
-		// TODO: implement actual position retrieval from native window
-		return map[string]int{"x": 0, "y": 0}, nil
+		x, y := wv.GetPosition()
+		return map[string]int{"x": x, "y": y}, nil
 	})
 
 	router.Handle("window.minimize", func(params json.RawMessage) (any, error) {

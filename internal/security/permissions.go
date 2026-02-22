@@ -401,16 +401,23 @@ func (p *Policy) CheckProcess(cmd string, args []string) error {
 			return nil
 		}
 
-		// Check if the first argument (subcommand) is in the allowed list
-		if len(args) > 0 {
-			for _, allowed := range rule.Args {
-				if args[0] == allowed {
-					return nil
-				}
+		// Check that ALL user-provided args are in the allowed list
+		allowedSet := make(map[string]bool, len(rule.Args))
+		for _, a := range rule.Args {
+			allowedSet[a] = true
+		}
+		allAllowed := true
+		for _, arg := range args {
+			if !allowedSet[arg] {
+				allAllowed = false
+				break
 			}
 		}
+		if allAllowed && len(args) > 0 {
+			return nil
+		}
 
-		// No args provided but args are restricted
+		// Args not allowed
 		allowedStr := make([]string, len(rule.Args))
 		for i, a := range rule.Args {
 			allowedStr[i] = cmd + " " + a
@@ -555,7 +562,7 @@ func resolvePathVariable(pattern string, appName string) string {
 	case "darwin":
 		replacements["$APP_DATA"] = filepath.Join(home, "Library", "Application Support", appName)
 	default:
-		replacements["$APP_DATA"] = filepath.Join(home, ".config", appName)
+		replacements["$APP_DATA"] = filepath.Join(home, ".local", "share", appName)
 	}
 
 	result := pattern

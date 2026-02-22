@@ -319,6 +319,38 @@ void WebviewEnableFileDrop(void) {
     }
 }
 
+int WebviewGetWidth(void) {
+    if (mainWindow) {
+        return (int)mainWindow.frame.size.width;
+    }
+    return 0;
+}
+
+int WebviewGetHeight(void) {
+    if (mainWindow) {
+        return (int)mainWindow.frame.size.height;
+    }
+    return 0;
+}
+
+int WebviewGetX(void) {
+    if (mainWindow) {
+        return (int)mainWindow.frame.origin.x;
+    }
+    return 0;
+}
+
+int WebviewGetY(void) {
+    if (mainWindow) {
+        // Convert from macOS bottom-left origin to top-left origin
+        NSScreen *screen = [NSScreen mainScreen];
+        CGFloat screenHeight = screen.frame.size.height;
+        CGFloat windowHeight = mainWindow.frame.size.height;
+        return (int)(screenHeight - mainWindow.frame.origin.y - windowHeight);
+    }
+    return 0;
+}
+
 void AppSetBadgeCount(int count) {
     dispatch_async(dispatch_get_main_queue(), ^{
         if (count > 0) {

@@ -8,9 +8,11 @@ type Webview interface {
 	Eval(js string) error
 	SetTitle(title string) error
 	SetSize(w, h int) error
+	GetSize() (int, int)
 	SetMinSize(w, h int) error
 	SetMaxSize(w, h int) error
 	SetPosition(x, y int) error
+	GetPosition() (int, int)
 	Fullscreen() error
 	Minimize() error
 	Maximize() error

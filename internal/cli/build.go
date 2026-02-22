@@ -140,14 +140,20 @@ extern void WebviewSetContentProtection(int enabled);
 extern void WebviewSetVibrancy(const char* style);
 extern void WebviewSetColorScheme(const char* scheme);
 extern void WebviewEnableFileDrop(void);
+extern int WebviewGetWidth(void);
+extern int WebviewGetHeight(void);
+extern int WebviewGetX(void);
+extern int WebviewGetY(void);
 extern void AppSetBadgeCount(int count);
 */
 import "C"
 
 import (
 	"embed"
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	"io"
 	"io/fs"
 	"net"
 	"net/http"
@@ -206,8 +212,14 @@ func checkPath(path string) error {
 	if err != nil {
 		return fmt.Errorf("invalid path: %%w", err)
 	}
+	// Resolve symlinks to prevent traversal attacks
+	resolved, err := filepath.EvalSymlinks(filepath.Dir(abs))
+	if err != nil {
+		resolved = filepath.Dir(abs)
+	}
+	abs = filepath.Join(resolved, filepath.Base(abs))
 	for _, dir := range allowedPaths {
-		if len(abs) >= len(dir) && abs[:len(dir)] == dir {
+		if strings.HasPrefix(abs, dir+string(os.PathSeparator)) || abs == dir {
 			return nil
 		}
 	}
@@ -280,7 +292,7 @@ func registerAPIs() {
 		return "{{.Version}}", nil
 	})
 	registerHandler("app.quit", func(p json.RawMessage) (any, error) {
-		os.Exit(0)
+		C.WebviewClose()
 		return nil, nil
 	})
 	registerHandler("app.dataDir", func(p json.RawMessage) (any, error) {
@@ -293,11 +305,20 @@ func registerAPIs() {
 
 	registerHandler("fs.readFile", func(p json.RawMessage) (any, error) {
 		if err := checkPerm("fs"); err != nil { return nil, err }
-		var params struct { Path string {{.BTick}}json:"path"{{.BTick}} }
+		var params struct {
+			Path     string {{.BTick}}json:"path"{{.BTick}}
+			Encoding string {{.BTick}}json:"encoding"{{.BTick}}
+		}
 		json.Unmarshal(p, &params)
 		if err := checkPath(params.Path); err != nil { return nil, err }
 		data, err := os.ReadFile(params.Path)
-		return string(data), err
+		if err != nil { return nil, err }
+		switch params.Encoding {
+		case "base64", "binary":
+			return base64.StdEncoding.EncodeToString(data), nil
+		default:
+			return string(data), nil
+		}
 	})
 	registerHandler("fs.writeFile", func(p json.RawMessage) (any, error) {
 		if err := checkPerm("fs"); err != nil { return nil, err }
@@ -375,6 +396,18 @@ func registerAPIs() {
 		json.Unmarshal(p, &params)
 		C.WebviewSetSize(C.int(params.Width), C.int(params.Height))
 		return nil, nil
+	})
+	registerHandler("window.getSize", func(p json.RawMessage) (any, error) {
+		return map[string]int{"width": int(C.WebviewGetWidth()), "height": int(C.WebviewGetHeight())}, nil
+	})
+	registerHandler("window.setPosition", func(p json.RawMessage) (any, error) {
+		var params struct { X int {{.BTick}}json:"x"{{.BTick}}; Y int {{.BTick}}json:"y"{{.BTick}} }
+		json.Unmarshal(p, &params)
+		C.WebviewSetPosition(C.int(params.X), C.int(params.Y))
+		return nil, nil
+	})
+	registerHandler("window.getPosition", func(p json.RawMessage) (any, error) {
+		return map[string]int{"x": int(C.WebviewGetX()), "y": int(C.WebviewGetY())}, nil
 	})
 	registerHandler("window.minimize", func(p json.RawMessage) (any, error) {
 		C.WebviewMinimize()
@@ -493,8 +526,36 @@ func main() {
 	}
 	port := listener.Addr().(*net.TCPAddr).Port
 
+	const productionCSP = "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; object-src 'none'; frame-ancestors 'none'"
+	cspMeta := fmt.Sprintf("<meta http-equiv=\"Content-Security-Policy\" content=\"%s\">", productionCSP)
+	fileServer := http.FileServer(http.FS(subFS))
 	mux := http.NewServeMux()
-	mux.Handle("/", http.FileServer(http.FS(subFS)))
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		p := r.URL.Path
+		if p == "/" || strings.HasSuffix(p, ".html") || strings.HasSuffix(p, ".htm") {
+			// Read and inject CSP into HTML files
+			fname := strings.TrimPrefix(p, "/")
+			if fname == "" { fname = "index.html" }
+			f, err := subFS.Open(fname)
+			if err == nil {
+				defer f.Close()
+				data, err := io.ReadAll(f)
+				if err == nil {
+					html := string(data)
+					idx := strings.Index(strings.ToLower(html), "<head>")
+					if idx >= 0 {
+						html = html[:idx+6] + cspMeta + html[idx+6:]
+					} else {
+						html = cspMeta + html
+					}
+					w.Header().Set("Content-Type", "text/html; charset=utf-8")
+					w.Write([]byte(html))
+					return
+				}
+			}
+		}
+		fileServer.ServeHTTP(w, r)
+	})
 	go http.Serve(listener, mux)
 
 	initSecurity()

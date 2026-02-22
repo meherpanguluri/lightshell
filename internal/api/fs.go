@@ -1,6 +1,7 @@
 package api
 
 import (
+	"encoding/base64"
 	"encoding/json"
 	"os"
 	"path/filepath"
@@ -29,7 +30,12 @@ func RegisterFS(router *ipc.Router, policy *security.Policy) {
 		if err != nil {
 			return nil, err
 		}
-		return string(data), nil
+		switch p.Encoding {
+		case "base64", "binary":
+			return base64.StdEncoding.EncodeToString(data), nil
+		default:
+			return string(data), nil
+		}
 	})
 
 	router.Handle("fs.writeFile", func(params json.RawMessage) (any, error) {

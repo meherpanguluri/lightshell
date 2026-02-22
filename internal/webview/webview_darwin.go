@@ -29,6 +29,10 @@ extern void WebviewSetContentProtection(int enabled);
 extern void WebviewSetVibrancy(const char* style);
 extern void WebviewSetColorScheme(const char* scheme);
 extern void WebviewEnableFileDrop(void);
+extern int WebviewGetWidth(void);
+extern int WebviewGetHeight(void);
+extern int WebviewGetX(void);
+extern int WebviewGetY(void);
 */
 import "C"
 import (
@@ -117,6 +121,10 @@ func (w *DarwinWebview) SetSize(width, height int) error {
 	return nil
 }
 
+func (w *DarwinWebview) GetSize() (int, int) {
+	return int(C.WebviewGetWidth()), int(C.WebviewGetHeight())
+}
+
 func (w *DarwinWebview) SetMinSize(width, height int) error {
 	C.WebviewSetMinSize(C.int(width), C.int(height))
 	return nil
@@ -130,6 +138,10 @@ func (w *DarwinWebview) SetMaxSize(width, height int) error {
 func (w *DarwinWebview) SetPosition(x, y int) error {
 	C.WebviewSetPosition(C.int(x), C.int(y))
 	return nil
+}
+
+func (w *DarwinWebview) GetPosition() (int, int) {
+	return int(C.WebviewGetX()), int(C.WebviewGetY())
 }
 
 func (w *DarwinWebview) Fullscreen() error {
