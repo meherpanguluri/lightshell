@@ -47,7 +47,7 @@ export default defineConfig({
         },
       ],
       expressiveCode: {
-        themes: ['github-dark'],
+        themes: ['github-light', 'github-dark'],
         styleOverrides: {
           borderRadius: '12px',
           codeFontFamily: "'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace",

@@ -460,6 +460,20 @@ starlight-toc a[aria-current='true'] {
   --ec-codeLineHeight: 1.7 !important;
 }
 
+/* Use theme-provided background instead of custom warm beige for code blocks.
+   The --code-background var is too similar to syntax token colors in light mode. */
+html[data-theme='light'] .expressive-code {
+  --ec-codeBg: #FFFFFF !important;
+  --ec-frm-edBg: #FFFFFF !important;
+  --ec-frm-trmBg: #FFFFFF !important;
+}
+
+html[data-theme='dark'] .expressive-code {
+  --ec-codeBg: #1E1D1A !important;
+  --ec-frm-edBg: #1E1D1A !important;
+  --ec-frm-trmBg: #1E1D1A !important;
+}
+
 .expressive-code .frame {
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important;
 }
