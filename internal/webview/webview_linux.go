@@ -26,6 +26,10 @@ func (w *LinuxWebview) Eval(js string) error {
 	return fmt.Errorf("linux webview not yet implemented")
 }
 
+func (w *LinuxWebview) AddUserScript(js string) error {
+	return fmt.Errorf("linux webview not yet implemented")
+}
+
 func (w *LinuxWebview) SetTitle(title string) error {
 	return fmt.Errorf("linux webview not yet implemented")
 }
@@ -91,6 +95,10 @@ func (w *LinuxWebview) EnableFileDrop() error {
 }
 
 func (w *LinuxWebview) OnMessage(handler func(msg string)) {}
+
+func (w *LinuxWebview) Screenshot() ([]byte, error) {
+	return nil, fmt.Errorf("screenshot not yet implemented on linux")
+}
 
 func (w *LinuxWebview) Run() error {
 	return fmt.Errorf("linux webview not yet implemented")

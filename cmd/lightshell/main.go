@@ -57,6 +57,11 @@ func main() {
 			fmt.Fprintf(os.Stderr, "Error: %v\n", err)
 			os.Exit(1)
 		}
+	case "mcp":
+		if err := cli.MCP(); err != nil {
+			fmt.Fprintf(os.Stderr, "Error: %v\n", err)
+			os.Exit(1)
+		}
 	case "help", "--help", "-h":
 		printUsage()
 	default:
@@ -80,6 +85,7 @@ Commands:
   keys           Manage signing keys (keys generate)
   release        Sign and publish a release
   config         Get/set global config (config get/set <key> [value])
+  mcp            Run MCP server for AI-assisted development
   version        Print version
 
 Run 'lightshell help' for more information.`)

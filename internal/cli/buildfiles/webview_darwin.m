@@ -137,6 +137,16 @@ void WebviewEval(const char* js) {
     }
 }
 
+void WebviewAddUserScript(const char* js) {
+    if (webView) {
+        NSString *nsJS = [NSString stringWithUTF8String:js];
+        WKUserScript *script = [[WKUserScript alloc] initWithSource:nsJS
+            injectionTime:WKUserScriptInjectionTimeAtDocumentStart
+            forMainFrameOnly:YES];
+        [webView.configuration.userContentController addUserScript:script];
+    }
+}
+
 void WebviewSetTitle(const char* title) {
     if (mainWindow) {
         dispatch_async(dispatch_get_main_queue(), ^{

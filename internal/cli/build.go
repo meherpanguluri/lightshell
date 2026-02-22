@@ -124,6 +124,7 @@ extern void WebviewCreate(const char* title, int width, int height, int minWidth
 extern void WebviewLoadURL(const char* url);
 extern void WebviewLoadHTML(const char* html);
 extern void WebviewEval(const char* js);
+extern void WebviewAddUserScript(const char* js);
 extern void WebviewSetTitle(const char* title);
 extern void WebviewSetSize(int width, int height);
 extern void WebviewSetMinSize(int width, int height);
@@ -236,6 +237,12 @@ func goMessageHandler(msg *C.char) {
 func evalJS(js string) {
 	cJS := C.CString(js)
 	C.WebviewEval(cJS)
+	C.free(unsafe.Pointer(cJS))
+}
+
+func addUserScript(js string) {
+	cJS := C.CString(js)
+	C.WebviewAddUserScript(cJS)
 	C.free(unsafe.Pointer(cJS))
 }
 
@@ -571,10 +578,12 @@ func main() {
 		evalJS(js)
 	}
 
-	evalJS(polyfillsJS)
-	evalJS(clientJS)
-	// Inject defaults CSS as a style tag
-	injectCSS(defaultsCSS)
+	// Use addUserScript so scripts persist across page navigations (including initial LoadURL)
+	addUserScript(polyfillsJS)
+	addUserScript(clientJS)
+	// Inject defaults CSS as a user script
+	cssJS := fmt.Sprintf("(function(){var s=document.createElement('style');s.id='lightshell-defaults';s.textContent=%s;document.head.insertBefore(s,document.head.firstChild)})()", fmt.Sprintf("%q", defaultsCSS))
+	addUserScript(cssJS)
 
 	url := fmt.Sprintf("http://127.0.0.1:%d/{{.EntryFile}}", port)
 	cURL := C.CString(url)

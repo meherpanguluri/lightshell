@@ -29,3 +29,5 @@ Thumbs.db
 # Claude
 claude.md
 CLAUDE.md
+private.pem
+public.pem

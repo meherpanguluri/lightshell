@@ -30,6 +30,14 @@ func Dev() error {
 		return err
 	}
 
+	// Check for --mcp-socket flag (used when launched by the MCP server)
+	var mcpSocketPath string
+	for i, arg := range os.Args {
+		if arg == "--mcp-socket" && i+1 < len(os.Args) {
+			mcpSocketPath = os.Args[i+1]
+		}
+	}
+
 	// Find a free port
 	listener, err := net.Listen("tcp", "127.0.0.1:0")
 	if err != nil {
@@ -84,11 +92,25 @@ func Dev() error {
 		return fmt.Errorf("failed to create window: %w", err)
 	}
 
-	// Wire IPC: webview messages go to router, router can eval JS back
+	// Set up the MCP socket server if --mcp-socket was specified.
+	// This must be done before wiring OnMessage so we can intercept MCP messages.
+	var mcpSrv *mcpSocketServer
+	if mcpSocketPath != "" {
+		mcpSrv = newMCPSocketServer(mcpSocketPath, wv)
+	}
+
+	// Wire IPC: webview messages go to router, router can eval JS back.
+	// When running in MCP mode, messages are first checked for MCP-specific
+	// prefixes (console forwarding, eval results) before being routed to IPC.
 	router.SetEvalFunc(func(js string) {
 		wv.Eval(js)
 	})
 	wv.OnMessage(func(msg string) {
+		// If MCP socket server is active, check for MCP-specific messages first
+		if mcpSrv != nil && mcpSrv.handleMCPMessage(msg) {
+			return // was an MCP message, don't route to IPC
+		}
+
 		response := router.HandleMessage(msg)
 		js := fmt.Sprintf("__lightshell_receive(%s)", response)
 		wv.Eval(js)
@@ -110,12 +132,31 @@ func Dev() error {
 	api.RegisterMenu(router, policy)
 	api.RegisterAppExtended(router, cfg.Name)
 
-	// Inject polyfills + client library
+	// Set up dev tray with Debug Console menu
+	api.SetupDevTray(func(js string) { wv.Eval(js) })
+
+	// Inject polyfills + client library + debug console
 	injectScripts(wv)
+
+	// If MCP mode, inject the console forwarding script that wraps
+	// console.log/warn/error to forward entries to Go via postMessage
+	if mcpSrv != nil {
+		wv.AddUserScript(mcpConsoleForwardScript)
+	}
 
 	// Load the dev URL
 	if err := wv.LoadURL(devURL); err != nil {
 		return fmt.Errorf("failed to load dev URL: %w", err)
+	}
+
+	// Start the MCP socket server if configured
+	if mcpSrv != nil {
+		go func() {
+			if err := mcpSrv.serve(); err != nil {
+				fmt.Fprintf(os.Stderr, "MCP socket server error: %v\n", err)
+			}
+		}()
+		defer mcpSrv.close()
 	}
 
 	// Start file watcher for hot reload
@@ -130,6 +171,9 @@ func Dev() error {
 	go func() {
 		<-sigCh
 		fmt.Println("\nShutting down...")
+		if mcpSrv != nil {
+			mcpSrv.close()
+		}
 		server.Close()
 		wv.Destroy()
 		os.Exit(0)
@@ -140,11 +184,13 @@ func Dev() error {
 }
 
 func injectScripts(wv webview.Webview) {
-	wv.Eval(polyfillsJS)
-	wv.Eval(clientJS)
+	// Use AddUserScript so scripts persist across page navigations (including initial LoadURL)
+	wv.AddUserScript(polyfillsJS)
+	wv.AddUserScript(clientJS)
+	wv.AddUserScript(debugConsoleJS)
 	// Inject defaults CSS as a <style> tag
 	cssInjection := fmt.Sprintf(`(function(){var s=document.createElement('style');s.id='lightshell-defaults';s.textContent=%q;document.head.insertBefore(s,document.head.firstChild)})()`, defaultsCSS)
-	wv.Eval(cssInjection)
+	wv.AddUserScript(cssInjection)
 }
 
 func watchFiles(dir string, onchange func()) {

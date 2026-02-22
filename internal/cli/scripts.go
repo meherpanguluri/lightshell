@@ -12,3 +12,6 @@ var clientJS string
 
 //go:embed scripts/defaults.css
 var defaultsCSS string
+
+//go:embed scripts/debug-console.js
+var debugConsoleJS string

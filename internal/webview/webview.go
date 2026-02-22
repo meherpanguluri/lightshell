@@ -6,6 +6,7 @@ type Webview interface {
 	LoadHTML(html string) error
 	LoadURL(url string) error
 	Eval(js string) error
+	AddUserScript(js string) error
 	SetTitle(title string) error
 	SetSize(w, h int) error
 	GetSize() (int, int)
@@ -23,6 +24,7 @@ type Webview interface {
 	SetColorScheme(scheme string) error
 	EnableFileDrop() error
 	OnMessage(handler func(msg string))
+	Screenshot() ([]byte, error)
 	Run() error
 	Destroy()
 }

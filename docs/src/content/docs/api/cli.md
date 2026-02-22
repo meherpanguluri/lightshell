@@ -168,6 +168,88 @@ All checks passed.
 
 ---
 
+### lightshell mcp
+
+Start the MCP (Model Context Protocol) server for AI-assisted development. The server communicates over stdio using JSON-RPC 2.0 and exposes tools and resources that allow AI agents to interact with your running LightShell app.
+
+**Usage:**
+```bash
+lightshell mcp
+```
+
+**What it does:**
+1. Starts a JSON-RPC 2.0 server over stdio
+2. Automatically launches a `lightshell dev` child process with a Unix domain socket for communication
+3. Exposes tools for screenshots, console log reading, JavaScript evaluation, DOM inspection, and page reloading
+4. Exposes resources like the full API reference and error catalog
+
+**Configuring with AI tools:**
+
+For **Claude Code**, add to your project's `.mcp.json`:
+```json
+{
+  "mcpServers": {
+    "lightshell": {
+      "command": "lightshell",
+      "args": ["mcp"]
+    }
+  }
+}
+```
+
+For **Cursor**, add to `.cursor/mcp.json`:
+```json
+{
+  "mcpServers": {
+    "lightshell": {
+      "command": "lightshell",
+      "args": ["mcp"]
+    }
+  }
+}
+```
+
+**Available tools:**
+
+| Tool | Description |
+|------|-------------|
+| `lightshell_create_project` | Scaffold a new project with starter files |
+| `lightshell_write_file` | Write or overwrite a project file |
+| `lightshell_read_file` | Read a project file's contents |
+| `lightshell_list_files` | List project files (excludes hidden, node_modules, dist) |
+| `lightshell_dev_start` | Start the dev server with hot reload |
+| `lightshell_dev_stop` | Stop the running dev server |
+| `lightshell_screenshot` | Capture a PNG screenshot of the app window |
+| `lightshell_get_console` | Read console.log/error/warn output from the app |
+| `lightshell_build` | Build the app for production |
+| `lightshell_get_dom` | Inspect the DOM tree at a CSS selector |
+| `lightshell_execute_js` | Run JavaScript in the webview and return the result |
+| `lightshell_get_config` | Read the current lightshell.json |
+| `lightshell_update_config` | Patch lightshell.json with merge semantics |
+| `lightshell_doctor` | Run project diagnostics |
+| `lightshell_hot_reload` | Force a page reload after file changes |
+| `lightshell_package` | Build a distributable package (DMG, .deb, .rpm) |
+
+**Available resources:**
+
+| URI | Description |
+|-----|-------------|
+| `lightshell://api-reference` | Complete LightShell API reference |
+| `lightshell://errors` | Error code catalog with troubleshooting guidance |
+
+**Example workflow:**
+
+An AI agent using the MCP server can:
+1. Create a project with `lightshell_create_project`
+2. Write app code with `lightshell_write_file`
+3. Start the app with `lightshell_dev_start`
+4. Take a `lightshell_screenshot` to see the rendered UI
+5. Read `lightshell_get_console` to check for errors
+6. Fix code, call `lightshell_hot_reload`, screenshot again to verify
+7. Build with `lightshell_build` when ready
+
+---
+
 ## Common Workflows
 
 ### Create and Run a New App

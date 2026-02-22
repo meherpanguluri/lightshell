@@ -13,6 +13,7 @@ extern void WebviewCreate(const char* title, int width, int height, int minWidth
 extern void WebviewLoadHTML(const char* html);
 extern void WebviewLoadURL(const char* url);
 extern void WebviewEval(const char* js);
+extern void WebviewAddUserScript(const char* js);
 extern void WebviewSetTitle(const char* title);
 extern void WebviewSetSize(int width, int height);
 extern void WebviewSetMinSize(int width, int height);
@@ -33,9 +34,12 @@ extern int WebviewGetWidth(void);
 extern int WebviewGetHeight(void);
 extern int WebviewGetX(void);
 extern int WebviewGetY(void);
+extern void* WebviewScreenshot(int* outLen);
 */
 import "C"
+
 import (
+	"fmt"
 	"unsafe"
 )
 
@@ -106,6 +110,13 @@ func (w *DarwinWebview) Eval(js string) error {
 	cJS := C.CString(js)
 	defer C.free(unsafe.Pointer(cJS))
 	C.WebviewEval(cJS)
+	return nil
+}
+
+func (w *DarwinWebview) AddUserScript(js string) error {
+	cJS := C.CString(js)
+	defer C.free(unsafe.Pointer(cJS))
+	C.WebviewAddUserScript(cJS)
 	return nil
 }
 
@@ -199,6 +210,16 @@ func (w *DarwinWebview) EnableFileDrop() error {
 
 func (w *DarwinWebview) OnMessage(handler func(msg string)) {
 	messageHandler = handler
+}
+
+func (w *DarwinWebview) Screenshot() ([]byte, error) {
+	var outLen C.int
+	ptr := C.WebviewScreenshot(&outLen)
+	if ptr == nil {
+		return nil, fmt.Errorf("screenshot failed: webview not available or timed out")
+	}
+	defer C.free(ptr)
+	return C.GoBytes(ptr, outLen), nil
 }
 
 func (w *DarwinWebview) Run() error {

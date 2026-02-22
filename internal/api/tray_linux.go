@@ -14,3 +14,6 @@ func handleTraySet(params json.RawMessage) (any, error) {
 func handleTrayRemove(params json.RawMessage) (any, error) {
 	return nil, fmt.Errorf("tray.remove not yet implemented on linux")
 }
+
+func SetupDevTray(evalFunc func(string)) {}
+

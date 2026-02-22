@@ -10,12 +10,34 @@ package api
 
 extern void TraySet(const char* tooltip);
 extern void TrayRemove();
+extern void TraySetDevMenu();
 */
 import "C"
 import (
 	"encoding/json"
 	"unsafe"
 )
+
+var trayEvalFunc func(string)
+
+//export goTrayMenuAction
+func goTrayMenuAction(itemId *C.char) {
+	id := C.GoString(itemId)
+	if trayEvalFunc == nil {
+		return
+	}
+	switch id {
+	case "debug.toggle":
+		trayEvalFunc("if(window.__lightshell_debug)window.__lightshell_debug.toggle()")
+	case "app.quit":
+		trayEvalFunc("lightshell.app.quit()")
+	}
+}
+
+func SetupDevTray(evalFunc func(string)) {
+	trayEvalFunc = evalFunc
+	C.TraySetDevMenu()
+}
 
 func handleTraySet(params json.RawMessage) (any, error) {
 	var p struct {

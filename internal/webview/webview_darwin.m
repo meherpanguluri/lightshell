@@ -137,6 +137,16 @@ void WebviewEval(const char* js) {
     }
 }
 
+void WebviewAddUserScript(const char* js) {
+    if (webView) {
+        NSString *nsJS = [NSString stringWithUTF8String:js];
+        WKUserScript *script = [[WKUserScript alloc] initWithSource:nsJS
+            injectionTime:WKUserScriptInjectionTimeAtDocumentStart
+            forMainFrameOnly:YES];
+        [webView.configuration.userContentController addUserScript:script];
+    }
+}
+
 void WebviewSetTitle(const char* title) {
     if (mainWindow) {
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -349,4 +359,45 @@ int WebviewGetY(void) {
         return (int)(screenHeight - mainWindow.frame.origin.y - windowHeight);
     }
     return 0;
+}
+
+// Returns PNG data as a malloc'd buffer. Caller must free. Sets *outLen to data length.
+// Returns NULL on failure.
+void* WebviewScreenshot(int* outLen) {
+    __block NSData *pngData = nil;
+
+    dispatch_semaphore_t sem = dispatch_semaphore_create(0);
+
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (webView == nil) {
+            dispatch_semaphore_signal(sem);
+            return;
+        }
+        WKSnapshotConfiguration *config = [[WKSnapshotConfiguration alloc] init];
+        [webView takeSnapshotWithConfiguration:config completionHandler:^(NSImage *image, NSError *error) {
+            if (image && !error) {
+                CGImageRef cgRef = [image CGImageForProposedRect:NULL context:nil hints:nil];
+                if (cgRef) {
+                    NSBitmapImageRep *rep = [[NSBitmapImageRep alloc] initWithCGImage:cgRef];
+                    pngData = [rep representationUsingType:NSBitmapImageFileTypePNG properties:@{}];
+                    [pngData retain];
+                }
+            }
+            dispatch_semaphore_signal(sem);
+        }];
+    });
+
+    // Wait up to 5 seconds for the screenshot to complete
+    dispatch_semaphore_wait(sem, dispatch_time(DISPATCH_TIME_NOW, 5 * NSEC_PER_SEC));
+
+    if (pngData == nil) {
+        *outLen = 0;
+        return NULL;
+    }
+
+    *outLen = (int)[pngData length];
+    void *buf = malloc(*outLen);
+    memcpy(buf, [pngData bytes], *outLen);
+    [pngData release];
+    return buf;
 }

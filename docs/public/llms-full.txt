@@ -1,14 +1,17 @@
 # LightShell -- Complete Documentation for AI Consumption
 
-LightShell is a desktop app framework where you write only JS/HTML/CSS and get a native binary under 5MB. It uses system webviews (WKWebView on macOS, WebKitGTK on Linux) instead of bundling a browser. The Go backend is invisible to the developer -- they never write or configure Go code. There are 15 API namespaces: window, fs, dialog, clipboard, shell, notify, tray, menu, system, app, store, http, process, shortcuts, updater.
+LightShell is a desktop app framework where you write only JS/HTML/CSS and get a native binary under 5MB. It uses system webviews (WKWebView on macOS, WebKitGTK on Linux) instead of bundling a browser. The Go backend is invisible to the developer -- they never write or configure Go code. There are 15 API namespaces: window, fs, dialog, clipboard, shell, notify, tray, menu, system, app, store, http, process, shortcuts, updater. LightShell includes a built-in MCP (Model Context Protocol) server that lets AI agents screenshot, inspect DOM, evaluate JS, read console logs, and reload your running app.
 
 ## Installation
 
 ```bash
 # Install via npm (no Go required -- prebuilt binaries are downloaded)
-npm install -g lightshell
+npm install -g @lightshell/cli
 
-# Create a new project
+# Or create a project directly (no global install needed)
+npx @lightshell/create my-app
+
+# Create a new project (if installed globally)
 lightshell init my-app
 cd my-app
 lightshell dev
@@ -24,6 +27,7 @@ A LightShell app has three files: lightshell.json (config), an HTML entry point,
   "name": "hello-world",
   "version": "1.0.0",
   "entry": "src/index.html",
+  "permissions": ["fs", "dialog", "clipboard", "shell", "notification"],
   "window": {
     "title": "Hello World",
     "width": 800,
@@ -786,10 +790,19 @@ General:
 
 ## Permission System
 
-LightShell has two modes: permissive (default) and restricted.
-- Permissive: no permissions key in lightshell.json = everything allowed
-- Restricted: add a permissions key to scope API access
+LightShell has two permission formats:
 
+**Simple format (recommended for most apps)** -- just list which API namespaces you need:
+```json
+{
+  "permissions": ["fs", "dialog", "clipboard", "shell", "notification"]
+}
+```
+This is what `lightshell init` generates by default. It enables the listed APIs without path/URL scoping.
+
+Available permission names: fs, dialog, clipboard, shell, notification, http, process, store, shortcuts, updater, tray, menu, system, window, app.
+
+**Advanced format (fine-grained scoping for production apps):**
 ```json
 {
   "permissions": {
@@ -810,6 +823,8 @@ LightShell has two modes: permissive (default) and restricted.
   }
 }
 ```
+
+**No permissions key at all** = permissive mode (everything allowed, no restrictions).
 
 Path variables: $APP_DATA, $HOME, $TEMP, $DOWNLOADS, $DESKTOP
 Glob patterns: * matches within directory, ** matches recursively
@@ -849,6 +864,7 @@ lightshell build --target rpm           # Fedora/RHEL .rpm package
 lightshell build --target all           # All formats for current OS
 lightshell build --devtools             # Include DevTools in production build
 lightshell doctor                       # Scan code for cross-platform compatibility issues
+lightshell mcp                          # Start MCP server for AI-assisted development
 ```
 
 **Default output:**
@@ -883,20 +899,7 @@ lightshell doctor                       # Scan code for cross-platform compatibi
       }
     }
   },
-  "permissions": {
-    "fs": {
-      "read": ["$APP_DATA/**", "$HOME/Documents/**"],
-      "write": ["$APP_DATA/**"]
-    },
-    "http": {
-      "allow": ["https://api.example.com/*"]
-    },
-    "process": {
-      "exec": [
-        { "cmd": "git", "args": ["status", "log", "diff"] }
-      ]
-    }
-  },
+  "permissions": ["fs", "dialog", "clipboard", "shell", "notification"],
   "security": {
     "csp": "default-src 'self'; script-src 'self' https://cdn.example.com"
   },
@@ -923,10 +926,10 @@ lightshell doctor                       # Scan code for cross-platform compatibi
 - build.appId: Reverse-domain app identifier (e.g. com.company.app)
 - build.mac.identity: macOS code signing identity
 - build.mac.entitlements: macOS entitlements for sandboxing
-- permissions: Restrict API access (omit for permissive mode where everything is allowed)
-- permissions.fs.read/write: Glob patterns for allowed file paths ($APP_DATA, $HOME, $TEMP, $DOWNLOADS, $DESKTOP)
-- permissions.http.allow: URL patterns for allowed HTTP requests
-- permissions.process.exec: Allowed commands and arguments (args: ["*"] allows any arguments)
+- permissions: Simple format is an array of API names: ["fs", "dialog", "clipboard", "shell", "notification"]. Advanced format is an object with scoped rules (see Permission System section). Omit entirely for permissive mode where everything is allowed.
+- permissions (advanced).fs.read/write: Glob patterns for allowed file paths ($APP_DATA, $HOME, $TEMP, $DOWNLOADS, $DESKTOP)
+- permissions (advanced).http.allow: URL patterns for allowed HTTP requests
+- permissions (advanced).process.exec: Allowed commands and arguments (args: ["*"] allows any arguments)
 - security.csp: Custom Content Security Policy (auto-injected into HTML)
 - updater.enabled: Enable auto-update checking
 - updater.endpoint: URL to the JSON update manifest
@@ -966,6 +969,95 @@ Host this JSON file at the updater.endpoint URL:
 }
 ```
 
+## MCP Server (AI-Assisted Development)
+
+LightShell includes a built-in MCP (Model Context Protocol) server that enables AI agents to interact with your running app in real time. The server communicates over stdio using JSON-RPC 2.0.
+
+### Starting the MCP Server
+
+```bash
+lightshell mcp
+```
+
+This starts the MCP server, which automatically launches a `lightshell dev` child process and communicates with it over a Unix domain socket. AI agents connect to the MCP server via stdio.
+
+### Configuration
+
+To use the MCP server with AI tools, add it to the tool's MCP configuration.
+
+**Claude Code** (`.mcp.json` in project root):
+```json
+{
+  "mcpServers": {
+    "lightshell": {
+      "command": "lightshell",
+      "args": ["mcp"]
+    }
+  }
+}
+```
+
+**Cursor** (`.cursor/mcp.json`):
+```json
+{
+  "mcpServers": {
+    "lightshell": {
+      "command": "lightshell",
+      "args": ["mcp"]
+    }
+  }
+}
+```
+
+### Available Tools
+
+The MCP server exposes these tools for AI agents:
+
+| Tool | Description |
+|------|-------------|
+| lightshell_create_project | Scaffold a new LightShell project with lightshell.json, src/index.html, src/app.js, src/style.css. |
+| lightshell_write_file | Write or overwrite a file in the project. Path is relative to project root. Auto-creates parent directories. |
+| lightshell_read_file | Read a file's contents from the project. Path is relative to project root. |
+| lightshell_list_files | List all files in the project (or a subdirectory). Excludes hidden files, node_modules, dist. |
+| lightshell_dev_start | Start the dev server with hot reload. Opens a native window and MCP socket for commands. |
+| lightshell_dev_stop | Stop the running dev server and close the app window. |
+| lightshell_screenshot | Capture a PNG screenshot of the app window. Optional delay (ms) for animations. Returns base64-encoded image. |
+| lightshell_get_console | Read console.log/warn/error entries from the app. Filter by level, set line count (max 200). |
+| lightshell_build | Build the app for production. Creates .app (macOS) or AppImage (Linux). Stops dev if running. |
+| lightshell_get_dom | Inspect the DOM tree at a CSS selector with configurable depth. Returns HTML structure. |
+| lightshell_execute_js | Execute JavaScript in the webview context and return the result. |
+| lightshell_get_config | Read the current lightshell.json as a JSON object. |
+| lightshell_update_config | Merge a patch into lightshell.json. Null values delete keys. Nested objects merge recursively. |
+| lightshell_doctor | Run diagnostics on the project. Checks dependencies, config, and compatibility issues. |
+| lightshell_hot_reload | Force a page reload in the running app after file changes. |
+| lightshell_package | Package the app for distribution (DMG, .deb, .rpm). Optionally code-sign on macOS. |
+
+### Available Resources
+
+| URI | Description |
+|-----|-------------|
+| lightshell://api-reference | Complete LightShell API reference with all namespaces, methods, and examples |
+| lightshell://errors | Error code catalog with causes and troubleshooting guidance |
+
+### Example Workflow
+
+A typical AI-assisted development session using the MCP server:
+
+1. Agent calls `lightshell_create_project` to scaffold a new app
+2. Agent calls `lightshell_write_file` to write index.html, app.js, style.css
+3. Agent calls `lightshell_dev_start` to launch the app window
+4. Agent calls `lightshell_screenshot` to see the rendered UI
+5. Agent calls `lightshell_get_console` to check for JS errors
+6. Agent fixes code with `lightshell_write_file`, calls `lightshell_hot_reload`
+7. Agent calls `lightshell_screenshot` again to verify the fix
+8. Agent calls `lightshell_build` to produce a native binary
+
+This loop -- write, screenshot, inspect, fix, reload, verify -- enables AI agents to iteratively build and debug LightShell apps with visual feedback.
+
+### Architecture
+
+The MCP server (parent process) communicates with the `lightshell dev` process (child) over a Unix domain socket with 0600 permissions. Commands are sent as JSON-delimited messages. The dev process handles screenshot capture via the native webview API, console log forwarding via injected JavaScript that wraps console.log/warn/error, and JS evaluation via the webview's eval mechanism with result callbacks through postMessage.
+
 ## Important Rules for AI Code Generation
 
 1. Use `window.lightshell.*` APIs, NOT Node.js APIs.
@@ -987,4 +1079,5 @@ Host this JSON file at the updater.endpoint URL:
 17. Event listener methods (onResize, onMove, onFocus, onBlur, onClick, watch) return an unsubscribe function. Call it to stop listening.
 18. `lightshell.process.exec()` does NOT use a shell. Pass the command and arguments separately. Do not pass a shell command string.
 19. All file paths in `lightshell.fs` are real filesystem paths, not URLs. Use forward slashes on all platforms.
-20. When generating a complete app, always include all three files: lightshell.json, src/index.html, and src/app.js (or inline <script> in the HTML).
+20. When generating a complete app, always include all three files: lightshell.json (with a "permissions" array listing needed APIs), src/index.html, and src/app.js (or inline <script> in the HTML).
+21. `lightshell.system.platform()` returns `"darwin"` on macOS, NOT `"macos"`. Always check for `"darwin"` in platform-conditional code.

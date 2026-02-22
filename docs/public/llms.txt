@@ -1,6 +1,6 @@
 # LightShell
 
-> LightShell is a lightweight desktop app framework. Write JS/HTML/CSS, get native apps under 5MB. Uses system webviews (WKWebView on macOS, WebKitGTK on Linux). 15 API namespaces covering window management, file system, dialogs, clipboard, HTTP, storage, process execution, global shortcuts, auto-updates, and more. Designed for AI code generation.
+> LightShell is a lightweight desktop app framework. Write JS/HTML/CSS, get native apps under 5MB. Uses system webviews (WKWebView on macOS, WebKitGTK on Linux). 15 API namespaces covering window management, file system, dialogs, clipboard, HTTP, storage, process execution, global shortcuts, auto-updates, and more. Built-in MCP server for AI-assisted development -- AI agents can screenshot, inspect DOM, eval JS, and reload your app live. Designed for AI code generation.
 
 ## Docs
 
@@ -28,7 +28,7 @@
 - [API: Updater](https://lightshell.dev/docs/api/updater/): Auto-update with SHA256 verification
 - [API: Events](https://lightshell.dev/docs/api/events/): Global event listener (lightshell.on)
 - [API: Configuration](https://lightshell.dev/docs/api/config/): Complete lightshell.json reference
-- [API: CLI](https://lightshell.dev/docs/api/cli/): Command-line interface — dev, build, doctor, init
+- [API: CLI](https://lightshell.dev/docs/api/cli/): Command-line interface — dev, build, doctor, init, mcp
 - [API: Error Codes](https://lightshell.dev/docs/api/errors/): All error codes (FS_NOT_FOUND, FS_PERMISSION_DENIED, HTTP_TIMEOUT, PROCESS_NOT_FOUND, etc.) and troubleshooting
 - [Guide: File System](https://lightshell.dev/docs/guides/file-system/): Working with files, paths, and directories in detail
 - [Guide: Menus & Tray](https://lightshell.dev/docs/guides/menus-tray/): System tray icons, menus, and app menu bars
@@ -73,6 +73,7 @@
 - [LLM Integration: AGENTS.md](https://lightshell.dev/docs/llm/agents-md/): AGENTS.md for Claude Code and Codex
 - [LLM Integration: Example Prompts](https://lightshell.dev/docs/llm/example-prompts/): Copy-paste prompts that produce working apps
 - [LLM Integration: Common Mistakes](https://lightshell.dev/docs/llm/common-mistakes/): Mistakes AI models make and how to prevent them
+- [MCP Server](https://lightshell.dev/docs/api/cli/#lightshell-mcp): Built-in MCP server for AI-assisted development -- screenshot, console, eval, DOM inspection, reload
 - [Guide: Single-File Apps](https://lightshell.dev/docs/guides/single-file-apps/): Build an entire app in one HTML file
 - [Guide: Error Handling](https://lightshell.dev/docs/guides/error-handling/): Handle errors gracefully in LightShell apps
 - [Guide: Migrate from Electron](https://lightshell.dev/docs/guides/migration-from-electron/): Moving from Electron to LightShell
