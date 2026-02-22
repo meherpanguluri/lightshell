@@ -90,11 +90,11 @@ For format-specific configuration like code signing, see the individual format g
 
 ## Detailed Guides
 
-- [macOS App Bundle](/guides/packaging/app-bundle/) — the default macOS format
-- [DMG Installer](/guides/packaging/dmg/) — drag-to-install disk image
-- [AppImage](/guides/packaging/appimage/) — portable Linux executable
-- [.deb Package](/guides/packaging/deb/) — for Debian and Ubuntu
-- [.rpm Package](/guides/packaging/rpm/) — for Fedora and RHEL
-- [Code Signing](/guides/packaging/code-signing/) — sign and notarize for macOS
-- [App Icons](/guides/packaging/icons/) — create and configure icons
-- [App Identifier](/guides/packaging/app-id/) — choose a unique app ID
+- [macOS App Bundle](/docs/guides/packaging/app-bundle/) — the default macOS format
+- [DMG Installer](/docs/guides/packaging/dmg/) — drag-to-install disk image
+- [AppImage](/docs/guides/packaging/appimage/) — portable Linux executable
+- [.deb Package](/docs/guides/packaging/deb/) — for Debian and Ubuntu
+- [.rpm Package](/docs/guides/packaging/rpm/) — for Fedora and RHEL
+- [Code Signing](/docs/guides/packaging/code-signing/) — sign and notarize for macOS
+- [App Icons](/docs/guides/packaging/icons/) — create and configure icons
+- [App Identifier](/docs/guides/packaging/app-id/) — choose a unique app ID

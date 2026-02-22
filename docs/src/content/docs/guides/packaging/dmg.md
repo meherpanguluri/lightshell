@@ -76,7 +76,7 @@ This signs the `.app` bundle before packaging it into the DMG. You must have a D
 }
 ```
 
-See [Code Signing](/guides/packaging/code-signing/) for the full setup process.
+See [Code Signing](/docs/guides/packaging/code-signing/) for the full setup process.
 
 ## Adding Notarization
 
@@ -88,7 +88,7 @@ lightshell build --target dmg --sign --notarize
 
 This submits the DMG to Apple's notarization service, waits for approval, and staples the notarization ticket to the DMG. Users will see no security warnings at all when opening your app.
 
-Notarization requires your Apple ID and Team ID in the configuration. See [Code Signing](/guides/packaging/code-signing/) for details.
+Notarization requires your Apple ID and Team ID in the configuration. See [Code Signing](/docs/guides/packaging/code-signing/) for details.
 
 ## Typical Distribution Workflow
 

@@ -13,7 +13,7 @@ If you do not want to run a separate release server, you can publish updates dir
 - You do not need download analytics or a release dashboard
 - Your release cadence is moderate (not multiple times per day)
 
-**Choose [lightshell-server](/guides/auto-updates/release-server/) when:**
+**Choose [lightshell-server](/docs/guides/auto-updates/release-server/) when:**
 - You want a dashboard with download stats and audit logs
 - You need to manage releases for multiple apps in one place
 - You want automatic manifest generation from uploaded binaries
@@ -200,14 +200,14 @@ The GitHub API has rate limits that apply to unauthenticated requests:
 - **Unauthenticated:** 60 requests per hour per IP
 - **Authenticated:** 5,000 requests per hour
 
-For most apps, the default `24h` check interval stays well within the unauthenticated limit. If you have many users on the same network (e.g., a corporate deployment), consider using a longer interval or switching to [lightshell-server](/guides/auto-updates/release-server/).
+For most apps, the default `24h` check interval stays well within the unauthenticated limit. If you have many users on the same network (e.g., a corporate deployment), consider using a longer interval or switching to [lightshell-server](/docs/guides/auto-updates/release-server/).
 
 ## Private Repositories
 
 For private repositories, users need a GitHub token to access release assets. This is not practical for distributed apps. If your repository is private, use one of these alternatives:
 
 - Make the repository public (release assets are publicly downloadable)
-- Use [lightshell-server](/guides/auto-updates/release-server/) to host releases separately
+- Use [lightshell-server](/docs/guides/auto-updates/release-server/) to host releases separately
 - Use a public repository just for releases (keep your source code private in a separate repo)
 
 ## Limitations

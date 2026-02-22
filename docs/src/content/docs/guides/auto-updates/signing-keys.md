@@ -66,7 +66,7 @@ The private key file at `~/.lightshell/signing-key.pem` is created with `0600` p
 - **Never** commit it to version control
 - **Never** share it in chat, email, or issue trackers
 - Store a backup in a password manager or encrypted drive
-- In CI/CD, store it as an encrypted secret (see [CI/CD](/guides/auto-updates/ci-cd/))
+- In CI/CD, store it as an encrypted secret (see [CI/CD](/docs/guides/auto-updates/ci-cd/))
 
 If you lose the private key, you cannot sign new releases that match the public key embedded in existing app installations. You would need to ship a new version with a rotated public key (see [Key Rotation](#key-rotation) below).
 
@@ -183,7 +183,7 @@ env:
 
 The `lightshell release --sign` command checks for the `LIGHTSHELL_SIGNING_KEY` environment variable before falling back to the file at `~/.lightshell/signing-key.pem`. The variable should contain the full PEM-encoded key contents.
 
-See [CI/CD](/guides/auto-updates/ci-cd/) for a complete GitHub Actions workflow.
+See [CI/CD](/docs/guides/auto-updates/ci-cd/) for a complete GitHub Actions workflow.
 
 ## Verifying a Signature Manually
 

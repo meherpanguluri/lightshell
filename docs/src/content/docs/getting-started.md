@@ -85,6 +85,6 @@ You never wrote Go. You never configured a build system. You wrote JS and got a 
 
 ## Next Steps
 
-- [Build your first real app](/tutorial/01-your-first-app/) — a step-by-step tutorial
-- [Use native APIs](/tutorial/02-native-apis/) — file system, dialogs, clipboard, and more
-- [API Reference](/api/window/) — complete documentation for every API
+- [Build your first real app](/docs/tutorial/01-your-first-app/) — a step-by-step tutorial
+- [Use native APIs](/docs/tutorial/02-native-apis/) — file system, dialogs, clipboard, and more
+- [API Reference](/docs/api/window/) — complete documentation for every API

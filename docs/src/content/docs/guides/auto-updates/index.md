@@ -94,7 +94,7 @@ That is the entire integration. Three steps, no external tools, no package manag
 
 Every update is verified with a SHA256 hash before installation. If the hash in the manifest does not match the downloaded archive, the update is rejected and the existing binary is preserved. The manifest endpoint must use HTTPS in production builds (HTTP is allowed in dev mode for local testing).
 
-See [Update Security](/guides/auto-updates/security/) for the full security model.
+See [Update Security](/docs/guides/auto-updates/security/) for the full security model.
 
 ## What Gets Updated
 
@@ -102,9 +102,9 @@ LightShell replaces the app binary itself. On macOS, it replaces the executable 
 
 ## Detailed Guides
 
-- [Update Setup](/guides/auto-updates/setup/) -- configure auto-updates step by step
-- [Hosting Releases](/guides/auto-updates/hosting-releases/) -- where and how to host your update files
-- [Update Manifest](/guides/auto-updates/update-manifest/) -- the JSON manifest format in detail
-- [Update Flow](/guides/auto-updates/update-flow/) -- how downloading and installing works internally
-- [Update Security](/guides/auto-updates/security/) -- SHA256 verification and HTTPS requirements
-- [Update UI Patterns](/guides/auto-updates/ui-patterns/) -- common patterns for presenting updates to users
+- [Update Setup](/docs/guides/auto-updates/setup/) -- configure auto-updates step by step
+- [Hosting Releases](/docs/guides/auto-updates/hosting-releases/) -- where and how to host your update files
+- [Update Manifest](/docs/guides/auto-updates/update-manifest/) -- the JSON manifest format in detail
+- [Update Flow](/docs/guides/auto-updates/update-flow/) -- how downloading and installing works internally
+- [Update Security](/docs/guides/auto-updates/security/) -- SHA256 verification and HTTPS requirements
+- [Update UI Patterns](/docs/guides/auto-updates/ui-patterns/) -- common patterns for presenting updates to users

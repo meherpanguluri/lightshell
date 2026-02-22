@@ -469,7 +469,7 @@ LightShell Error [updater.install]: Signature verification failed
 
 **Cause:** The Ed25519 signature in the manifest does not verify against the downloaded archive and the embedded public key. This may indicate a key mismatch, a tampered archive, or a corrupted signature.
 
-**Solution:** Verify you are signing releases with the private key that matches the `updater.publicKey` in `lightshell.json`. See [Signing Keys](/guides/auto-updates/signing-keys/).
+**Solution:** Verify you are signing releases with the private key that matches the `updater.publicKey` in `lightshell.json`. See [Signing Keys](/docs/guides/auto-updates/signing-keys/).
 
 ---
 

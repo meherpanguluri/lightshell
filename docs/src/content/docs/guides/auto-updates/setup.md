@@ -63,7 +63,7 @@ Create a `latest.json` file on your server. This tells LightShell what the lates
 }
 ```
 
-See [Update Manifest](/guides/auto-updates/update-manifest/) for the full format specification.
+See [Update Manifest](/docs/guides/auto-updates/update-manifest/) for the full format specification.
 
 ## Step 3: Add Update Check to Your App
 
@@ -132,7 +132,7 @@ When you are ready to ship updates:
 4. Update your `latest.json` with the new version, URL, and hash
 5. Upload both the archive and the manifest to your server
 
-See [Hosting Releases](/guides/auto-updates/hosting-releases/) for detailed hosting options including GitHub Releases and S3.
+See [Hosting Releases](/docs/guides/auto-updates/hosting-releases/) for detailed hosting options including GitHub Releases and S3.
 
 ## Background Checks
 

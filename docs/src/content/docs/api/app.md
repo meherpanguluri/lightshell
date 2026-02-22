@@ -244,7 +244,7 @@ lightshell.app.onProtocol(async (url) => {
 })
 ```
 
-See the [Deep Linking](/guides/deep-linking/) guide for detailed examples and platform-specific behavior.
+See the [Deep Linking](/docs/guides/deep-linking/) guide for detailed examples and platform-specific behavior.
 
 ---
 

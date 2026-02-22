@@ -93,7 +93,7 @@ Use the `@` mention to include the file as context:
 3. Type `@https://lightshell.dev/llms-full.txt` to include the full reference
 4. Ask your question or describe what you want to build
 
-Alternatively, add it to your project's `.cursorrules` file so every conversation automatically has context. See the [Cursor Rules](/llm/cursor-rules/) page.
+Alternatively, add it to your project's `.cursorrules` file so every conversation automatically has context. See the [Cursor Rules](/docs/llm/cursor-rules/) page.
 
 ### In a System Prompt
 
@@ -112,7 +112,7 @@ Always use lightshell.* APIs for native features. Never use Node.js APIs.
 
 ### In Claude Code (AGENTS.md)
 
-Claude Code reads project-level instruction files automatically. You can reference the llms-full.txt content in your AGENTS.md file or simply rely on the [AGENTS.md template](/llm/agents-md/) which includes a summary of all APIs.
+Claude Code reads project-level instruction files automatically. You can reference the llms-full.txt content in your AGENTS.md file or simply rely on the [AGENTS.md template](/docs/llm/agents-md/) which includes a summary of all APIs.
 
 ### In GitHub Copilot
 

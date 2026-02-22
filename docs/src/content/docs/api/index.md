@@ -9,21 +9,21 @@ LightShell exposes a complete set of native APIs through the `window.lightshell`
 
 | # | Namespace | Methods | Priority | Description |
 |---|-----------|---------|----------|-------------|
-| 1 | [window](/api/window/) | setTitle, setSize, getSize, setPosition, getPosition, minimize, maximize, fullscreen, restore, close | P0 | Window management and state |
-| 2 | [fs](/api/fs/) | readFile, writeFile, readDir, exists, stat, mkdir, remove, watch | P0 | File system access |
-| 3 | [dialog](/api/dialog/) | open, save, message, confirm, prompt | P0 | Native file pickers and message dialogs |
-| 4 | [clipboard](/api/clipboard/) | read, write | P0 | System clipboard text access |
-| 5 | [system](/api/system/) | platform, arch, homeDir, tempDir, hostname | P0 | OS information and system paths |
-| 6 | [app](/api/app/) | quit, version, dataDir | P0 | Application lifecycle and metadata |
-| 7 | [shell](/api/shell/) | open | P0 | Open URLs and files with system defaults |
-| 8 | [notify](/api/notify/) | send | P1 | System notifications |
-| 9 | [tray](/api/tray/) | set, remove, onClick | P1 | System tray icon and menu |
-| 10 | [menu](/api/menu/) | set | P1 | Application menu bar |
-| 11 | [store](/api/store/) | get, set, delete, has, keys, clear | P0 | Persistent key-value storage |
-| 12 | [http](/api/http/) | fetch, download | P0 | CORS-free HTTP requests |
-| 13 | [process](/api/process/) | exec | P1 | Scoped system command execution |
-| 14 | [shortcuts](/api/shortcuts/) | register, unregister, unregisterAll, isRegistered | P1 | Global keyboard shortcuts |
-| 15 | [updater](/api/updater/) | check, install, checkAndInstall, onProgress | P1 | Auto-update mechanism |
+| 1 | [window](/docs/api/window/) | setTitle, setSize, getSize, setPosition, getPosition, minimize, maximize, fullscreen, restore, close | P0 | Window management and state |
+| 2 | [fs](/docs/api/fs/) | readFile, writeFile, readDir, exists, stat, mkdir, remove, watch | P0 | File system access |
+| 3 | [dialog](/docs/api/dialog/) | open, save, message, confirm, prompt | P0 | Native file pickers and message dialogs |
+| 4 | [clipboard](/docs/api/clipboard/) | read, write | P0 | System clipboard text access |
+| 5 | [system](/docs/api/system/) | platform, arch, homeDir, tempDir, hostname | P0 | OS information and system paths |
+| 6 | [app](/docs/api/app/) | quit, version, dataDir | P0 | Application lifecycle and metadata |
+| 7 | [shell](/docs/api/shell/) | open | P0 | Open URLs and files with system defaults |
+| 8 | [notify](/docs/api/notify/) | send | P1 | System notifications |
+| 9 | [tray](/docs/api/tray/) | set, remove, onClick | P1 | System tray icon and menu |
+| 10 | [menu](/docs/api/menu/) | set | P1 | Application menu bar |
+| 11 | [store](/docs/api/store/) | get, set, delete, has, keys, clear | P0 | Persistent key-value storage |
+| 12 | [http](/docs/api/http/) | fetch, download | P0 | CORS-free HTTP requests |
+| 13 | [process](/docs/api/process/) | exec | P1 | Scoped system command execution |
+| 14 | [shortcuts](/docs/api/shortcuts/) | register, unregister, unregisterAll, isRegistered | P1 | Global keyboard shortcuts |
+| 15 | [updater](/docs/api/updater/) | check, install, checkAndInstall, onProgress | P1 | Auto-update mechanism |
 
 **P0** = core APIs available from day one. **P1** = important APIs that ship in v1 but are secondary to core functionality.
 
@@ -79,7 +79,7 @@ document.addEventListener('click', (e) => {
 
 ## Event System
 
-LightShell also provides an event system for reacting to asynchronous changes. See the [Events](/api/events/) reference for the full list.
+LightShell also provides an event system for reacting to asynchronous changes. See the [Events](/docs/api/events/) reference for the full list.
 
 ```js
 const unsubscribe = lightshell.on('window.resize', (data) => {
@@ -89,7 +89,7 @@ const unsubscribe = lightshell.on('window.resize', (data) => {
 
 ## Configuration
 
-All app settings, permissions, and build options are defined in `lightshell.json`. See the [Configuration](/api/config/) reference.
+All app settings, permissions, and build options are defined in `lightshell.json`. See the [Configuration](/docs/api/config/) reference.
 
 ## Key Principles
 

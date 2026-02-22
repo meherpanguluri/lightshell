@@ -106,7 +106,7 @@ To open an unsigned app:
 
 This only needs to be done once. After that, the app opens normally.
 
-For distribution to a wider audience, code signing eliminates this friction entirely. See the [Code Signing](/guides/packaging/code-signing/) guide.
+For distribution to a wider audience, code signing eliminates this friction entirely. See the [Code Signing](/docs/guides/packaging/code-signing/) guide.
 
 ## Customizing the Build
 
@@ -122,7 +122,7 @@ Provide a 512x512 or 1024x1024 PNG image:
 }
 ```
 
-LightShell converts it to `.icns` format with multiple resolutions (16x16 through 512x512 at 1x and 2x). See the [App Icons](/guides/packaging/icons/) guide for details.
+LightShell converts it to `.icns` format with multiple resolutions (16x16 through 512x512 at 1x and 2x). See the [App Icons](/docs/guides/packaging/icons/) guide for details.
 
 ### App Identifier
 
@@ -136,7 +136,7 @@ Set a reverse-domain identifier for your app:
 }
 ```
 
-This is used as the macOS bundle identifier. Choose it carefully before your first release — changing it later creates a new identity from the OS perspective. See the [App Identifier](/guides/packaging/app-id/) guide.
+This is used as the macOS bundle identifier. Choose it carefully before your first release — changing it later creates a new identity from the OS perspective. See the [App Identifier](/docs/guides/packaging/app-id/) guide.
 
 ## Binary Size
 
@@ -159,7 +159,7 @@ A `.app` bundle can be distributed by:
 
 - Compressing it into a `.zip` file and sharing directly
 - Uploading to GitHub Releases
-- Packaging it in a [DMG](/guides/packaging/dmg/) for a professional drag-to-install experience
+- Packaging it in a [DMG](/docs/guides/packaging/dmg/) for a professional drag-to-install experience
 - Creating a Homebrew Cask formula
 
-For the best user experience when distributing publicly, use a signed DMG. See [DMG Installer](/guides/packaging/dmg/) and [Code Signing](/guides/packaging/code-signing/).
+For the best user experience when distributing publicly, use a signed DMG. See [DMG Installer](/docs/guides/packaging/dmg/) and [Code Signing](/docs/guides/packaging/code-signing/).

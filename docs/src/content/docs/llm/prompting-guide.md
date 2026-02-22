@@ -176,8 +176,8 @@ These patterns usually require a follow-up prompt to get right:
 
 ## Example Prompts
 
-See the [Example Prompts](/llm/example-prompts/) page for 8 complete, copy-paste-ready prompts that produce working LightShell apps.
+See the [Example Prompts](/docs/llm/example-prompts/) page for 8 complete, copy-paste-ready prompts that produce working LightShell apps.
 
 ## When the AI Gets It Wrong
 
-See [Common AI Mistakes](/llm/common-mistakes/) for a catalog of frequent errors (using `require('fs')`, forgetting `await`, using `window.open()`) and their fixes.
+See [Common AI Mistakes](/docs/llm/common-mistakes/) for a catalog of frequent errors (using `require('fs')`, forgetting `await`, using `window.open()`) and their fixes.

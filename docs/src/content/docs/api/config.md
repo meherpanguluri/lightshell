@@ -247,7 +247,7 @@ Setting a custom `csp` completely replaces the default. Make sure to include `'s
 
 ### updater
 
-Auto-update configuration. See the [Updater API](/api/updater/) for the full JavaScript API.
+Auto-update configuration. See the [Updater API](/docs/api/updater/) for the full JavaScript API.
 
 | Field | Type | Default | Description |
 |-------|------|---------|-------------|

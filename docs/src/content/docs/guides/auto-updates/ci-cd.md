@@ -9,8 +9,8 @@ This guide provides a complete GitHub Actions workflow for building, signing, an
 
 Before setting up CI/CD, make sure you have:
 
-1. A release server running (see [Release Server](/guides/auto-updates/release-server/)) or a GitHub Releases setup (see [GitHub Releases](/guides/auto-updates/github-releases/))
-2. An Ed25519 signing key pair (see [Signing Keys](/guides/auto-updates/signing-keys/))
+1. A release server running (see [Release Server](/docs/guides/auto-updates/release-server/)) or a GitHub Releases setup (see [GitHub Releases](/docs/guides/auto-updates/github-releases/))
+2. An Ed25519 signing key pair (see [Signing Keys](/docs/guides/auto-updates/signing-keys/))
 3. A GitHub repository with your LightShell app
 
 ## Secrets
