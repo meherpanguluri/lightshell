@@ -4,76 +4,76 @@
 
 ## Docs
 
-- [Getting Started](https://lightshell.dev/getting-started/): Install LightShell and create your first app in 5 minutes
-- [Tutorial 1: Your First App](https://lightshell.dev/tutorial/01-your-first-app/): Create a minimal desktop app from scratch
-- [Tutorial 2: Native APIs](https://lightshell.dev/tutorial/02-native-apis/): Use dialogs, clipboard, file system, and notifications
-- [Tutorial 3: Styling](https://lightshell.dev/tutorial/03-styling/): Cross-platform CSS, theming, and platform-specific styles
-- [Tutorial 4: Packaging](https://lightshell.dev/tutorial/04-packaging/): Build and distribute your app as .app, .dmg, AppImage, .deb, or .rpm
-- [Tutorial 5: Adding Persistence](https://lightshell.dev/tutorial/05-adding-persistence/): Save and load data with lightshell.store and lightshell.fs
-- [Tutorial 6: Connecting to APIs](https://lightshell.dev/tutorial/06-connecting-to-apis/): Make CORS-free HTTP requests from your desktop app
-- [API: Window](https://lightshell.dev/api/window/): Window management — title, size, position, minimize, maximize, fullscreen, content protection, vibrancy, file drop, color scheme, events
-- [API: File System](https://lightshell.dev/api/fs/): Read, write, list, watch files and directories
-- [API: Dialogs](https://lightshell.dev/api/dialog/): Native open, save, message, confirm, and prompt dialogs
-- [API: Clipboard](https://lightshell.dev/api/clipboard/): System clipboard read and write
-- [API: System](https://lightshell.dev/api/system/): Platform, architecture, home directory, temp directory, hostname
-- [API: App](https://lightshell.dev/api/app/): App lifecycle — quit, version, data directory, badge count, protocol handler, second instance
-- [API: Shell](https://lightshell.dev/api/shell/): Open URLs and files in the default system handler
-- [API: Notifications](https://lightshell.dev/api/notify/): Send native system notifications
-- [API: Tray](https://lightshell.dev/api/tray/): System tray icon and menu
-- [API: Menu](https://lightshell.dev/api/menu/): Application menu bar with keyboard accelerators
-- [API: Store](https://lightshell.dev/api/store/): Persistent key-value storage (get, set, delete, has, keys, clear)
-- [API: HTTP](https://lightshell.dev/api/http/): CORS-free HTTP client and file downloads
-- [API: Process](https://lightshell.dev/api/process/): Scoped system command execution
-- [API: Shortcuts](https://lightshell.dev/api/shortcuts/): Global keyboard shortcuts that work when app is not focused
-- [API: Updater](https://lightshell.dev/api/updater/): Auto-update with SHA256 verification
-- [API: Events](https://lightshell.dev/api/events/): Global event listener (lightshell.on)
-- [API: Configuration](https://lightshell.dev/api/config/): Complete lightshell.json reference
-- [API: CLI](https://lightshell.dev/api/cli/): Command-line interface — dev, build, doctor, init
-- [API: Error Codes](https://lightshell.dev/api/errors/): All error codes (FS_NOT_FOUND, FS_PERMISSION_DENIED, HTTP_TIMEOUT, PROCESS_NOT_FOUND, etc.) and troubleshooting
-- [Guide: File System](https://lightshell.dev/guides/file-system/): Working with files, paths, and directories in detail
-- [Guide: Menus & Tray](https://lightshell.dev/guides/menus-tray/): System tray icons, menus, and app menu bars
-- [Guide: Dialogs & Prompts](https://lightshell.dev/guides/dialogs-and-prompts/): File pickers, confirmations, and user input
-- [Guide: Keyboard Shortcuts](https://lightshell.dev/guides/keyboard-shortcuts/): In-app and global keyboard shortcuts
-- [Guide: Security & Permissions](https://lightshell.dev/guides/security-and-permissions/): Permission engine, path validation, and CSP
-- [Guide: Default Styles](https://lightshell.dev/guides/default-css/): Built-in CSS, system fonts, dark mode, CSS variables (--ls-*)
-- [Guide: Deep Linking](https://lightshell.dev/guides/deep-linking/): Custom URL protocols (myapp://...) for launching your app
-- [Guide: Cross-Platform](https://lightshell.dev/guides/cross-platform/): Handle macOS vs Linux differences
-- [Packaging: Overview](https://lightshell.dev/guides/packaging/): All packaging formats and build targets
-- [Packaging: App Bundle](https://lightshell.dev/guides/packaging/app-bundle/): macOS .app bundle format
-- [Packaging: DMG Installer](https://lightshell.dev/guides/packaging/dmg/): macOS drag-to-install DMG
-- [Packaging: AppImage](https://lightshell.dev/guides/packaging/appimage/): Linux single-file executable
-- [Packaging: .deb Package](https://lightshell.dev/guides/packaging/deb/): Debian/Ubuntu package
-- [Packaging: .rpm Package](https://lightshell.dev/guides/packaging/rpm/): Fedora/RHEL package
-- [Packaging: Code Signing](https://lightshell.dev/guides/packaging/code-signing/): macOS code signing and notarization
-- [Packaging: App Icons](https://lightshell.dev/guides/packaging/icons/): Icon formats and sizes for all platforms
-- [Packaging: App Identifier](https://lightshell.dev/guides/packaging/app-id/): Bundle IDs and app identifiers
-- [Auto-Updates: Overview](https://lightshell.dev/guides/auto-updates/): Built-in auto-update system
-- [Auto-Updates: Setup](https://lightshell.dev/guides/auto-updates/setup/): Enable auto-updates in your app
-- [Auto-Updates: Hosting Releases](https://lightshell.dev/guides/auto-updates/hosting-releases/): Host update manifests on any static server
-- [Auto-Updates: Update Manifest](https://lightshell.dev/guides/auto-updates/update-manifest/): JSON manifest format and fields
-- [Auto-Updates: Update Flow](https://lightshell.dev/guides/auto-updates/update-flow/): How the update check-download-install cycle works
-- [Auto-Updates: Security](https://lightshell.dev/guides/auto-updates/security/): SHA256 verification, HTTPS enforcement
-- [Auto-Updates: UI Patterns](https://lightshell.dev/guides/auto-updates/ui-patterns/): UX patterns for showing update prompts
-- [Auto-Updates: Release Server](https://lightshell.dev/guides/auto-updates/release-server/): Deploy and configure the lightshell-server for hosting updates
-- [Auto-Updates: Signing Keys](https://lightshell.dev/guides/auto-updates/signing-keys/): Ed25519 key generation, storage, rotation, and threat model
-- [Auto-Updates: CI/CD](https://lightshell.dev/guides/auto-updates/ci-cd/): GitHub Actions workflow for automated build-sign-upload
-- [Auto-Updates: GitHub Releases](https://lightshell.dev/guides/auto-updates/github-releases/): Publish updates via GitHub Releases
+- [Getting Started](https://lightshell.dev/docs/getting-started/): Install LightShell and create your first app in 5 minutes
+- [Tutorial 1: Your First App](https://lightshell.dev/docs/tutorial/01-your-first-app/): Create a minimal desktop app from scratch
+- [Tutorial 2: Native APIs](https://lightshell.dev/docs/tutorial/02-native-apis/): Use dialogs, clipboard, file system, and notifications
+- [Tutorial 3: Styling](https://lightshell.dev/docs/tutorial/03-styling/): Cross-platform CSS, theming, and platform-specific styles
+- [Tutorial 4: Packaging](https://lightshell.dev/docs/tutorial/04-packaging/): Build and distribute your app as .app, .dmg, AppImage, .deb, or .rpm
+- [Tutorial 5: Adding Persistence](https://lightshell.dev/docs/tutorial/05-adding-persistence/): Save and load data with lightshell.store and lightshell.fs
+- [Tutorial 6: Connecting to APIs](https://lightshell.dev/docs/tutorial/06-connecting-to-apis/): Make CORS-free HTTP requests from your desktop app
+- [API: Window](https://lightshell.dev/docs/api/window/): Window management — title, size, position, minimize, maximize, fullscreen, content protection, vibrancy, file drop, color scheme, events
+- [API: File System](https://lightshell.dev/docs/api/fs/): Read, write, list, watch files and directories
+- [API: Dialogs](https://lightshell.dev/docs/api/dialog/): Native open, save, message, confirm, and prompt dialogs
+- [API: Clipboard](https://lightshell.dev/docs/api/clipboard/): System clipboard read and write
+- [API: System](https://lightshell.dev/docs/api/system/): Platform, architecture, home directory, temp directory, hostname
+- [API: App](https://lightshell.dev/docs/api/app/): App lifecycle — quit, version, data directory, badge count, protocol handler, second instance
+- [API: Shell](https://lightshell.dev/docs/api/shell/): Open URLs and files in the default system handler
+- [API: Notifications](https://lightshell.dev/docs/api/notify/): Send native system notifications
+- [API: Tray](https://lightshell.dev/docs/api/tray/): System tray icon and menu
+- [API: Menu](https://lightshell.dev/docs/api/menu/): Application menu bar with keyboard accelerators
+- [API: Store](https://lightshell.dev/docs/api/store/): Persistent key-value storage (get, set, delete, has, keys, clear)
+- [API: HTTP](https://lightshell.dev/docs/api/http/): CORS-free HTTP client and file downloads
+- [API: Process](https://lightshell.dev/docs/api/process/): Scoped system command execution
+- [API: Shortcuts](https://lightshell.dev/docs/api/shortcuts/): Global keyboard shortcuts that work when app is not focused
+- [API: Updater](https://lightshell.dev/docs/api/updater/): Auto-update with SHA256 verification
+- [API: Events](https://lightshell.dev/docs/api/events/): Global event listener (lightshell.on)
+- [API: Configuration](https://lightshell.dev/docs/api/config/): Complete lightshell.json reference
+- [API: CLI](https://lightshell.dev/docs/api/cli/): Command-line interface — dev, build, doctor, init
+- [API: Error Codes](https://lightshell.dev/docs/api/errors/): All error codes (FS_NOT_FOUND, FS_PERMISSION_DENIED, HTTP_TIMEOUT, PROCESS_NOT_FOUND, etc.) and troubleshooting
+- [Guide: File System](https://lightshell.dev/docs/guides/file-system/): Working with files, paths, and directories in detail
+- [Guide: Menus & Tray](https://lightshell.dev/docs/guides/menus-tray/): System tray icons, menus, and app menu bars
+- [Guide: Dialogs & Prompts](https://lightshell.dev/docs/guides/dialogs-and-prompts/): File pickers, confirmations, and user input
+- [Guide: Keyboard Shortcuts](https://lightshell.dev/docs/guides/keyboard-shortcuts/): In-app and global keyboard shortcuts
+- [Guide: Security & Permissions](https://lightshell.dev/docs/guides/security-and-permissions/): Permission engine, path validation, and CSP
+- [Guide: Default Styles](https://lightshell.dev/docs/guides/default-css/): Built-in CSS, system fonts, dark mode, CSS variables (--ls-*)
+- [Guide: Deep Linking](https://lightshell.dev/docs/guides/deep-linking/): Custom URL protocols (myapp://...) for launching your app
+- [Guide: Cross-Platform](https://lightshell.dev/docs/guides/cross-platform/): Handle macOS vs Linux differences
+- [Packaging: Overview](https://lightshell.dev/docs/guides/packaging/): All packaging formats and build targets
+- [Packaging: App Bundle](https://lightshell.dev/docs/guides/packaging/app-bundle/): macOS .app bundle format
+- [Packaging: DMG Installer](https://lightshell.dev/docs/guides/packaging/dmg/): macOS drag-to-install DMG
+- [Packaging: AppImage](https://lightshell.dev/docs/guides/packaging/appimage/): Linux single-file executable
+- [Packaging: .deb Package](https://lightshell.dev/docs/guides/packaging/deb/): Debian/Ubuntu package
+- [Packaging: .rpm Package](https://lightshell.dev/docs/guides/packaging/rpm/): Fedora/RHEL package
+- [Packaging: Code Signing](https://lightshell.dev/docs/guides/packaging/code-signing/): macOS code signing and notarization
+- [Packaging: App Icons](https://lightshell.dev/docs/guides/packaging/icons/): Icon formats and sizes for all platforms
+- [Packaging: App Identifier](https://lightshell.dev/docs/guides/packaging/app-id/): Bundle IDs and app identifiers
+- [Auto-Updates: Overview](https://lightshell.dev/docs/guides/auto-updates/): Built-in auto-update system
+- [Auto-Updates: Setup](https://lightshell.dev/docs/guides/auto-updates/setup/): Enable auto-updates in your app
+- [Auto-Updates: Hosting Releases](https://lightshell.dev/docs/guides/auto-updates/hosting-releases/): Host update manifests on any static server
+- [Auto-Updates: Update Manifest](https://lightshell.dev/docs/guides/auto-updates/update-manifest/): JSON manifest format and fields
+- [Auto-Updates: Update Flow](https://lightshell.dev/docs/guides/auto-updates/update-flow/): How the update check-download-install cycle works
+- [Auto-Updates: Security](https://lightshell.dev/docs/guides/auto-updates/security/): SHA256 verification, HTTPS enforcement
+- [Auto-Updates: UI Patterns](https://lightshell.dev/docs/guides/auto-updates/ui-patterns/): UX patterns for showing update prompts
+- [Auto-Updates: Release Server](https://lightshell.dev/docs/guides/auto-updates/release-server/): Deploy and configure the lightshell-server for hosting updates
+- [Auto-Updates: Signing Keys](https://lightshell.dev/docs/guides/auto-updates/signing-keys/): Ed25519 key generation, storage, rotation, and threat model
+- [Auto-Updates: CI/CD](https://lightshell.dev/docs/guides/auto-updates/ci-cd/): GitHub Actions workflow for automated build-sign-upload
+- [Auto-Updates: GitHub Releases](https://lightshell.dev/docs/guides/auto-updates/github-releases/): Publish updates via GitHub Releases
 
 ## Optional
 
-- [Concepts: Architecture](https://lightshell.dev/concepts/architecture/): How LightShell works internally — Go backend, system webview, IPC
-- [Concepts: IPC Protocol](https://lightshell.dev/concepts/ipc-protocol/): The JS-to-Go communication layer
-- [Concepts: Security Model](https://lightshell.dev/concepts/security-model/): Permission engine, CSP, path traversal protection
-- [Concepts: Cross-Platform Rendering](https://lightshell.dev/concepts/cross-platform-rendering/): WebKit differences between macOS and Linux
-- [Concepts: AI-Native Design](https://lightshell.dev/concepts/ai-native-design/): Why LightShell is built for AI code generation
-- [LLM Integration: Overview](https://lightshell.dev/llm/): How to use LightShell with AI tools
-- [LLM Integration: llms.txt Spec](https://lightshell.dev/llm/llms-txt/): The llms.txt and llms-full.txt files explained
-- [LLM Integration: Prompting Guide](https://lightshell.dev/llm/prompting-guide/): Effective prompts for generating LightShell apps
-- [LLM Integration: Cursor Rules](https://lightshell.dev/llm/cursor-rules/): .cursorrules file for Cursor IDE
-- [LLM Integration: AGENTS.md](https://lightshell.dev/llm/agents-md/): AGENTS.md for Claude Code and Codex
-- [LLM Integration: Example Prompts](https://lightshell.dev/llm/example-prompts/): Copy-paste prompts that produce working apps
-- [LLM Integration: Common Mistakes](https://lightshell.dev/llm/common-mistakes/): Mistakes AI models make and how to prevent them
-- [Guide: Single-File Apps](https://lightshell.dev/guides/single-file-apps/): Build an entire app in one HTML file
-- [Guide: Error Handling](https://lightshell.dev/guides/error-handling/): Handle errors gracefully in LightShell apps
-- [Guide: Migrate from Electron](https://lightshell.dev/guides/migration-from-electron/): Moving from Electron to LightShell
-- [Guide: Migrate from Neutralinojs](https://lightshell.dev/guides/migration-from-neutralinojs/): Moving from Neutralinojs to LightShell
+- [Concepts: Architecture](https://lightshell.dev/docs/concepts/architecture/): How LightShell works internally — Go backend, system webview, IPC
+- [Concepts: IPC Protocol](https://lightshell.dev/docs/concepts/ipc-protocol/): The JS-to-Go communication layer
+- [Concepts: Security Model](https://lightshell.dev/docs/concepts/security-model/): Permission engine, CSP, path traversal protection
+- [Concepts: Cross-Platform Rendering](https://lightshell.dev/docs/concepts/cross-platform-rendering/): WebKit differences between macOS and Linux
+- [Concepts: AI-Native Design](https://lightshell.dev/docs/concepts/ai-native-design/): Why LightShell is built for AI code generation
+- [LLM Integration: Overview](https://lightshell.dev/docs/llm/): How to use LightShell with AI tools
+- [LLM Integration: llms.txt Spec](https://lightshell.dev/docs/llm/llms-txt/): The llms.txt and llms-full.txt files explained
+- [LLM Integration: Prompting Guide](https://lightshell.dev/docs/llm/prompting-guide/): Effective prompts for generating LightShell apps
+- [LLM Integration: Cursor Rules](https://lightshell.dev/docs/llm/cursor-rules/): .cursorrules file for Cursor IDE
+- [LLM Integration: AGENTS.md](https://lightshell.dev/docs/llm/agents-md/): AGENTS.md for Claude Code and Codex
+- [LLM Integration: Example Prompts](https://lightshell.dev/docs/llm/example-prompts/): Copy-paste prompts that produce working apps
+- [LLM Integration: Common Mistakes](https://lightshell.dev/docs/llm/common-mistakes/): Mistakes AI models make and how to prevent them
+- [Guide: Single-File Apps](https://lightshell.dev/docs/guides/single-file-apps/): Build an entire app in one HTML file
+- [Guide: Error Handling](https://lightshell.dev/docs/guides/error-handling/): Handle errors gracefully in LightShell apps
+- [Guide: Migrate from Electron](https://lightshell.dev/docs/guides/migration-from-electron/): Moving from Electron to LightShell
+- [Guide: Migrate from Neutralinojs](https://lightshell.dev/docs/guides/migration-from-neutralinojs/): Moving from Neutralinojs to LightShell
