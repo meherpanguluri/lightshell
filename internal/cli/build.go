@@ -31,6 +31,22 @@ func Build() error {
 		return err
 	}
 
+	// If a build command is configured (e.g. Vite), run it first
+	if cfg.BuildCommand != "" {
+		if _, err := os.Stat(filepath.Join(dir, "node_modules")); os.IsNotExist(err) {
+			return fmt.Errorf("node_modules not found. Run 'npm install' first")
+		}
+		fmt.Printf("Running: %s\n", cfg.BuildCommand)
+		parts := strings.Fields(cfg.BuildCommand)
+		buildCmd := exec.Command(parts[0], parts[1:]...)
+		buildCmd.Dir = dir
+		buildCmd.Stdout = os.Stdout
+		buildCmd.Stderr = os.Stderr
+		if err := buildCmd.Run(); err != nil {
+			return fmt.Errorf("build command failed: %w", err)
+		}
+	}
+
 	// Create staging directory
 	staging, err := os.MkdirTemp("", "lightshell-build-*")
 	if err != nil {

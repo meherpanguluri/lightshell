@@ -46,6 +46,17 @@ my-app/
 
 The `lightshell.json` file defines your app's name, window size, and other settings. The `src/` directory contains your web code.
 
+### Using React or Svelte
+
+Want to use a framework? Pass `--template`:
+
+```bash
+lightshell init my-app --template react    # React + Vite
+lightshell init my-app --template svelte   # Svelte + Vite
+```
+
+Framework projects include Vite for dev server HMR and production builds. Run `npm install` after init. See the [React & Svelte guide](/docs/guides/frameworks/) for details.
+
 ## Run in Development Mode
 
 ```bash

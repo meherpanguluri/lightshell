@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/lightshell-dev/lightshell/internal/cli"
 )
@@ -20,10 +21,17 @@ func main() {
 		fmt.Printf("lightshell %s\n", version)
 	case "init":
 		name := ""
-		if len(os.Args) > 2 {
-			name = os.Args[2]
+		template := ""
+		for i := 2; i < len(os.Args); i++ {
+			arg := os.Args[i]
+			if arg == "--template" && i+1 < len(os.Args) {
+				template = os.Args[i+1]
+				i++
+			} else if !strings.HasPrefix(arg, "-") && name == "" {
+				name = arg
+			}
 		}
-		if err := cli.Init(name); err != nil {
+		if err := cli.Init(name, template); err != nil {
 			fmt.Fprintf(os.Stderr, "Error: %v\n", err)
 			os.Exit(1)
 		}
@@ -78,7 +86,8 @@ Usage:
   lightshell <command> [options]
 
 Commands:
-  init [name]    Create a new LightShell project
+  init [name] [--template react|svelte]
+                 Create a new LightShell project
   dev            Run app with hot reload (dev mode)
   build          Build app for current platform
   doctor         Check for cross-platform compatibility issues

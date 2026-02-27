@@ -9,18 +9,45 @@ import (
 	"strings"
 )
 
-//go:embed templates/default
+//go:embed all:templates/default
 var defaultTemplate embed.FS
 
+//go:embed all:templates/react
+var reactTemplate embed.FS
+
+//go:embed all:templates/svelte
+var svelteTemplate embed.FS
+
 // Init creates a new LightShell project.
-func Init(name string) error {
+func Init(name string, templateName string) error {
 	if name == "" {
 		name = "my-lightshell-app"
+	}
+
+	if templateName == "" {
+		templateName = "default"
 	}
 
 	// Validate name
 	if strings.ContainsAny(name, " /\\") {
 		return fmt.Errorf("project name cannot contain spaces or slashes: %q", name)
+	}
+
+	// Select template
+	var tmplFS embed.FS
+	var tmplRoot string
+	switch templateName {
+	case "default":
+		tmplFS = defaultTemplate
+		tmplRoot = "templates/default"
+	case "react":
+		tmplFS = reactTemplate
+		tmplRoot = "templates/react"
+	case "svelte":
+		tmplFS = svelteTemplate
+		tmplRoot = "templates/svelte"
+	default:
+		return fmt.Errorf("unknown template %q. Available templates: default, react, svelte", templateName)
 	}
 
 	dir, err := filepath.Abs(name)
@@ -37,20 +64,20 @@ func Init(name string) error {
 	}
 
 	// Copy template files
-	err = fs.WalkDir(defaultTemplate, "templates/default", func(path string, d fs.DirEntry, err error) error {
+	err = fs.WalkDir(tmplFS, tmplRoot, func(path string, d fs.DirEntry, err error) error {
 		if err != nil {
 			return err
 		}
 
 		// Compute relative path from template root
-		relPath, _ := filepath.Rel("templates/default", path)
+		relPath, _ := filepath.Rel(tmplRoot, path)
 		destPath := filepath.Join(dir, relPath)
 
 		if d.IsDir() {
 			return os.MkdirAll(destPath, 0o755)
 		}
 
-		data, err := defaultTemplate.ReadFile(path)
+		data, err := tmplFS.ReadFile(path)
 		if err != nil {
 			return err
 		}
@@ -67,9 +94,18 @@ func Init(name string) error {
 		return fmt.Errorf("failed to create project: %w", err)
 	}
 
-	fmt.Printf("Created %s\n\n", name)
+	fmt.Printf("Created %s", name)
+	if templateName != "default" {
+		fmt.Printf(" (template: %s)", templateName)
+	}
+	fmt.Println()
+	fmt.Println()
 	fmt.Printf("  cd %s\n", name)
-	fmt.Printf("  lightshell dev\n\n")
+	if templateName != "default" {
+		fmt.Println("  npm install")
+	}
+	fmt.Println("  lightshell dev")
+	fmt.Println()
 
 	return nil
 }

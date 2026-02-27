@@ -64,6 +64,8 @@ Every LightShell app has a `lightshell.json` file in the project root. This file
 | `name` | string | yes | — | Application display name |
 | `version` | string | yes | — | Application version (semver recommended, e.g., `"1.0.0"`) |
 | `entry` | string | no | `"index.html"` | Path to the main HTML file, relative to the project root |
+| `devCommand` | string | no | — | Command to start an external dev server (e.g. `"npm run dev -- --port 5188"`). When set, `lightshell dev` starts this process and loads its URL instead of the built-in static server. |
+| `buildCommand` | string | no | — | Command to run before packaging (e.g. `"npm run build"`). When set, `lightshell build` runs this before embedding files. |
 
 ---
 

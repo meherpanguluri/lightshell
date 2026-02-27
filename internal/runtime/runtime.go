@@ -16,8 +16,10 @@ type Config struct {
 	Entry       string       `json:"entry"`
 	Window      WindowConfig `json:"window"`
 	Tray        bool         `json:"tray"`
-	Build       BuildConfig  `json:"build"`
-	Permissions []string     `json:"permissions"`
+	Build        BuildConfig  `json:"build"`
+	Permissions  []string     `json:"permissions"`
+	DevCommand   string       `json:"devCommand,omitempty"`
+	BuildCommand string       `json:"buildCommand,omitempty"`
 }
 
 type WindowConfig struct {

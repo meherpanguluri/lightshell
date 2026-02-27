@@ -13,28 +13,64 @@ Create a new LightShell project with a starter template.
 
 **Usage:**
 ```bash
-lightshell init <project-name>
+lightshell init <project-name> [--template react|svelte]
 ```
+
+**Options:**
+
+| Flag | Description |
+|------|-------------|
+| `--template react` | Create a React + Vite project |
+| `--template svelte` | Create a Svelte + Vite project |
+| *(none)* | Create a vanilla HTML/CSS/JS project (default) |
 
 **What it does:**
 1. Creates a new directory with the given name
 2. Generates `lightshell.json` with sensible defaults
-3. Creates a starter `index.html` with a basic UI and the LightShell client library included
-4. Creates a minimal CSS file
+3. Creates starter files based on the selected template
+4. For framework templates: includes `package.json` with Vite and framework dependencies
 
-**Example:**
+**Examples:**
 ```bash
+# Vanilla project
 lightshell init my-app
 cd my-app
 lightshell dev
+
+# React project
+lightshell init my-app --template react
+cd my-app
+npm install
+lightshell dev
+
+# Svelte project
+lightshell init my-app --template svelte
+cd my-app
+npm install
+lightshell dev
 ```
 
-**Output structure:**
+**Output structure (vanilla):**
 ```
 my-app/
   lightshell.json
+  src/
+    index.html
+    app.js
+    style.css
+```
+
+**Output structure (React/Svelte):**
+```
+my-app/
+  lightshell.json
+  package.json
+  vite.config.js
   index.html
-  style.css
+  src/
+    main.jsx          # (or main.js for Svelte)
+    App.jsx           # (or App.svelte)
+    App.css           # (or app.css)
 ```
 
 ---
@@ -54,6 +90,8 @@ lightshell dev
 - DevTools are enabled (right-click to inspect)
 - Uses the relaxed dev CSP (`default-src 'self' 'unsafe-inline' 'unsafe-eval' lightshell: http://localhost:*`)
 - Console output from `console.log()` is printed to the terminal
+
+**Framework projects:** If `devCommand` is set in `lightshell.json`, LightShell starts the external dev server (e.g. Vite) and loads its URL in the webview. Vite handles HMR natively — no file watcher needed.
 
 **Example:**
 ```bash
@@ -91,6 +129,8 @@ lightshell build [flags]
 | `deb` | Linux | `.deb` package | Debian/Ubuntu package for `apt install` |
 | `rpm` | Linux | `.rpm` package | Fedora/RHEL package for `dnf install` |
 | `all` | both | all formats | Build all formats available for the current OS |
+
+**Framework projects:** If `buildCommand` is set in `lightshell.json`, LightShell runs it first (e.g. `npm run build` for Vite) before packaging. The build output directory must match the `entry` path in your config.
 
 **Examples:**
 ```bash
