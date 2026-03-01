@@ -9,7 +9,28 @@ permissions:
   contents: write
 
 jobs:
+  test:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.23'
+      - name: Test with coverage
+        run: |
+          go test ./internal/ipc/ ./internal/security/ ./internal/errors/ ./internal/runtime/ ./internal/compat/ ./tests/ \
+            -coverprofile=coverage.out -covermode=atomic -count=1
+      - name: Check coverage threshold
+        run: |
+          COVERAGE=$(go tool cover -func=coverage.out | grep total | awk '{print $3}' | sed 's/%//')
+          echo "Total coverage: ${COVERAGE}%"
+          if [ "$(echo "$COVERAGE < 85" | bc -l)" -eq 1 ]; then
+            echo "::error::Coverage ${COVERAGE}% is below the 85% threshold"
+            exit 1
+          fi
+
   build:
+    needs: test
     strategy:
       matrix:
         include:

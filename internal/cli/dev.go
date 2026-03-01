@@ -179,6 +179,7 @@ func Dev() error {
 	go func() {
 		<-sigCh
 		fmt.Println("\nShutting down...")
+		router.RunShutdownHooks()
 		if mcpSrv != nil {
 			mcpSrv.close()
 		}
@@ -188,7 +189,9 @@ func Dev() error {
 	}()
 
 	// Run the event loop (blocking)
-	return wv.Run()
+	err = wv.Run()
+	router.RunShutdownHooks()
+	return err
 }
 
 func injectScripts(wv webview.Webview) {
@@ -304,6 +307,7 @@ func devWithBundler(dir string, cfg runtime.Config) error {
 	go func() {
 		<-sigCh
 		fmt.Println("\nShutting down...")
+		router.RunShutdownHooks()
 		cmd.Process.Kill()
 		wv.Destroy()
 		os.Exit(0)
@@ -311,6 +315,7 @@ func devWithBundler(dir string, cfg runtime.Config) error {
 
 	// Run the event loop (blocking)
 	err := wv.Run()
+	router.RunShutdownHooks()
 	cmd.Process.Kill()
 	return err
 }

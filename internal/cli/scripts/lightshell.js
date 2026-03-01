@@ -153,6 +153,7 @@
       checkAndInstall: ()   => call('updater.checkAndInstall'),
       onProgress:      (cb) => on('updater.progress', cb),
     },
+    invoke: (handler, payload) => call('invoke', { handler, payload: payload || {} }),
     on,
   }
 })()

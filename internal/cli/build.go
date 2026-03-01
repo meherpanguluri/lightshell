@@ -74,6 +74,16 @@ func Build() error {
 		return fmt.Errorf("failed to generate build source: %w", err)
 	}
 
+	// Copy user's handlers.go if it exists, otherwise generate a default stub
+	userHandlers := filepath.Join(dir, "handlers.go")
+	stageHandlers := filepath.Join(staging, "handlers.go")
+	if data, err := os.ReadFile(userHandlers); err == nil {
+		os.WriteFile(stageHandlers, data, 0o644)
+	} else {
+		defaultHandlers := "package main\n\n// customHandlers registers your Go handlers.\n// Edit handlers.go in your project root to add custom handlers.\n//\n// Example:\n//   func customHandlers() {\n//       Handle(\"ai.status\", func(payload json.RawMessage) (any, error) {\n//           return map[string]any{\"ready\": true}, nil\n//       })\n//       OnShutdown(func() { fmt.Println(\"Goodbye!\") })\n//   }\nfunc customHandlers() {}\n"
+		os.WriteFile(stageHandlers, []byte(defaultHandlers), 0o644)
+	}
+
 	// Copy the Objective-C webview bridge
 	if runtime.GOOS == "darwin" {
 		os.WriteFile(filepath.Join(staging, "webview_darwin.m"), []byte(webviewDarwinM), 0o644)
@@ -197,6 +207,24 @@ var defaultsCSS string
 
 var msgHandler func(string)
 var ipcHandlers = map[string]func(json.RawMessage)(any, error){}
+var invokeHandlers = map[string]func(json.RawMessage)(any, error){}
+var shutdownHooks []func()
+
+// Handle registers a custom handler invokable from JS via lightshell.invoke(name, payload).
+func Handle(name string, handler func(json.RawMessage)(any, error)) {
+	invokeHandlers[name] = handler
+}
+
+// OnShutdown registers a function to be called when the app is shutting down.
+func OnShutdown(fn func()) {
+	shutdownHooks = append(shutdownHooks, fn)
+}
+
+func runShutdownHooks() {
+	for _, fn := range shutdownHooks {
+		fn()
+	}
+}
 
 // Security: declared permissions and allowed paths
 var permissions = map[string]bool{
@@ -296,6 +324,21 @@ func handleMessage(rawMsg string) string {
 }
 
 func registerAPIs() {
+	registerHandler("invoke", func(p json.RawMessage) (any, error) {
+		var req struct {
+			Handler string          {{.BTick}}json:"handler"{{.BTick}}
+			Payload json.RawMessage {{.BTick}}json:"payload"{{.BTick}}
+		}
+		if err := json.Unmarshal(p, &req); err != nil {
+			return nil, fmt.Errorf("invalid invoke params: %%v", err)
+		}
+		handler, ok := invokeHandlers[req.Handler]
+		if !ok {
+			return nil, fmt.Errorf("unknown handler: %%s", req.Handler)
+		}
+		return handler(req.Payload)
+	})
+
 	registerHandler("system.platform", func(p json.RawMessage) (any, error) {
 		return runtime.GOOS, nil
 	})
@@ -606,15 +649,20 @@ func main() {
 	defer C.free(unsafe.Pointer(cURL))
 	C.WebviewLoadURL(cURL)
 
+	// Register custom handlers (user code in handlers.go)
+	customHandlers()
+
 	sigCh := make(chan os.Signal, 1)
 	signal.Notify(sigCh, syscall.SIGINT, syscall.SIGTERM)
 	go func() {
 		<-sigCh
+		runShutdownHooks()
 		C.WebviewDestroy()
 		os.Exit(0)
 	}()
 
 	C.WebviewRun()
+	runShutdownHooks()
 }
 `
 	t, err := template.New("main").Parse(tmpl)

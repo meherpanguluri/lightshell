@@ -1,5 +1,11 @@
 # LightShell
 
+[![CI](https://github.com/lightshell-dev/lightshell/actions/workflows/ci.yml/badge.svg)](https://github.com/lightshell-dev/lightshell/actions/workflows/ci.yml)
+[![Go Coverage](https://img.shields.io/badge/coverage->85%25-brightgreen)](https://github.com/lightshell-dev/lightshell/actions/workflows/ci.yml)
+[![Go Report Card](https://goreportcard.com/badge/github.com/lightshell-dev/lightshell)](https://goreportcard.com/report/github.com/lightshell-dev/lightshell)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![npm](https://img.shields.io/npm/v/lightshell)](https://www.npmjs.com/package/lightshell)
+
 Build desktop apps with JavaScript. Ship them under 5MB.
 
 ---

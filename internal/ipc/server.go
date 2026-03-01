@@ -11,16 +11,22 @@ type HandlerFunc func(params json.RawMessage) (any, error)
 
 // Router routes IPC method calls to handler functions.
 type Router struct {
-	mu       sync.RWMutex
-	handlers map[string]HandlerFunc
-	evalFunc func(js string) // function to evaluate JS in the webview
+	mu              sync.RWMutex
+	handlers        map[string]HandlerFunc
+	customHandlers  map[string]HandlerFunc
+	evalFunc        func(js string) // function to evaluate JS in the webview
+	shutdownHooks   []func()
 }
 
 // NewRouter creates a new IPC router.
 func NewRouter() *Router {
-	return &Router{
-		handlers: make(map[string]HandlerFunc),
+	r := &Router{
+		handlers:       make(map[string]HandlerFunc),
+		customHandlers: make(map[string]HandlerFunc),
 	}
+	// Register the invoke dispatcher that routes to custom handlers
+	r.handlers["invoke"] = r.handleInvoke
+	return r
 }
 
 // SetEvalFunc sets the function used to send JS to the webview.
@@ -33,6 +39,52 @@ func (r *Router) Handle(method string, handler HandlerFunc) {
 	r.mu.Lock()
 	defer r.mu.Unlock()
 	r.handlers[method] = handler
+}
+
+// HandleCustom registers a custom handler invokable from JS via lightshell.invoke(name, payload).
+func (r *Router) HandleCustom(name string, handler HandlerFunc) {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+	r.customHandlers[name] = handler
+}
+
+// OnShutdown registers a function to be called when the app is shutting down.
+func (r *Router) OnShutdown(fn func()) {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+	r.shutdownHooks = append(r.shutdownHooks, fn)
+}
+
+// RunShutdownHooks calls all registered shutdown hooks.
+func (r *Router) RunShutdownHooks() {
+	r.mu.RLock()
+	hooks := make([]func(), len(r.shutdownHooks))
+	copy(hooks, r.shutdownHooks)
+	r.mu.RUnlock()
+	for _, fn := range hooks {
+		fn()
+	}
+}
+
+// handleInvoke dispatches lightshell.invoke() calls to custom handlers.
+func (r *Router) handleInvoke(params json.RawMessage) (any, error) {
+	var p struct {
+		Handler string          `json:"handler"`
+		Payload json.RawMessage `json:"payload"`
+	}
+	if err := json.Unmarshal(params, &p); err != nil {
+		return nil, fmt.Errorf("invalid invoke params: %v", err)
+	}
+
+	r.mu.RLock()
+	handler, ok := r.customHandlers[p.Handler]
+	r.mu.RUnlock()
+
+	if !ok {
+		return nil, fmt.Errorf("unknown handler: %s", p.Handler)
+	}
+
+	return handler(p.Payload)
 }
 
 // HandleMessage processes a raw JSON message from the webview and returns the JSON response.
