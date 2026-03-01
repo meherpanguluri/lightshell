@@ -27,6 +27,17 @@ LightShell exposes a complete set of native APIs through the `window.lightshell`
 
 **P0** = core APIs available from day one. **P1** = important APIs that ship in v1 but are secondary to core functionality.
 
+## Custom Go Handlers
+
+In addition to the built-in APIs, you can write custom Go handlers and call them from JavaScript using `lightshell.invoke()`:
+
+```js
+const result = await lightshell.invoke('greet', { name: 'Alice' })
+// result = { message: "Hello, Alice!" }
+```
+
+See the [Custom Go Handlers](/docs/guides/custom-handlers/) guide for details on writing `handlers.go` and using `Handle()` / `OnShutdown()` from Go.
+
 ## Quick Example
 
 A small example using multiple APIs together — a note-taking app that saves notes to the store, uses keyboard shortcuts, and sends a notification when done.

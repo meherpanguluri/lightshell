@@ -85,6 +85,7 @@ export default defineConfig({
             { label: 'Single-File Apps', slug: 'guides/single-file-apps' },
             { label: 'Error Handling', slug: 'guides/error-handling' },
             { label: 'React & Svelte', slug: 'guides/frameworks' },
+            { label: 'Custom Go Handlers', slug: 'guides/custom-handlers' },
             { label: 'Cross-Platform', slug: 'guides/cross-platform' },
             { label: 'Migrate from Electron', slug: 'guides/migration-from-electron' },
             { label: 'Migrate from Neutralinojs', slug: 'guides/migration-from-neutralinojs' },

@@ -195,6 +195,36 @@ The Go-side IPC router maps method names to handler functions:
 | `app.quit` | AppAPI | Quit application |
 | `app.version` | AppAPI | Get app version |
 | `app.dataDir` | AppAPI | Get data directory |
+| `invoke` | InvokeDispatcher | Dispatch to custom Go handlers |
+
+## Custom Handler Dispatch (`invoke`)
+
+The `invoke` method is a special IPC method that dispatches to user-defined Go handlers registered via `Handle()` in `handlers.go`. Unlike the built-in methods above, `invoke` is a meta-handler that routes to custom handlers by name.
+
+**Request:**
+```json
+{
+  "id": "...",
+  "method": "invoke",
+  "params": {
+    "handler": "greet",
+    "payload": { "name": "Alice" }
+  }
+}
+```
+
+**Response:**
+```json
+{
+  "id": "...",
+  "result": { "message": "Hello, Alice!" },
+  "error": null
+}
+```
+
+The `handler` field identifies which custom handler to call. The `payload` field is forwarded as `json.RawMessage` to the Go handler function. If the handler name is not registered, an error is returned.
+
+See the [Custom Go Handlers](/docs/guides/custom-handlers/) guide for how to register handlers.
 
 ## Event Types
 
